@@ -51,14 +51,14 @@ fun OnboardingScreen() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
-            verticalArrangement = Arrangement.Top, // ← Только Top, без SpaceBetween!
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
             ) {
-                TextButton(onClick = { /* Пропустить */ }) {
+                TextButton(onClick = {  }) {
                     Text(
                         text = "Пропустить",
                         fontSize = 14.sp,
