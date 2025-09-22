@@ -73,7 +73,7 @@ fun NoConnection() {
         Spacer(modifier = Modifier.weight(1f))
 
         Button(
-            onClick = { /* обработка */ },
+            onClick = { },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
