@@ -51,8 +51,7 @@ fun OnboardingScreen() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
+            verticalArrangement = Arrangement.Top
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
