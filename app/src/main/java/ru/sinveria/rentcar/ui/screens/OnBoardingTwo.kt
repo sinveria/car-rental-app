@@ -31,34 +31,23 @@ import ru.sinveria.rentcar.R
 
 @Preview
 @Composable
-fun OnboardingScreen() {
+fun OnboardingTwoScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 50.dp)
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.onboadring_one),
-            contentDescription = "Car image",
-            contentScale = ContentScale.FillWidth,
-            modifier = Modifier
-                .padding(top = 80.dp)
-                .fillMaxWidth()
-                .height(343.dp)
-        )
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
-            verticalArrangement = Arrangement.Top, // ← Только Top, без SpaceBetween!
-            horizontalAlignment = Alignment.CenterHorizontally
+            verticalArrangement = Arrangement.Top,
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
             ) {
-                TextButton(onClick = { /* Пропустить */ }) {
+                TextButton(onClick = {  }) {
                     Text(
                         text = "Пропустить",
                         fontSize = 14.sp,
@@ -68,18 +57,27 @@ fun OnboardingScreen() {
                 }
             }
 
-            Spacer(modifier = Modifier.height(343.dp + 32.dp))
-
-            Text(
-                text = "Аренда автомобилей",
-                fontSize = 24.sp,
-                color = Color(0xFF1A1A1A),
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 16.dp)
+            Image(
+                painter = painterResource(id = R.drawable.onboarding_two),
+                contentDescription = "Car image",
+                contentScale = ContentScale.FillWidth,
+                modifier = Modifier
+                    .padding(top = 80.dp)
+                    .fillMaxWidth()
+                    .height(343.dp)
             )
 
             Text(
-                text = "Открой для себя удобный и доступный способ передвижения",
+                text = "Безопасно и удобно",
+                fontSize = 24.sp,
+                color = Color(0xFF1A1A1A),
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .padding(bottom = 16.dp)
+            )
+
+            Text(
+                text = "Арендуй автомобиль и наслаждайся его удобством",
                 fontSize = 14.sp,
                 color = Color(0xFF666666),
                 textAlign = TextAlign.Start,
@@ -99,16 +97,6 @@ fun OnboardingScreen() {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Button(
-                        onClick = { },
-                        modifier = Modifier
-                            .width(40.dp)
-                            .height(8.dp),
-                        shape = RoundedCornerShape(2.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2A1246)),
-                        content = {}
-                    )
-                    repeat(2) {
                         Button(
                             onClick = { },
                             modifier = Modifier
@@ -118,7 +106,26 @@ fun OnboardingScreen() {
                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE0E0E0)),
                             content = {}
                         )
-                    }
+                    Button(
+                        onClick = { },
+                        modifier = Modifier
+                            .width(40.dp)
+                            .height(8.dp),
+                        shape = RoundedCornerShape(2.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2A1246)),
+                        content = {}
+                    )
+
+                        Button(
+                            onClick = { },
+                            modifier = Modifier
+                                .width(40.dp)
+                                .height(8.dp),
+                            shape = RoundedCornerShape(2.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE0E0E0)),
+                            content = {}
+                        )
+
                 }
 
                 Button(
