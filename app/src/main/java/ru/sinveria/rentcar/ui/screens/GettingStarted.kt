@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,17 +36,17 @@ fun GettingStarted() {
         verticalArrangement = Arrangement.Top
     ) {
         Text(
-            text = "DriveNext",
+            text = stringResource(R.string.getting_started_app_name),
             fontSize = 24.sp,
-            color = Color(0xFF2A1246),
+            color = Color(android.graphics.Color.parseColor("#2A1246")),
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(top = 112.dp)
         )
 
         Text(
-            text = "Поможем найти твою следующую поездку",
+            text = stringResource(R.string.getting_started_subtitle),
             fontSize = 16.sp,
-            color = Color(0xB2000000),
+            color = Color(android.graphics.Color.parseColor("#B2000000")),
             modifier = Modifier.padding(top = 8.dp)
         )
 
@@ -66,12 +67,12 @@ fun GettingStarted() {
 
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF2A1246),
+                containerColor = Color(android.graphics.Color.parseColor("#2A1246")),
                 contentColor = Color.White
             )
         ) {
             Text(
-                text = "Войти",
+                text = stringResource(R.string.getting_started_login_button),
                 fontSize = 16.sp
             )
         }
@@ -83,18 +84,18 @@ fun GettingStarted() {
                 .height(56.dp)
                 .border(
                     width = 1.dp,
-                    color = Color(0xFFD0D5DD),
+                    color = Color(android.graphics.Color.parseColor("#D0D5DD")),
                     shape = RoundedCornerShape(12.dp)
                 ),
 
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFFFFFFF),
+                containerColor = Color(android.graphics.Color.parseColor("#FFFFFFFF")),
                 contentColor = Color.Black
             )
         ) {
             Text(
-                text = "Зарегистрироваться",
+                text = stringResource(R.string.getting_started_register_button),
                 fontSize = 16.sp
             )
         }

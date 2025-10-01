@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="onboarding_skip_text">#FF2A1246</color>
-    <color name="onboarding_title">#FF1A1A1A</color>
-    <color name="onboarding_description">#FF666666</color>
-    <color name="onboarding_dot_inactive">#FFE0E0E0</color>
-    <color name="onboarding_dot_active">#FF2A1246</color>
-    <color name="onboarding_button_background">#FF2A1246</color>
-    <color name="onboarding_button_text">#FFFFFFFF</color>
+    <color name="skip_text">#FF2A1246</color>
+    <color name="title">#FF1A1A1A</color>
+    <color name="description">#FF666666</color>
+    <color name="dot_inactive">#FFE0E0E0</color>
+    <color name="dot_active">#FF2A1246</color>
+    <color name="button_background">#FF2A1246</color>
+    <color name="button_text">#FFFFFFFF</color>
 </resources>
