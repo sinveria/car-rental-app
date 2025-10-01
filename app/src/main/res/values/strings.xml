@@ -1,9 +1,11 @@
 <resources>
     <string name="app_name">rentCar</string>
     <string name="onboarding_skip">Пропустить</string>
-    <string name="onboarding_three_title">Лучшие предложения</string>
+    <string name="onboarding_one_title">Аренда автомобилей</string>
+    <string name="onboarding_one_description">Открой для себя удобный и доступный способ передвижения</string>
     <string name="onboarding_two_title">Безопасно и удобно</string>
     <string name="onboarding_two_description">Арендуй автомобиль и наслаждайся его удобством</string>
+    <string name="onboarding_three_title">Лучшие предложения</string>
     <string name="onboarding_three_description">Выбирай понравившееся среди сотен доступных автомобилей</string>
     <string name="onboarding_next">Далее</string>
 </resources>

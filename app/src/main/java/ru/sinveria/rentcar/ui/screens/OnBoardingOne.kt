@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -59,9 +60,9 @@ fun OnboardingScreen() {
             ) {
                 TextButton(onClick = {  }) {
                     Text(
-                        text = "Пропустить",
+                        text = stringResource(R.string.onboarding_skip),
                         fontSize = 14.sp,
-                        color = Color(0xFF2A1246),
+                        color = Color(android.graphics.Color.parseColor("#2A1246")),
                         fontWeight = FontWeight.Medium
                     )
                 }
@@ -70,17 +71,17 @@ fun OnboardingScreen() {
             Spacer(modifier = Modifier.height(343.dp + 32.dp))
 
             Text(
-                text = "Аренда автомобилей",
+                text = stringResource(R.string.onboarding_one_title),
                 fontSize = 24.sp,
-                color = Color(0xFF1A1A1A),
+                color = Color(android.graphics.Color.parseColor("#1A1A1A")),
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
             Text(
-                text = "Открой для себя удобный и доступный способ передвижения",
+                text = stringResource(R.string.onboarding_one_description),
                 fontSize = 14.sp,
-                color = Color(0xFF666666),
+                color = Color(android.graphics.Color.parseColor("#666666")),
                 textAlign = TextAlign.Start,
                 lineHeight = 24.sp,
                 modifier = Modifier
@@ -104,7 +105,7 @@ fun OnboardingScreen() {
                             .width(40.dp)
                             .height(8.dp),
                         shape = RoundedCornerShape(2.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2A1246)),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(android.graphics.Color.parseColor("#2A1246"))),
                         content = {}
                     )
                     repeat(2) {
@@ -114,7 +115,7 @@ fun OnboardingScreen() {
                                 .width(40.dp)
                                 .height(8.dp),
                             shape = RoundedCornerShape(2.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE0E0E0)),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(android.graphics.Color.parseColor("#E0E0E0"))),
                             content = {}
                         )
                     }
@@ -127,11 +128,11 @@ fun OnboardingScreen() {
                         .height(50.dp),
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF2A1246),
+                        containerColor = Color(android.graphics.Color.parseColor("#2A1246")),
                         contentColor = Color.White
                     )
                 ) {
-                    Text(text = "Далее", fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                    Text(text = stringResource(R.string.onboarding_next), fontSize = 16.sp, fontWeight = FontWeight.Medium)
                 }
             }
 
