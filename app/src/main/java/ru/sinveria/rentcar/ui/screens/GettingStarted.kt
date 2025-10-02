@@ -73,7 +73,7 @@ fun GettingStarted() {
             )
         ) {
             Text(
-                text = stringResource(R.string.getting_started_login_button),
+                text = stringResource(R.string.login_button),
                 fontSize = 16.sp
             )
         }

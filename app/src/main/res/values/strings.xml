@@ -12,6 +12,15 @@
     <string name="onboarding_next">Далее</string>
     <string name="title">DriveNext</string>
     <string name="find_next_ride">Поможем найти твою следующую поездку</string>
-    <string name="getting_started_login_button">Войти</string>
+    <string name="login_button">Войти</string>
     <string name="getting_started_register_button">Зарегистрироваться</string>
+    <string name="login_account">Войдите в аккаунт</string>
+    <string name="enter_your_data">Пожалуйста, введите свои данные</string>
+    <string name="email">Электронная почта</string>
+    <string name="enter_email">Введите электронную почту</string>
+    <string name="login_google">Войдите через Google</string>
+    <string name="password">Пароль</string>
+    <string name="enter_password">Введите пароль</string>
+    <string name="forget_password">Забыли пароль?</string>
+    <string name="registration">Зарегистрироваться</string>
 </resources>

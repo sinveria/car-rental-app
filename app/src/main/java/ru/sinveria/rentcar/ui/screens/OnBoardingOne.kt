@@ -129,7 +129,7 @@ fun OnboardingScreen() {
                         .height(50.dp),
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = colorResource(id = R.color.dot_active),
+                        containerColor = colorResource(id = R.color.accent_color),
                         contentColor = Color.White
                     )
                 ) {

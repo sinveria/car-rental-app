@@ -7,7 +7,8 @@
     <color name="color_btn">#FF344054</color>
     <color name="description">#FF666666</color>
     <color name="dot_inactive">#FFE0E0E0</color>
-    <color name="dot_active">#FF2A1246</color>
     <color name="button_white">#FFFFFFFF</color>
     <color name="color_black">#00000000</color>
+    <color name="input_text">#FF667085</color>
+    <color name="label_input">#FF404040</color>
 </resources>
