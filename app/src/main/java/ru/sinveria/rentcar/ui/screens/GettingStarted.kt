@@ -37,7 +37,7 @@ fun GettingStarted() {
         verticalArrangement = Arrangement.Top
     ) {
         Text(
-            text = stringResource(R.string.getting_started_app_name),
+            text = stringResource(R.string.title),
             fontSize = 24.sp,
             color = colorResource(id = R.color.accent_color),
             fontWeight = FontWeight.Bold,
@@ -45,7 +45,7 @@ fun GettingStarted() {
         )
 
         Text(
-            text = stringResource(R.string.getting_started_subtitle),
+            text = stringResource(R.string.find_next_ride),
             fontSize = 16.sp,
             color = colorResource(id = R.color.color_black),
             modifier = Modifier.padding(top = 8.dp)

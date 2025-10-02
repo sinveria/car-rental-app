@@ -10,8 +10,8 @@
     <string name="no_connection">Нет подключения\n\nк интернету</string>
     <string name="try_again_connection">Проверьте подключение и повторите\nпопытку</string>
     <string name="onboarding_next">Далее</string>
-    <string name="getting_started_app_name">DriveNext</string>
-    <string name="getting_started_subtitle">Поможем найти твою следующую поездку</string>
+    <string name="title">DriveNext</string>
+    <string name="find_next_ride">Поможем найти твою следующую поездку</string>
     <string name="getting_started_login_button">Войти</string>
     <string name="getting_started_register_button">Зарегистрироваться</string>
 </resources>
