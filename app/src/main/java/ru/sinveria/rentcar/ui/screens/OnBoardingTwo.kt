@@ -141,7 +141,7 @@ fun OnboardingTwoScreen() {
                         contentColor = Color.White
                     )
                 ) {
-                    Text(stringResource(R.string.onboarding_next), fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                    Text(stringResource(R.string.next), fontSize = 16.sp, fontWeight = FontWeight.Medium)
                 }
             }
 

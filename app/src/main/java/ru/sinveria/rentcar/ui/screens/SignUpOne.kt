@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,6 +19,8 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Text
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
@@ -40,42 +43,53 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.sinveria.rentcar.R
 
-@Preview
+@Preview(showBackground = true)
 @Composable
-fun Login() {
+fun SignUpOne() {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
+    val confirmPassword = remember { mutableStateOf("") }
     val emailFocused = remember { mutableStateOf(false) }
     val passwordFocused = remember { mutableStateOf(false) }
+    val confirmPasswordFocused = remember { mutableStateOf(false) }
+    val agreedToTerms = remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(24.dp)
-            .padding(top = 138.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+            .padding(top = 32.dp),
+        horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top
     ) {
-        Text(
-            text = stringResource(id = R.string.login_account),
-            fontSize = 24.sp,
-            color = colorResource(id = R.color.accent_color),
-            fontWeight = FontWeight.Bold,
+        Row(
             modifier = Modifier
-                .padding(top = 56.dp),
-        )
-
-        Text(
-            text = stringResource(id = R.string.enter_your_data),
-            fontSize = 16.sp,
-            color = colorResource(id = R.color.input_text),
-            modifier = Modifier.padding(top = 8.dp)
-        )
+                .fillMaxWidth()
+                .padding(bottom = 87.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.go_back),
+                contentDescription = "Back",
+                modifier = Modifier
+                    .size(24.dp)
+                    .clickable { }
+            )
+            Text(
+                text = stringResource(id = R.string.create_account),
+                fontSize = 20.sp,
+                color = colorResource(id = R.color.accent_color),
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .weight(1f),
+                textAlign = TextAlign.Center
+            )
+        }
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 64.dp),
+                .padding(top = 32.dp),
             horizontalAlignment = Alignment.Start
         ) {
             Text(
@@ -134,7 +148,7 @@ fun Login() {
             }
 
             Text(
-                text = stringResource(id = R.string.password),
+                text = stringResource(id = R.string.think_password),
                 fontSize = 14.sp,
                 color = colorResource(id = R.color.label_input),
                 fontWeight = FontWeight.Medium,
@@ -198,86 +212,126 @@ fun Login() {
                         .clickable { }
                 )
             }
-        }
 
-        Text(
-            text = stringResource(id = R.string.forget_password),
-            fontSize = 14.sp,
-            color = colorResource(id = R.color.accent_color),
-            fontWeight = FontWeight.Medium,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp)
-                .clickable { },
-            textAlign = TextAlign.Center
-        )
-
-        Button(
-            onClick = { },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 24.dp)
-                .height(56.dp),
-            shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = colorResource(id = R.color.accent_color),
-                contentColor = Color.White
-            )
-        ) {
             Text(
-                text = stringResource(id = R.string.login_button),
-                fontSize = 16.sp,
+                text = stringResource(id = R.string.repeat_password),
+                fontSize = 14.sp,
+                color = colorResource(id = R.color.label_input),
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.padding(top = 16.dp)
             )
-        }
 
-        Button(
-            onClick = { },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp)
-                .height(56.dp)
-                .border(
-                    width = 1.dp,
-                    color = colorResource(id = R.color.color_border),
-                    shape = RoundedCornerShape(12.dp)
-                ),
-            shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White,
-                contentColor = Color.Black
-            )
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp)
+                    .height(56.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .border(
+                        width = 1.dp,
+                        color = if (confirmPasswordFocused.value) colorResource(id = R.color.accent_color)
+                        else colorResource(id = R.color.color_border),
+                        shape = RoundedCornerShape(12.dp)
+                    )
+                    .background(Color.White)
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.google_icon),
-                    contentDescription = "Google",
+                BasicTextField(
+                    value = confirmPassword.value,
+                    onValueChange = { confirmPassword.value = it },
                     modifier = Modifier
-                        .size(20.dp)
-                        .padding(2.dp)
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp)
+                        .onFocusChanged { focusState ->
+                            confirmPasswordFocused.value = focusState.isFocused
+                        },
+                    textStyle = TextStyle(
+                        fontSize = 16.sp,
+                        color = Color.Black
+                    ),
+                    singleLine = true,
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    decorationBox = { innerTextField ->
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
+                            if (confirmPassword.value.isEmpty()) {
+                                Text(
+                                    text = stringResource(id = R.string.enter_password),
+                                    fontSize = 16.sp,
+                                    color = colorResource(id = R.color.input_text)
+                                )
+                            }
+                            innerTextField()
+                        }
+                    }
                 )
-                Text(
-                    text = stringResource(id = R.string.login_google),
-                    fontSize = 14.sp
+
+                Image(
+                    painter = painterResource(id = R.drawable.no_visible_pass),
+                    contentDescription = "Toggle password visibility",
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(end = 16.dp)
+                        .size(20.dp)
+                        .clickable { }
                 )
             }
-        }
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 84.dp),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = stringResource(id = R.string.registration),
-                fontSize = 14.sp,
-                color = colorResource(id = R.color.accent_color),
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.clickable { }
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(20.dp)
+                        .border(
+                            width = 1.dp,
+                            color = colorResource(id = R.color.color_border),
+                            shape = RoundedCornerShape(4.dp)
+                        )
+                ) {
+                    Checkbox(
+                        checked = agreedToTerms.value,
+                        onCheckedChange = { agreedToTerms.value = it },
+                        modifier = Modifier.size(20.dp),
+                        colors = CheckboxDefaults.colors(
+                            uncheckedColor = Color.Transparent,
+                            checkedColor = colorResource(id = R.color.accent_color)
+                        )
+                    )
+                }
+                Text(
+                    text = stringResource(id = R.string.conditions),
+                    fontSize = 14.sp,
+                    color = colorResource(id = R.color.label_input),
+                    modifier = Modifier.padding(start = 12.dp),
+                    lineHeight = 18.sp
+                )
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Button(
+                onClick = { },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 24.dp)
+                    .height(56.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colorResource(id = R.color.accent_color),
+                    contentColor = Color.White
+                )
+            ) {
+                Text(
+                    text = stringResource(id = R.string.next),
+                    fontSize = 16.sp,
+                )
+            }
         }
     }
 }

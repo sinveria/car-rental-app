@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -62,7 +63,7 @@ fun OnboardingThreeScreen() {
                     Text(
                         text = stringResource(R.string.onboarding_skip),
                         fontSize = 14.sp,
-                        color = Color(android.graphics.Color.parseColor("#2A1246")),
+                        color = colorResource(id = R.color.accent_color),
                         fontWeight = FontWeight.Medium
                     )
                 }
@@ -73,7 +74,7 @@ fun OnboardingThreeScreen() {
             Text(
                 text = stringResource(R.string.onboarding_three_title),
                 fontSize = 24.sp,
-                color = Color(android.graphics.Color.parseColor("#1A1A1A")),
+                color = colorResource(id = R.color.accent_color),
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
@@ -81,7 +82,7 @@ fun OnboardingThreeScreen() {
             Text(
                 text = stringResource(R.string.onboarding_three_description),
                 fontSize = 14.sp,
-                color = Color(android.graphics.Color.parseColor("#666666")),
+                color = colorResource(id = R.color.description),
                 textAlign = TextAlign.Start,
                 lineHeight = 24.sp,
                 modifier = Modifier
@@ -106,7 +107,7 @@ fun OnboardingThreeScreen() {
                                 .width(40.dp)
                                 .height(8.dp),
                             shape = RoundedCornerShape(2.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(android.graphics.Color.parseColor("#E0E0E0"))),
+                            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.dot_inactive)),
                             content = {}
                         )
                     }
@@ -116,7 +117,7 @@ fun OnboardingThreeScreen() {
                             .width(40.dp)
                             .height(8.dp),
                         shape = RoundedCornerShape(2.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(android.graphics.Color.parseColor("#2A1246"))),
+                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.accent_color)),
                         content = {}
                     )
                 }
@@ -128,11 +129,11 @@ fun OnboardingThreeScreen() {
                         .height(50.dp),
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(android.graphics.Color.parseColor("#2A1246")),
+                        containerColor = colorResource(id = R.color.accent_color),
                         contentColor = Color.White
                     )
                 ) {
-                    Text(stringResource(R.string.onboarding_next), fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                    Text(stringResource(R.string.next), fontSize = 16.sp, fontWeight = FontWeight.Medium)
                 }
             }
 

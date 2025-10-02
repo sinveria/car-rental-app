@@ -87,7 +87,7 @@ fun NoConnection() {
             )
         ) {
             Text(
-                text = "Повторить попытку",
+                text = stringResource(id = R.string.retry),
                 fontSize = 16.sp
             )
         }

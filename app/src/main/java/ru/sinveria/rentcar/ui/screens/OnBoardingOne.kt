@@ -133,7 +133,7 @@ fun OnboardingScreen() {
                         contentColor = Color.White
                     )
                 ) {
-                    Text(text = stringResource(R.string.onboarding_next), fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                    Text(text = stringResource(R.string.next), fontSize = 16.sp, fontWeight = FontWeight.Medium)
                 }
             }
 

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="skip_text">#FF2A1246</color>
     <color name="title">#FF1A1A1A</color>
     <color name="accent_color">#FF2A1246</color>
     <color name="color_border">#D0D5DD</color>
