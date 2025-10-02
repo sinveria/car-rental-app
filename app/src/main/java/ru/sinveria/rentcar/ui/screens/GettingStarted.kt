@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -38,7 +39,7 @@ fun GettingStarted() {
         Text(
             text = stringResource(R.string.getting_started_app_name),
             fontSize = 24.sp,
-            color = Color(android.graphics.Color.parseColor("#2A1246")),
+            color = colorResource(id = R.color.accent_color),
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(top = 112.dp)
         )
@@ -46,7 +47,7 @@ fun GettingStarted() {
         Text(
             text = stringResource(R.string.getting_started_subtitle),
             fontSize = 16.sp,
-            color = Color(android.graphics.Color.parseColor("#B2000000")),
+            color = colorResource(id = R.color.color_black),
             modifier = Modifier.padding(top = 8.dp)
         )
 
@@ -67,7 +68,7 @@ fun GettingStarted() {
 
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(android.graphics.Color.parseColor("#2A1246")),
+                containerColor = colorResource(id = R.color.accent_color),
                 contentColor = Color.White
             )
         ) {
@@ -84,14 +85,14 @@ fun GettingStarted() {
                 .height(56.dp)
                 .border(
                     width = 1.dp,
-                    color = Color(android.graphics.Color.parseColor("#D0D5DD")),
+                    color = colorResource(id = R.color.color_border),
                     shape = RoundedCornerShape(12.dp)
                 ),
 
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(android.graphics.Color.parseColor("#FFFFFFFF")),
-                contentColor = Color.Black
+                containerColor = colorResource(id = R.color.button_white),
+                contentColor = colorResource(id = R.color.color_btn)
             )
         ) {
             Text(

@@ -2,9 +2,13 @@
 <resources>
     <color name="skip_text">#FF2A1246</color>
     <color name="title">#FF1A1A1A</color>
+    <color name="accent_color">#2A1246</color>
+    <color name="color_border">#D0D5DD</color>
+    <color name="color_btn">#344054</color>
     <color name="description">#FF666666</color>
     <color name="dot_inactive">#FFE0E0E0</color>
     <color name="dot_active">#FF2A1246</color>
     <color name="button_background">#FF2A1246</color>
-    <color name="button_text">#FFFFFFFF</color>
+    <color name="button_white">#FFFFFFFF</color>
+    <color name="color_black">#00000000</color>
 </resources>
