@@ -7,6 +7,8 @@
     <string name="onboarding_two_description">Арендуй автомобиль и наслаждайся его удобством</string>
     <string name="onboarding_three_title">Лучшие предложения</string>
     <string name="onboarding_three_description">Выбирай понравившееся среди сотен доступных автомобилей</string>
+    <string name="no_connection">Нет подключения\n\nк интернету</string>
+    <string name="try_again_connection">Проверьте подключение и повторите\nпопытку</string>
     <string name="onboarding_next">Далее</string>
     <string name="getting_started_app_name">DriveNext</string>
     <string name="getting_started_subtitle">Поможем найти твою следующую поездку</string>

@@ -17,7 +17,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -53,9 +55,9 @@ fun NoConnection() {
             modifier = Modifier.padding(bottom = 32.dp)
         ) {
             Text(
-                text = "Нет подключения\n\nк интернету",
+                text = stringResource(id = R.string.no_connection),
                 fontSize = 24.sp,
-                color = Color(0xFF1A1A1A),
+                color = colorResource(id = R.color.accent_color),
                 fontWeight = FontWeight.Bold,
                 lineHeight = 32.sp,
                 textAlign = TextAlign.Center,
@@ -63,9 +65,9 @@ fun NoConnection() {
             )
 
             Text(
-                text = "Проверьте подключение и повторите \nпопытку",
+                text = stringResource(id = R.string.try_again_connection),
                 fontSize = 14.sp,
-                color = Color(0xFF1A1A1A),
+                color = colorResource(id = R.color.accent_color),
                 textAlign = TextAlign.Center
             )
         }
@@ -80,7 +82,7 @@ fun NoConnection() {
 
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF2A1246),
+                containerColor = colorResource(id = R.color.accent_color),
                 contentColor = Color.White
             )
         ) {
