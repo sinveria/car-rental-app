@@ -45,4 +45,7 @@
     <string name="upload_lisence_photo">Загрузите фото водительского удостоверения</string>
     <string name="upload_photo">Загрузить фото</string>
     <string name="upload_passport_photo">Загрузите фото паспорта</string>
+    <string name="use_it">Пользуйтесь с удовольствием</string>
+    <string name="congratulate">Поздравляем</string>
+    <string name="congratulations_description">Вы успешно зарегистрировались.\nОбработка ваших персональных данных займет около двух часов. Спасибо\nза ожидание.</string>
 </resources>
