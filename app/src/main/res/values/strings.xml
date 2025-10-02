@@ -28,4 +28,15 @@
     <string name="registration">Зарегистрироваться</string>
     <string name="create_account">Создать аккаунт</string>
     <string name="conditions">Я согласен с условиями обслуживания и политикой конфиденциальности</string>
+    <string name="surname">Фамилия</string>
+    <string name="enter_surname">Введите фамилию</string>
+    <string name="name">Имя</string>
+    <string name="enter_name">Введите имя</string>
+    <string name="patronymic">Отчество</string>
+    <string name="enter_patronymic">Введите отчество</string>
+    <string name="birthdate">Дата рождения</string>
+    <string name="enter_birthdate">DD/MM/YYYY</string>
+    <string name="gender">Пол</string>
+    <string name="male">Мужской</string>
+    <string name="female">Женский</string>
 </resources>
