@@ -6,15 +6,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.sinveria.rentcar.R
 
+@Preview
 @Composable
-fun SplashScreen() {
+fun SplashScreen(onSplashComplete: () -> Unit = {}) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -23,17 +26,17 @@ fun SplashScreen() {
         verticalArrangement = Arrangement.Top
     ) {
         Text(
-            text = "DriveNext",
+            text = stringResource(id = R.string.title),
             fontSize = 24.sp,
-            color = Color(0xFF2A1246),
+            color = colorResource(id = R.color.accent_color),
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(top = 112.dp)
         )
 
         Text(
-            text = "Поможем найти твою следующую поездку",
+            text = stringResource(id = R.string.find_next_ride),
             fontSize = 16.sp,
-            color = Color(0xB2000000),
+            color = colorResource(id = R.color.color_black),
             modifier = Modifier.padding(top = 8.dp)
         )
 
