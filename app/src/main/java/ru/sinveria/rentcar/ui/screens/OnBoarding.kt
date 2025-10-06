@@ -17,6 +17,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,14 +37,59 @@ import ru.sinveria.rentcar.R
 
 @Preview(showBackground = true)
 @Composable
-fun OnboardingScreen() {
+fun Onboarding(
+    onNavigateToGettingStarted: () -> Unit = {}
+) {
+    var currentScreen by rememberSaveable { mutableIntStateOf(0) }
+
+    when (currentScreen) {
+        0 -> OnboardingPage(
+            currentScreen = currentScreen,
+            onNext = { currentScreen++ },
+            onSkip = { onNavigateToGettingStarted() },
+            imageRes = R.drawable.onboadring_one,
+            titleRes = R.string.onboarding_one_title,
+            descriptionRes = R.string.onboarding_one_description,
+            isLastScreen = false
+        )
+        1 -> OnboardingPage(
+            currentScreen = currentScreen,
+            onNext = { currentScreen++ },
+            onSkip = { onNavigateToGettingStarted() },
+            imageRes = R.drawable.onboarding_two,
+            titleRes = R.string.onboarding_two_title,
+            descriptionRes = R.string.onboarding_two_description,
+            isLastScreen = false
+        )
+        2 -> OnboardingPage(
+            currentScreen = currentScreen,
+            onNext = { onNavigateToGettingStarted() },
+            onSkip = { onNavigateToGettingStarted() },
+            imageRes = R.drawable.onboarding_three,
+            titleRes = R.string.onboarding_three_title,
+            descriptionRes = R.string.onboarding_three_description,
+            isLastScreen = true
+        )
+    }
+}
+
+@Composable
+fun OnboardingPage(
+    currentScreen: Int,
+    onNext: () -> Unit,
+    onSkip: () -> Unit,
+    imageRes: Int,
+    titleRes: Int,
+    descriptionRes: Int,
+    isLastScreen: Boolean = false
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 50.dp)
     ) {
         Image(
-            painter = painterResource(id = R.drawable.onboadring_one),
+            painter = painterResource(id = imageRes),
             contentDescription = "Car image",
             contentScale = ContentScale.FillWidth,
             modifier = Modifier
@@ -59,7 +108,7 @@ fun OnboardingScreen() {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
             ) {
-                TextButton(onClick = {  }) {
+                TextButton(onClick = onSkip) {
                     Text(
                         text = stringResource(R.string.onboarding_skip),
                         fontSize = 14.sp,
@@ -72,7 +121,7 @@ fun OnboardingScreen() {
             Spacer(modifier = Modifier.height(343.dp + 32.dp))
 
             Text(
-                text = stringResource(R.string.onboarding_one_title),
+                text = stringResource(titleRes),
                 fontSize = 24.sp,
                 color = colorResource(id = R.color.accent_color),
                 fontWeight = FontWeight.Bold,
@@ -80,7 +129,7 @@ fun OnboardingScreen() {
             )
 
             Text(
-                text = stringResource(R.string.onboarding_one_description),
+                text = stringResource(descriptionRes),
                 fontSize = 14.sp,
                 color = colorResource(id = R.color.description),
                 textAlign = TextAlign.Start,
@@ -100,30 +149,29 @@ fun OnboardingScreen() {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Button(
-                        onClick = { },
-                        modifier = Modifier
-                            .width(40.dp)
-                            .height(8.dp),
-                        shape = RoundedCornerShape(2.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.accent_color)),
-                        content = {}
-                    )
-                    repeat(2) {
+                    for (i in 0..2) {
+                        val dotColor = if (i == currentScreen) {
+                            R.color.accent_color
+                        } else {
+                            R.color.dot_inactive
+                        }
+
                         Button(
                             onClick = { },
                             modifier = Modifier
                                 .width(40.dp)
                                 .height(8.dp),
                             shape = RoundedCornerShape(2.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.dot_inactive)),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = colorResource(id = dotColor)
+                            ),
                             content = {}
                         )
                     }
                 }
 
                 Button(
-                    onClick = { },
+                    onClick = onNext,
                     modifier = Modifier
                         .width(131.dp)
                         .height(50.dp),
@@ -133,7 +181,15 @@ fun OnboardingScreen() {
                         contentColor = Color.White
                     )
                 ) {
-                    Text(text = stringResource(R.string.next), fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                    Text(
+                        text = if (isLastScreen) {
+                            stringResource(R.string.heregoes)
+                        } else {
+                            stringResource(R.string.next)
+                        },
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium
+                    )
                 }
             }
 

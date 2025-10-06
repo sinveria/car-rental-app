@@ -37,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,11 +45,78 @@ import ru.sinveria.rentcar.R
 
 @Preview(showBackground = true)
 @Composable
-fun SignUpThree() {
+fun SignUpThree(
+    onNavigateBack: () -> Unit = {},
+    onNavigateToCong: () -> Unit = {}
+) {
     val licenseNumber = remember { mutableStateOf("") }
+    val licenseNumberState = remember { mutableStateOf(TextFieldValue("")) }
     val issueDate = remember { mutableStateOf("") }
+    val issueDateState = remember { mutableStateOf(TextFieldValue("")) }
+
     val licenseNumberFocused = remember { mutableStateOf(false) }
     val issueDateFocused = remember { mutableStateOf(false) }
+
+    val licenseNumberError = remember { mutableStateOf("") }
+    val issueDateError = remember { mutableStateOf("") }
+
+    val licenseNumberTouched = remember { mutableStateOf(false) }
+    val issueDateTouched = remember { mutableStateOf(false) }
+    
+    fun isValidLicenseNumber(license: String): Boolean {
+        return license.length == 10 && license.all { it.isDigit() }
+    }
+
+    fun validateLicenseNumber(license: String): String {
+        return when {
+            license.isEmpty() -> "Номер водительского удостоверения обязателен"
+            !isValidLicenseNumber(license) -> "Номер должен содержать 10 цифр"
+            else -> ""
+        }
+    }
+
+    fun isValidDateFormat(date: String): Boolean {
+        val pattern = "^\\d{2}/\\d{2}/\\d{4}$".toRegex()
+        return pattern.matches(date)
+    }
+
+    fun isValidDate(date: String): Boolean {
+        if (!isValidDateFormat(date)) return false
+
+        val parts = date.split("/")
+        if (parts.size != 3) return false
+
+        val day = parts[0].toIntOrNull() ?: return false
+        val month = parts[1].toIntOrNull() ?: return false
+        val year = parts[2].toIntOrNull() ?: return false
+
+        if (year < 1900 || year > 2100) return false
+        if (month < 1 || month > 12) return false
+
+        val daysInMonth = when (month) {
+            2 -> if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) 29 else 28
+            4, 6, 9, 11 -> 30
+            else -> 31
+        }
+
+        return day in 1..daysInMonth
+    }
+
+    fun validateIssueDate(date: String): String {
+        return when {
+            date.isEmpty() -> "Дата выдачи обязательна"
+            !isValidDateFormat(date) -> "Некорректный формат даты (DD/MM/YYYY)"
+            !isValidDate(date) -> "Введите корректную дату выдачи"
+            else -> ""
+        }
+    }
+
+    fun validateForm(): Boolean {
+        licenseNumberError.value = validateLicenseNumber(licenseNumber.value)
+        issueDateError.value = validateIssueDate(issueDate.value)
+
+        return licenseNumberError.value.isEmpty() && issueDateError.value.isEmpty()
+    }
 
     Column(
         modifier = Modifier
@@ -69,7 +137,7 @@ fun SignUpThree() {
                 contentDescription = "Back",
                 modifier = Modifier
                     .size(24.dp)
-                    .clickable { }
+                    .clickable { onNavigateBack() }
             )
             Text(
                 text = stringResource(id = R.string.create_account),
@@ -148,20 +216,38 @@ fun SignUpThree() {
                     .clip(RoundedCornerShape(12.dp))
                     .border(
                         width = 1.dp,
-                        color = if (licenseNumberFocused.value) colorResource(id = R.color.accent_color)
-                        else colorResource(id = R.color.color_border),
+                        color = when {
+                            licenseNumberTouched.value && licenseNumberError.value.isNotEmpty() -> colorResource(id = R.color.error_color)
+                            licenseNumberFocused.value -> colorResource(id = R.color.accent_color)
+                            else -> colorResource(id = R.color.color_border)
+                        },
                         shape = RoundedCornerShape(12.dp)
                     )
                     .background(Color.White)
             ) {
                 BasicTextField(
-                    value = licenseNumber.value,
-                    onValueChange = { licenseNumber.value = it },
+                    value = licenseNumberState.value,
+                    onValueChange = { newValue ->
+                        val cleanInput = newValue.text.filter { it.isDigit() }.take(10)
+
+                        licenseNumberState.value = TextFieldValue(
+                            text = cleanInput,
+                            selection = androidx.compose.ui.text.TextRange(cleanInput.length)
+                        )
+                        licenseNumber.value = cleanInput
+                        licenseNumberTouched.value = true
+                        if (licenseNumberTouched.value) {
+                            licenseNumberError.value = validateLicenseNumber(cleanInput)
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(horizontal = 16.dp)
                         .onFocusChanged { focusState ->
                             licenseNumberFocused.value = focusState.isFocused
+                            if (!focusState.isFocused && licenseNumberTouched.value) {
+                                licenseNumberError.value = validateLicenseNumber(licenseNumber.value)
+                            }
                         },
                     textStyle = TextStyle(
                         fontSize = 16.sp,
@@ -174,7 +260,7 @@ fun SignUpThree() {
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.CenterStart
                         ) {
-                            if (licenseNumber.value.isEmpty()) {
+                            if (licenseNumberState.value.text.isEmpty()) {
                                 Text(
                                     text = "0000000000",
                                     fontSize = 16.sp,
@@ -184,6 +270,17 @@ fun SignUpThree() {
                             innerTextField()
                         }
                     }
+                )
+            }
+
+            if (licenseNumberTouched.value && licenseNumberError.value.isNotEmpty()) {
+                Text(
+                    text = licenseNumberError.value,
+                    fontSize = 12.sp,
+                    color = colorResource(id = R.color.error_color),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp)
                 )
             }
 
@@ -203,8 +300,11 @@ fun SignUpThree() {
                     .clip(RoundedCornerShape(12.dp))
                     .border(
                         width = 1.dp,
-                        color = if (issueDateFocused.value) colorResource(id = R.color.accent_color)
-                        else colorResource(id = R.color.color_border),
+                        color = when {
+                            issueDateTouched.value && issueDateError.value.isNotEmpty() -> colorResource(id = R.color.error_color)
+                            issueDateFocused.value -> colorResource(id = R.color.accent_color)
+                            else -> colorResource(id = R.color.color_border)
+                        },
                         shape = RoundedCornerShape(12.dp)
                     )
                     .background(Color.White)
@@ -221,13 +321,47 @@ fun SignUpThree() {
                             .size(20.dp)
                     )
                     BasicTextField(
-                        value = issueDate.value,
-                        onValueChange = { issueDate.value = it },
+                        value = issueDateState.value,
+                        onValueChange = { newValue ->
+                            val cleanInput = newValue.text.filter { it.isDigit() }
+
+                            val masked = when {
+                                cleanInput.length <= 2 -> cleanInput
+                                cleanInput.length <= 4 -> "${cleanInput.substring(0, 2)}/${cleanInput.substring(2)}"
+                                cleanInput.length <= 8 -> "${cleanInput.substring(0, 2)}/${cleanInput.substring(2, 4)}/${cleanInput.substring(4)}"
+                                else -> "${cleanInput.substring(0, 2)}/${cleanInput.substring(2, 4)}/${cleanInput.substring(4, 8)}"
+                            }
+
+                            val oldLength = issueDateState.value.text.length
+                            val newLength = masked.length
+                            val cursorPos = newValue.selection.start
+
+                            var newCursorPos = when {
+                                newLength > oldLength -> masked.length
+                                newLength < oldLength -> maxOf(0, cursorPos - 1)
+                                else -> cursorPos
+                            }
+                            newCursorPos = minOf(newCursorPos, masked.length)
+
+                            issueDateState.value = TextFieldValue(
+                                text = masked,
+                                selection = androidx.compose.ui.text.TextRange(newCursorPos)
+                            )
+
+                            issueDate.value = masked
+                            issueDateTouched.value = true
+                            if (issueDateTouched.value) {
+                                issueDateError.value = validateIssueDate(masked)
+                            }
+                        },
                         modifier = Modifier
                             .weight(1f)
                             .padding(start = 12.dp, end = 16.dp)
                             .onFocusChanged { focusState ->
                                 issueDateFocused.value = focusState.isFocused
+                                if (!focusState.isFocused && issueDateTouched.value) {
+                                    issueDateError.value = validateIssueDate(issueDate.value)
+                                }
                             },
                         textStyle = TextStyle(
                             fontSize = 16.sp,
@@ -240,7 +374,7 @@ fun SignUpThree() {
                                 modifier = Modifier.fillMaxSize(),
                                 contentAlignment = Alignment.CenterStart
                             ) {
-                                if (issueDate.value.isEmpty()) {
+                                if (issueDateState.value.text.isEmpty()) {
                                     Text(
                                         text = "DD/MM/YYYY",
                                         fontSize = 16.sp,
@@ -252,6 +386,17 @@ fun SignUpThree() {
                         }
                     )
                 }
+            }
+
+            if (issueDateTouched.value && issueDateError.value.isNotEmpty()) {
+                Text(
+                    text = issueDateError.value,
+                    fontSize = 12.sp,
+                    color = colorResource(id = R.color.error_color),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp)
+                )
             }
 
             Text(
@@ -339,7 +484,14 @@ fun SignUpThree() {
             Spacer(modifier = Modifier.weight(1f))
 
             Button(
-                onClick = { },
+                onClick = {
+                    licenseNumberTouched.value = true
+                    issueDateTouched.value = true
+
+                    if (validateForm()) {
+                        onNavigateToCong()
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 24.dp)
