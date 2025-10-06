@@ -45,7 +45,10 @@ import ru.sinveria.rentcar.R
 
 @Preview(showBackground = true)
 @Composable
-fun SignUpOne() {
+fun SignUpOne(
+    onNavigateBack: () -> Unit = {},
+    onNavigateToSignUpTwo: () -> Unit = {}
+) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     val confirmPassword = remember { mutableStateOf("") }
@@ -73,7 +76,7 @@ fun SignUpOne() {
                 contentDescription = "Back",
                 modifier = Modifier
                     .size(24.dp)
-                    .clickable { }
+                    .clickable { onNavigateBack() }
             )
             Text(
                 text = stringResource(id = R.string.create_account),
@@ -316,7 +319,7 @@ fun SignUpOne() {
             Spacer(modifier = Modifier.weight(1f))
 
             Button(
-                onClick = { },
+                onClick = onNavigateToSignUpTwo,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 24.dp)

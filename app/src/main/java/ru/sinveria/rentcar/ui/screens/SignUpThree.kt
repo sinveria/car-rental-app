@@ -44,7 +44,10 @@ import ru.sinveria.rentcar.R
 
 @Preview(showBackground = true)
 @Composable
-fun SignUpThree() {
+fun SignUpThree(
+    onNavigateBack: () -> Unit = {},
+    onNavigateToCong: () -> Unit = {}
+) {
     val licenseNumber = remember { mutableStateOf("") }
     val issueDate = remember { mutableStateOf("") }
     val licenseNumberFocused = remember { mutableStateOf(false) }
@@ -69,7 +72,7 @@ fun SignUpThree() {
                 contentDescription = "Back",
                 modifier = Modifier
                     .size(24.dp)
-                    .clickable { }
+                    .clickable { onNavigateBack() }
             )
             Text(
                 text = stringResource(id = R.string.create_account),
@@ -339,7 +342,7 @@ fun SignUpThree() {
             Spacer(modifier = Modifier.weight(1f))
 
             Button(
-                onClick = { },
+                onClick = onNavigateToCong,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 24.dp)

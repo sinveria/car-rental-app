@@ -8,7 +8,10 @@ import ru.sinveria.rentcar.ui.screens.GettingStarted
 import ru.sinveria.rentcar.ui.screens.Login
 import ru.sinveria.rentcar.ui.screens.Onboarding
 import ru.sinveria.rentcar.ui.screens.SignUpOne
+import ru.sinveria.rentcar.ui.screens.SignUpThree
+import ru.sinveria.rentcar.ui.screens.SignUpTwo
 import ru.sinveria.rentcar.ui.screens.SplashScreen
+import ru.sinveria.rentcar.ui.screens.Congratulations
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
@@ -55,7 +58,39 @@ fun AppNavigation(navController: NavHostController) {
         }
 
         composable(Screen.SignUpOne.route) {
-            SignUpOne()
+            SignUpOne(
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                onNavigateToSignUpTwo = {
+                    navController.navigate(Screen.SignUpTwo.route)
+                }
+            )
+        }
+        composable(Screen.SignUpTwo.route) {
+            SignUpTwo(
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                onNavigateToSignUpThree = {
+                    navController.navigate(Screen.SignUpThree.route)
+                }
+            )
+        }
+
+        composable(Screen.SignUpThree.route) {
+            SignUpThree(
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                onNavigateToCong = {
+                    navController.navigate(Screen.Сongratulations.route)
+                }
+            )
+        }
+
+        composable(Screen.Сongratulations.route) {
+            Congratulations()
         }
     }
 }
