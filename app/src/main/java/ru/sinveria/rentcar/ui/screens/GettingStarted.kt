@@ -28,7 +28,7 @@ import ru.sinveria.rentcar.R
 
 @Preview
 @Composable
-fun GettingStarted(onNavigateToOnboarding: () -> Unit = {}) {
+fun GettingStarted(onNavigateToOnboarding: () -> Unit = {}, onNavigateToLogin: () -> Unit = {}) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -60,7 +60,7 @@ fun GettingStarted(onNavigateToOnboarding: () -> Unit = {}) {
         )
 
         Button(
-            onClick = { },
+            onClick = onNavigateToLogin,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp)
@@ -73,12 +73,11 @@ fun GettingStarted(onNavigateToOnboarding: () -> Unit = {}) {
             )
         ) {
             Text(
-                text = stringResource(R.string.login_button),
-                fontSize = 16.sp
+                text = stringResource(R.string.login_button), fontSize = 16.sp
             )
         }
         Button(
-            onClick = { },
+            onClick = {},
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp)
@@ -96,8 +95,7 @@ fun GettingStarted(onNavigateToOnboarding: () -> Unit = {}) {
             )
         ) {
             Text(
-                text = stringResource(R.string.getting_started_register_button),
-                fontSize = 16.sp
+                text = stringResource(R.string.getting_started_register_button), fontSize = 16.sp
             )
         }
     }

@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import ru.sinveria.rentcar.ui.screens.GettingStarted
+import ru.sinveria.rentcar.ui.screens.Login
 import ru.sinveria.rentcar.ui.screens.Onboarding
 import ru.sinveria.rentcar.ui.screens.SplashScreen
 
@@ -27,18 +28,25 @@ fun AppNavigation(navController: NavHostController) {
             GettingStarted(
                 onNavigateToOnboarding = {
                     navController.navigate(Screen.Onboarding.route)
+                },
+
+                onNavigateToLogin = {
+                    navController.navigate(Screen.Login.route)
                 }
             )
         }
         composable(Screen.Onboarding.route) {
             Onboarding(
                 onNavigateToGettingStarted = {
-                    //  переход на главный экран
                     navController.navigate(Screen.GettingStarted.route) {
                         popUpTo(Screen.Onboarding.route) { inclusive = true }
                     }
                 }
             )
+        }
+
+        composable(Screen.Login.route) {
+            Login()
         }
     }
 }
