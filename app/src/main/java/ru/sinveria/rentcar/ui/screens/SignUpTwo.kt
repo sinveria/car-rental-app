@@ -20,12 +20,9 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,8 +37,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.sinveria.rentcar.R
@@ -56,6 +54,8 @@ fun SignUpTwo(
     val firstName = remember { mutableStateOf("") }
     val middleName = remember { mutableStateOf("") }
     val birthDate = remember { mutableStateOf("") }
+    val birthDateState = remember { mutableStateOf(TextFieldValue("")) }
+
     val lastNameFocused = remember { mutableStateOf(false) }
     val firstNameFocused = remember { mutableStateOf(false) }
     val middleNameFocused = remember { mutableStateOf(false) }
@@ -118,19 +118,6 @@ fun SignUpTwo(
 
     fun validateGender(gender: String): String {
         return if (gender.isEmpty()) "Выбор пола обязателен" else ""
-    }
-
-    // переделать
-    fun applyDateMask(input: String): String {
-        val digits = input.filter { it.isDigit() }
-        if (digits.length > 8) return birthDate.value
-
-        return when (digits.length) {
-            0 -> ""
-            1, 2 -> digits
-            3, 4 -> "${digits.substring(0, 2)}/${digits.substring(2)}"
-            else -> "${digits.substring(0, 2)}/${digits.substring(2, 4)}/${digits.substring(4)}"
-        }
     }
 
     fun validateForm(): Boolean {
@@ -426,18 +413,44 @@ fun SignUpTwo(
                         painter = painterResource(id = R.drawable.calendar),
                         contentDescription = "Calendar",
                         modifier = Modifier
-                            .padding(start = 16.dp)
+                            .padding(8.dp)
+                            .padding(start = 10.dp)
                             .size(20.dp)
                     )
 
-                    TextField(
-                        value = birthDate.value,
+                    BasicTextField(
+                        value = birthDateState.value,
                         onValueChange = { newValue ->
-                            val maskedValue = applyDateMask(newValue)
-                            birthDate.value = maskedValue
+                            val cleanInput = newValue.text.filter { it.isDigit() }
+
+                            val masked = when {
+                                cleanInput.length <= 2 -> cleanInput
+                                cleanInput.length <= 4 -> "${cleanInput.substring(0, 2)}/${cleanInput.substring(2)}"
+                                cleanInput.length <= 8 -> "${cleanInput.substring(0, 2)}/${cleanInput.substring(2, 4)}/${cleanInput.substring(4)}"
+                                else -> "${cleanInput.substring(0, 2)}/${cleanInput.substring(2, 4)}/${cleanInput.substring(4, 8)}"
+                            }
+
+                            // Простая эвристика позиции курсора
+                            val oldLength = birthDateState.value.text.length
+                            val newLength = masked.length
+                            val cursorPos = newValue.selection.start
+
+                            var newCursorPos = when {
+                                newLength > oldLength -> masked.length // ввод — курсор в конец
+                                newLength < oldLength -> maxOf(0, cursorPos - 1) // удаление — сдвигаем назад
+                                else -> cursorPos
+                            }
+                            newCursorPos = minOf(newCursorPos, masked.length)
+
+                            birthDateState.value = TextFieldValue(
+                                text = masked,
+                                selection = androidx.compose.ui.text.TextRange(newCursorPos)
+                            )
+
+                            birthDate.value = masked
                             birthDateTouched.value = true
                             if (birthDateTouched.value) {
-                                birthDateError.value = validateBirthDate(maskedValue)
+                                birthDateError.value = validateBirthDate(masked)
                             }
                         },
                         modifier = Modifier
@@ -454,21 +467,21 @@ fun SignUpTwo(
                         ),
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        placeholder = {
-                            Text(
-                                text = "DD/MM/YYYY",
-                                fontSize = 16.sp,
-                                color = colorResource(id = R.color.input_text)
-                            )
-                        },
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                            disabledContainerColor = Color.Transparent,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            disabledIndicatorColor = Color.Transparent
-                        )
+                        decorationBox = { innerTextField ->
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.CenterStart
+                            ) {
+                                if (birthDateState.value.text.isEmpty()) {
+                                    Text(
+                                        text = "DD/MM/YYYY",
+                                        fontSize = 16.sp,
+                                        color = colorResource(id = R.color.input_text)
+                                    )
+                                }
+                                innerTextField()
+                            }
+                        }
                     )
                 }
             }
