@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.sinveria.rentcar.R
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun Login() {
     val email = remember { mutableStateOf("") }
