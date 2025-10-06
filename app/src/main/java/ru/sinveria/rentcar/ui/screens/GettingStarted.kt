@@ -28,7 +28,7 @@ import ru.sinveria.rentcar.R
 
 @Preview
 @Composable
-fun GettingStarted() {
+fun GettingStarted(onNavigateToOnboarding: () -> Unit = {}) {
     Column(
         modifier = Modifier
             .fillMaxSize()
