@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import ru.sinveria.rentcar.ui.screens.GettingStarted
 import ru.sinveria.rentcar.ui.screens.Login
 import ru.sinveria.rentcar.ui.screens.Onboarding
+import ru.sinveria.rentcar.ui.screens.SignUpOne
 import ru.sinveria.rentcar.ui.screens.SplashScreen
 
 @Composable
@@ -32,6 +33,10 @@ fun AppNavigation(navController: NavHostController) {
 
                 onNavigateToLogin = {
                     navController.navigate(Screen.Login.route)
+                },
+
+                onNavigateToSignUpOne = {
+                    navController.navigate(Screen.SignUpOne.route)
                 }
             )
         }
@@ -47,6 +52,10 @@ fun AppNavigation(navController: NavHostController) {
 
         composable(Screen.Login.route) {
             Login()
+        }
+
+        composable(Screen.SignUpOne.route) {
+            SignUpOne()
         }
     }
 }

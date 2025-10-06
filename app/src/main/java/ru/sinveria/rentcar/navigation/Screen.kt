@@ -5,4 +5,5 @@ sealed class Screen(val route: String) {
     object GettingStarted : Screen("getting_started_screen")
     object Onboarding : Screen("onboarding_screen")
     object Login : Screen("login_screen")
+    object SignUpOne : Screen("sign_up_one_screen")
 }
