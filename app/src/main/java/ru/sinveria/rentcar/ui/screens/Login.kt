@@ -59,7 +59,7 @@ fun Login(onNavigateToSignUpOne: () -> Unit = {}) {
         return when {
             email.isEmpty() -> "Электронная почта обязательна"
             !android.util.Patterns.EMAIL_ADDRESS.matcher(email)
-                .matches() -> "Некорректный формат email"
+                .matches() -> "Введите корректный адрес электронной почты"
 
             else -> ""
         }
