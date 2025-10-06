@@ -23,6 +23,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +40,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,6 +61,89 @@ fun SignUpTwo(
     val middleNameFocused = remember { mutableStateOf(false) }
     val birthDateFocused = remember { mutableStateOf(false) }
     val selectedGender = remember { mutableStateOf("") }
+
+    val lastNameError = remember { mutableStateOf("") }
+    val firstNameError = remember { mutableStateOf("") }
+    val birthDateError = remember { mutableStateOf("") }
+    val genderError = remember { mutableStateOf("") }
+
+    val lastNameTouched = remember { mutableStateOf(false) }
+    val firstNameTouched = remember { mutableStateOf(false) }
+    val birthDateTouched = remember { mutableStateOf(false) }
+    val genderTouched = remember { mutableStateOf(false) }
+
+    fun isValidDateFormat(date: String): Boolean {
+        val pattern = "^\\d{2}/\\d{2}/\\d{4}$".toRegex()
+        return pattern.matches(date)
+    }
+
+    fun isValidDate(date: String): Boolean {
+        if (!isValidDateFormat(date)) return false
+
+        val parts = date.split("/")
+        if (parts.size != 3) return false
+
+        val day = parts[0].toIntOrNull() ?: return false
+        val month = parts[1].toIntOrNull() ?: return false
+        val year = parts[2].toIntOrNull() ?: return false
+
+        if (year < 1900 || year > 2100) return false
+        if (month < 1 || month > 12) return false
+
+        val daysInMonth = when (month) {
+            2 -> if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) 29 else 28
+            4, 6, 9, 11 -> 30
+            else -> 31
+        }
+
+        return day in 1..daysInMonth
+    }
+
+    fun validateLastName(lastName: String): String {
+        return if (lastName.isEmpty()) "Фамилия обязательна" else ""
+    }
+
+    fun validateFirstName(firstName: String): String {
+        return if (firstName.isEmpty()) "Имя обязательно" else ""
+    }
+
+    fun validateBirthDate(birthDate: String): String {
+        return when {
+            birthDate.isEmpty() -> "Дата рождения обязательна"
+            !isValidDateFormat(birthDate) -> "Некорректный формат даты (DD/MM/YYYY)"
+            !isValidDate(birthDate) -> "Введите корректную дату рождения"
+            else -> ""
+        }
+    }
+
+    fun validateGender(gender: String): String {
+        return if (gender.isEmpty()) "Выбор пола обязателен" else ""
+    }
+
+    // переделать
+    fun applyDateMask(input: String): String {
+        val digits = input.filter { it.isDigit() }
+        if (digits.length > 8) return birthDate.value
+
+        return when (digits.length) {
+            0 -> ""
+            1, 2 -> digits
+            3, 4 -> "${digits.substring(0, 2)}/${digits.substring(2)}"
+            else -> "${digits.substring(0, 2)}/${digits.substring(2, 4)}/${digits.substring(4)}"
+        }
+    }
+
+    fun validateForm(): Boolean {
+        lastNameError.value = validateLastName(lastName.value)
+        firstNameError.value = validateFirstName(firstName.value)
+        birthDateError.value = validateBirthDate(birthDate.value)
+        genderError.value = validateGender(selectedGender.value)
+
+        return lastNameError.value.isEmpty() &&
+                firstNameError.value.isEmpty() &&
+                birthDateError.value.isEmpty() &&
+                genderError.value.isEmpty()
+    }
 
     Column(
         modifier = Modifier
@@ -112,20 +198,32 @@ fun SignUpTwo(
                     .clip(RoundedCornerShape(12.dp))
                     .border(
                         width = 1.dp,
-                        color = if (lastNameFocused.value) colorResource(id = R.color.accent_color)
-                        else colorResource(id = R.color.color_border),
+                        color = when {
+                            lastNameTouched.value && lastNameError.value.isNotEmpty() -> colorResource(id = R.color.error_color)
+                            lastNameFocused.value -> colorResource(id = R.color.accent_color)
+                            else -> colorResource(id = R.color.color_border)
+                        },
                         shape = RoundedCornerShape(12.dp)
                     )
                     .background(Color.White)
             ) {
                 BasicTextField(
                     value = lastName.value,
-                    onValueChange = { lastName.value = it },
+                    onValueChange = {
+                        lastName.value = it
+                        lastNameTouched.value = true
+                        if (lastNameTouched.value) {
+                            lastNameError.value = validateLastName(it)
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(horizontal = 16.dp)
                         .onFocusChanged { focusState ->
                             lastNameFocused.value = focusState.isFocused
+                            if (!focusState.isFocused && lastNameTouched.value) {
+                                lastNameError.value = validateLastName(lastName.value)
+                            }
                         },
                     textStyle = TextStyle(
                         fontSize = 16.sp,
@@ -151,6 +249,17 @@ fun SignUpTwo(
                 )
             }
 
+            if (lastNameTouched.value && lastNameError.value.isNotEmpty()) {
+                Text(
+                    text = lastNameError.value,
+                    fontSize = 12.sp,
+                    color = colorResource(id = R.color.error_color),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp)
+                )
+            }
+
             Text(
                 text = stringResource(id = R.string.name),
                 fontSize = 14.sp,
@@ -167,20 +276,32 @@ fun SignUpTwo(
                     .clip(RoundedCornerShape(12.dp))
                     .border(
                         width = 1.dp,
-                        color = if (firstNameFocused.value) colorResource(id = R.color.accent_color)
-                        else colorResource(id = R.color.color_border),
+                        color = when {
+                            firstNameTouched.value && firstNameError.value.isNotEmpty() -> colorResource(id = R.color.error_color)
+                            firstNameFocused.value -> colorResource(id = R.color.accent_color)
+                            else -> colorResource(id = R.color.color_border)
+                        },
                         shape = RoundedCornerShape(12.dp)
                     )
                     .background(Color.White)
             ) {
                 BasicTextField(
                     value = firstName.value,
-                    onValueChange = { firstName.value = it },
+                    onValueChange = {
+                        firstName.value = it
+                        firstNameTouched.value = true
+                        if (firstNameTouched.value) {
+                            firstNameError.value = validateFirstName(it)
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(horizontal = 16.dp)
                         .onFocusChanged { focusState ->
                             firstNameFocused.value = focusState.isFocused
+                            if (!focusState.isFocused && firstNameTouched.value) {
+                                firstNameError.value = validateFirstName(firstName.value)
+                            }
                         },
                     textStyle = TextStyle(
                         fontSize = 16.sp,
@@ -203,6 +324,17 @@ fun SignUpTwo(
                             innerTextField()
                         }
                     }
+                )
+            }
+
+            if (firstNameTouched.value && firstNameError.value.isNotEmpty()) {
+                Text(
+                    text = firstNameError.value,
+                    fontSize = 12.sp,
+                    color = colorResource(id = R.color.error_color),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp)
                 )
             }
 
@@ -277,8 +409,11 @@ fun SignUpTwo(
                     .clip(RoundedCornerShape(12.dp))
                     .border(
                         width = 1.dp,
-                        color = if (birthDateFocused.value) colorResource(id = R.color.accent_color)
-                        else colorResource(id = R.color.color_border),
+                        color = when {
+                            birthDateTouched.value && birthDateError.value.isNotEmpty() -> colorResource(id = R.color.error_color)
+                            birthDateFocused.value -> colorResource(id = R.color.accent_color)
+                            else -> colorResource(id = R.color.color_border)
+                        },
                         shape = RoundedCornerShape(12.dp)
                     )
                     .background(Color.White)
@@ -295,14 +430,23 @@ fun SignUpTwo(
                             .size(20.dp)
                     )
 
-                    BasicTextField(
+                    TextField(
                         value = birthDate.value,
-                        onValueChange = { birthDate.value = it },
+                        onValueChange = { newValue ->
+                            val maskedValue = applyDateMask(newValue)
+                            birthDate.value = maskedValue
+                            birthDateTouched.value = true
+                            if (birthDateTouched.value) {
+                                birthDateError.value = validateBirthDate(maskedValue)
+                            }
+                        },
                         modifier = Modifier
                             .weight(1f)
-                            .padding(start = 12.dp, end = 16.dp)
                             .onFocusChanged { focusState ->
                                 birthDateFocused.value = focusState.isFocused
+                                if (!focusState.isFocused && birthDateTouched.value) {
+                                    birthDateError.value = validateBirthDate(birthDate.value)
+                                }
                             },
                         textStyle = TextStyle(
                             fontSize = 16.sp,
@@ -310,83 +454,131 @@ fun SignUpTwo(
                         ),
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        decorationBox = { innerTextField ->
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.CenterStart
-                            ) {
-                                if (birthDate.value.isEmpty()) {
-                                    Text(
-                                        text = stringResource(id = R.string.enter_birthdate),
-                                        fontSize = 16.sp,
-                                        color = colorResource(id = R.color.input_text)
-                                    )
-                                }
-                                innerTextField()
-                            }
-                        }
+                        placeholder = {
+                            Text(
+                                text = "DD/MM/YYYY",
+                                fontSize = 16.sp,
+                                color = colorResource(id = R.color.input_text)
+                            )
+                        },
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            disabledContainerColor = Color.Transparent,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent
+                        )
                     )
                 }
             }
 
-            Text(
-                text = stringResource(id = R.string.gender),
-                fontSize = 14.sp,
-                color = colorResource(id = R.color.label_input),
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.padding(top = 16.dp)
-            )
+            if (birthDateTouched.value && birthDateError.value.isNotEmpty()) {
+                Text(
+                    text = birthDateError.value,
+                    fontSize = 12.sp,
+                    color = colorResource(id = R.color.error_color),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp)
+                )
+            }
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            Column {
+                Text(
+                    text = stringResource(id = R.string.gender),
+                    fontSize = 14.sp,
+                    color = colorResource(id = R.color.label_input),
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.padding(top = 16.dp)
+                )
+
                 Row(
                     modifier = Modifier
-                        .clickable { selectedGender.value = "male" },
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    RadioButton(
-                        selected = selectedGender.value == "male",
-                        onClick = { selectedGender.value = "male" },
-                        colors = RadioButtonDefaults.colors(
-                            selectedColor = colorResource(id = R.color.accent_color),
-                            unselectedColor = colorResource(id = R.color.color_border)
-                        ),
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Text(
-                        text = stringResource(id = R.string.male),
-                        fontSize = 16.sp,
-                        color = colorResource(id = R.color.input_text),
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
+                    Row(
+                        modifier = Modifier
+                            .clickable {
+                                selectedGender.value = "male"
+                                genderTouched.value = true
+                                if (genderTouched.value) {
+                                    genderError.value = validateGender("male")
+                                }
+                            },
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = selectedGender.value == "male",
+                            onClick = {
+                                selectedGender.value = "male"
+                                genderTouched.value = true
+                                if (genderTouched.value) {
+                                    genderError.value = validateGender("male")
+                                }
+                            },
+                            colors = RadioButtonDefaults.colors(
+                                selectedColor = colorResource(id = R.color.accent_color),
+                                unselectedColor = colorResource(id = R.color.color_border)
+                            ),
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Text(
+                            text = stringResource(id = R.string.male),
+                            fontSize = 16.sp,
+                            color = colorResource(id = R.color.input_text),
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(24.dp))
+
+                    Row(
+                        modifier = Modifier
+                            .clickable {
+                                selectedGender.value = "female"
+                                genderTouched.value = true
+                                if (genderTouched.value) {
+                                    genderError.value = validateGender("female")
+                                }
+                            },
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = selectedGender.value == "female",
+                            onClick = {
+                                selectedGender.value = "female"
+                                genderTouched.value = true
+                                if (genderTouched.value) {
+                                    genderError.value = validateGender("female")
+                                }
+                            },
+                            colors = RadioButtonDefaults.colors(
+                                selectedColor = colorResource(id = R.color.accent_color),
+                                unselectedColor = colorResource(id = R.color.color_border)
+                            ),
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Text(
+                            text = stringResource(id = R.string.female),
+                            fontSize = 16.sp,
+                            color = colorResource(id = R.color.input_text),
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                    }
                 }
 
-                Spacer(modifier = Modifier.width(24.dp))
-
-                Row(
-                    modifier = Modifier
-                        .clickable { selectedGender.value = "female" },
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    RadioButton(
-                        selected = selectedGender.value == "female",
-                        onClick = { selectedGender.value = "female" },
-                        colors = RadioButtonDefaults.colors(
-                            selectedColor = colorResource(id = R.color.accent_color),
-                            unselectedColor = colorResource(id = R.color.color_border)
-                        ),
-                        modifier = Modifier.size(20.dp)
-                    )
+                if (genderTouched.value && genderError.value.isNotEmpty()) {
                     Text(
-                        text = stringResource(id = R.string.female),
-                        fontSize = 16.sp,
-                        color = colorResource(id = R.color.input_text),
-                        modifier = Modifier.padding(start = 8.dp)
+                        text = genderError.value,
+                        fontSize = 12.sp,
+                        color = colorResource(id = R.color.error_color),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 4.dp)
                     )
                 }
             }
@@ -394,7 +586,16 @@ fun SignUpTwo(
             Spacer(modifier = Modifier.weight(1f))
 
             Button(
-                onClick = onNavigateToSignUpThree,
+                onClick = {
+                    lastNameTouched.value = true
+                    firstNameTouched.value = true
+                    birthDateTouched.value = true
+                    genderTouched.value = true
+
+                    if (validateForm()) {
+                        onNavigateToSignUpThree()
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 24.dp)

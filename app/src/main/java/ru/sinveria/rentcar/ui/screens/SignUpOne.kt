@@ -60,7 +60,7 @@ fun SignUpOne(
 
     val isPasswordVisible = remember { mutableStateOf(false) }
     val isConfirmPasswordVisible = remember { mutableStateOf(false) }
-    
+
     val emailError = remember { mutableStateOf("") }
     val passwordError = remember { mutableStateOf("") }
     val confirmPasswordError = remember { mutableStateOf("") }
