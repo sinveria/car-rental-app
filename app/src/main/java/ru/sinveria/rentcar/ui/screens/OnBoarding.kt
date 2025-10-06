@@ -49,7 +49,8 @@ fun Onboarding(
             onSkip = { onNavigateToGettingStarted() },
             imageRes = R.drawable.onboadring_one,
             titleRes = R.string.onboarding_one_title,
-            descriptionRes = R.string.onboarding_one_description
+            descriptionRes = R.string.onboarding_one_description,
+            isLastScreen = false
         )
         1 -> OnboardingPage(
             currentScreen = currentScreen,
@@ -57,7 +58,8 @@ fun Onboarding(
             onSkip = { onNavigateToGettingStarted() },
             imageRes = R.drawable.onboarding_two,
             titleRes = R.string.onboarding_two_title,
-            descriptionRes = R.string.onboarding_two_description
+            descriptionRes = R.string.onboarding_two_description,
+            isLastScreen = false
         )
         2 -> OnboardingPage(
             currentScreen = currentScreen,
@@ -65,7 +67,8 @@ fun Onboarding(
             onSkip = { onNavigateToGettingStarted() },
             imageRes = R.drawable.onboarding_three,
             titleRes = R.string.onboarding_three_title,
-            descriptionRes = R.string.onboarding_three_description
+            descriptionRes = R.string.onboarding_three_description,
+            isLastScreen = true
         )
     }
 }
@@ -77,7 +80,8 @@ fun OnboardingPage(
     onSkip: () -> Unit,
     imageRes: Int,
     titleRes: Int,
-    descriptionRes: Int
+    descriptionRes: Int,
+    isLastScreen: Boolean = false
 ) {
     Box(
         modifier = Modifier
@@ -178,7 +182,11 @@ fun OnboardingPage(
                     )
                 ) {
                     Text(
-                        text = stringResource(R.string.next),
+                        text = if (isLastScreen) {
+                            stringResource(R.string.heregoes)
+                        } else {
+                            stringResource(R.string.next)
+                        },
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium
                     )
