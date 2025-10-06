@@ -54,7 +54,11 @@ fun AppNavigation(navController: NavHostController) {
         }
 
         composable(Screen.Login.route) {
-            Login()
+            Login(
+                onNavigateToSignUpOne = {
+                    navController.navigate(Screen.SignUpOne.route)
+                }
+            )
         }
 
         composable(Screen.SignUpOne.route) {

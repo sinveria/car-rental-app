@@ -42,7 +42,7 @@ import ru.sinveria.rentcar.R
 
 @Preview(showBackground = true)
 @Composable
-fun Login() {
+fun Login(onNavigateToSignUpOne: () -> Unit = {}) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     val emailFocused = remember { mutableStateOf(false) }
@@ -276,7 +276,9 @@ fun Login() {
                 fontSize = 14.sp,
                 color = colorResource(id = R.color.accent_color),
                 fontWeight = FontWeight.Medium,
-                modifier = Modifier.clickable { }
+                modifier = Modifier.clickable {
+                    onNavigateToSignUpOne() // ← Добавляем вызов
+                }
             )
         }
     }
