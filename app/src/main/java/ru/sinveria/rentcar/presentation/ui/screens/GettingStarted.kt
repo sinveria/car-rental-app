@@ -51,7 +51,7 @@ fun GettingStarted(
         Text(
             text = stringResource(R.string.find_next_ride),
             fontSize = 16.sp,
-            color = colorResource(id = R.color.color_black),
+            color = colorResource(id = R.color.accent_color),
             modifier = Modifier.padding(top = 8.dp)
         )
 
