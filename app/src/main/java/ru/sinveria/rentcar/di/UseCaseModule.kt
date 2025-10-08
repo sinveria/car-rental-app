@@ -8,8 +8,11 @@ import ru.sinveria.rentcar.domain.repository.AuthRepository
 import ru.sinveria.rentcar.domain.repository.ConnectionRepository
 import ru.sinveria.rentcar.domain.usecase.CheckConnectionUseCase
 import ru.sinveria.rentcar.domain.usecase.LoginUseCase
+import ru.sinveria.rentcar.domain.usecase.ValidateBirthDateUseCase
 import ru.sinveria.rentcar.domain.usecase.ValidateConfirmPasswordUseCase
 import ru.sinveria.rentcar.domain.usecase.ValidateEmailUseCase
+import ru.sinveria.rentcar.domain.usecase.ValidateGenderUseCase
+import ru.sinveria.rentcar.domain.usecase.ValidateNameUseCase
 import ru.sinveria.rentcar.domain.usecase.ValidatePasswordUseCase
 import ru.sinveria.rentcar.domain.usecase.ValidateTermsUseCase
 import javax.inject.Singleton
@@ -54,5 +57,23 @@ object UseCaseModule {
     @Singleton
     fun provideValidateTermsUseCase(): ValidateTermsUseCase {
         return ValidateTermsUseCase()
+    }
+
+    @Provides
+    @Singleton
+    fun provideValidateNameUseCase(): ValidateNameUseCase {
+        return ValidateNameUseCase()
+    }
+
+    @Provides
+    @Singleton
+    fun provideValidateBirthDateUseCase(): ValidateBirthDateUseCase {
+        return ValidateBirthDateUseCase()
+    }
+
+    @Provides
+    @Singleton
+    fun provideValidateGenderUseCase(): ValidateGenderUseCase {
+        return ValidateGenderUseCase()
     }
 }
