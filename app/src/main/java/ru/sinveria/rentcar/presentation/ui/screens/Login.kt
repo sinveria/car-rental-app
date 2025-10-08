@@ -1,5 +1,6 @@
-package ru.sinveria.rentcar.ui.screens
+package ru.sinveria.rentcar.presentation.ui.screens
 
+import android.util.Patterns
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -58,7 +59,7 @@ fun Login(onNavigateToSignUpOne: () -> Unit = {}) {
     fun validateEmail(email: String): String {
         return when {
             email.isEmpty() -> "Электронная почта обязательна"
-            !android.util.Patterns.EMAIL_ADDRESS.matcher(email)
+            !Patterns.EMAIL_ADDRESS.matcher(email)
                 .matches() -> "Введите корректный адрес электронной почты"
 
             else -> ""

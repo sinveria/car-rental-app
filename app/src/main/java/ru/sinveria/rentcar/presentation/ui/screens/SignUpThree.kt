@@ -1,5 +1,7 @@
-package ru.sinveria.rentcar.ui.screens
+package ru.sinveria.rentcar.presentation.ui.screens
 
+import android.Manifest
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -31,9 +33,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -41,7 +45,20 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import ru.sinveria.rentcar.R
+import ru.sinveria.rentcar.presentation.ui.components.ImageSourceDialog
+import ru.sinveria.rentcar.utils.ImagePicker
+import ru.sinveria.rentcar.utils.createImageUri
+import ru.sinveria.rentcar.utils.getGalleryPermission
+import ru.sinveria.rentcar.utils.rememberCameraPermissionLauncher
+import ru.sinveria.rentcar.utils.rememberGalleryPermissionLauncher
+import ru.sinveria.rentcar.utils.hasCameraPermission
+import ru.sinveria.rentcar.utils.hasGalleryPermission
+
+enum class ImageType {
+    PROFILE, LICENSE, PASSPORT
+}
 
 @Preview(showBackground = true)
 @Composable
@@ -49,6 +66,9 @@ fun SignUpThree(
     onNavigateBack: () -> Unit = {},
     onNavigateToCong: () -> Unit = {}
 ) {
+    val context = LocalContext.current
+    val imagePicker = ImagePicker()
+
     val licenseNumber = remember { mutableStateOf("") }
     val licenseNumberState = remember { mutableStateOf(TextFieldValue("")) }
     val issueDate = remember { mutableStateOf("") }
@@ -62,7 +82,114 @@ fun SignUpThree(
 
     val licenseNumberTouched = remember { mutableStateOf(false) }
     val issueDateTouched = remember { mutableStateOf(false) }
-    
+
+    val profileImageUri = remember { mutableStateOf<Uri?>(null) }
+    val licenseImageUri = remember { mutableStateOf<Uri?>(null) }
+    val passportImageUri = remember { mutableStateOf<Uri?>(null) }
+
+    val showImageSourceDialog = remember { mutableStateOf(false) }
+    val currentImageType = remember { mutableStateOf<ImageType?>(null) }
+
+    val cameraImageUri = remember { mutableStateOf<Uri?>(null) }
+
+    val cameraLauncher = imagePicker.rememberCameraLauncher(
+        cameraImageUri = cameraImageUri,
+        onImageCaptured = { uri ->
+            uri?.let { capturedUri ->
+                when (currentImageType.value) {
+                    ImageType.PROFILE -> profileImageUri.value = capturedUri
+                    ImageType.LICENSE -> licenseImageUri.value = capturedUri
+                    ImageType.PASSPORT -> passportImageUri.value = capturedUri
+                    null -> {}
+                }
+            }
+            cameraImageUri.value = null
+            currentImageType.value = null
+        }
+    )
+
+    val galleryLauncher = imagePicker.rememberGalleryLauncher { uri ->
+        uri?.let {
+            when (currentImageType.value) {
+                ImageType.PROFILE -> profileImageUri.value = it
+                ImageType.LICENSE -> licenseImageUri.value = it
+                ImageType.PASSPORT -> passportImageUri.value = it
+                null -> {}
+            }
+        }
+        currentImageType.value = null
+    }
+
+    val cameraPermissionLauncher = rememberCameraPermissionLauncher(
+        onPermissionGranted = {
+            cameraImageUri.value = createImageUri(context)
+            cameraImageUri.value?.let { uri ->
+                cameraLauncher.launch(uri)
+            }
+        },
+        onPermissionDenied = {
+            currentImageType.value = null
+        }
+    )
+
+    val galleryPermissionLauncher = rememberGalleryPermissionLauncher(
+        onPermissionGranted = {
+            currentImageType.value?.let { type ->
+                galleryLauncher.launch("image/*")
+            }
+        },
+        onPermissionDenied = {
+            currentImageType.value = null
+        }
+    )
+
+    fun openImageSourceDialog(imageType: ImageType) {
+        currentImageType.value = imageType
+        showImageSourceDialog.value = true
+    }
+
+    fun handleCameraSelection() {
+        showImageSourceDialog.value = false
+        if (hasCameraPermission(context)) {
+            cameraImageUri.value = createImageUri(context)
+            cameraImageUri.value?.let { uri ->
+                cameraLauncher.launch(uri)
+            }
+        } else {
+            cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+        }
+    }
+
+    fun openGallery() {
+        try {
+            galleryLauncher.launch("image/*")
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun requestGalleryPermission() {
+        val permission = getGalleryPermission()
+        galleryPermissionLauncher.launch(permission)
+    }
+
+    fun handleGallerySelection() {
+        showImageSourceDialog.value = false
+
+        val imageType = currentImageType.value
+        if (imageType == null) {
+            return
+        }
+
+        val hasPermission = hasGalleryPermission(context)
+
+        if (hasPermission) {
+            openGallery()
+        } else {
+            requestGalleryPermission()
+        }
+    }
+
     fun isValidLicenseNumber(license: String): Boolean {
         return license.length == 10 && license.all { it.isDigit() }
     }
@@ -118,6 +245,17 @@ fun SignUpThree(
         return licenseNumberError.value.isEmpty() && issueDateError.value.isEmpty()
     }
 
+    if (showImageSourceDialog.value) {
+        ImageSourceDialog(
+            onDismiss = {
+                showImageSourceDialog.value = false
+                currentImageType.value = null
+            },
+            onCameraSelected = { handleCameraSelection() },
+            onGallerySelected = { handleGallerySelection() }
+        )
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -168,16 +306,27 @@ fun SignUpThree(
                                 width = 1.dp,
                                 color = colorResource(id = R.color.color_border),
                                 shape = CircleShape
-                            ),
+                            )
+                            .clickable { openImageSourceDialog(ImageType.PROFILE) },
                         contentAlignment = Alignment.Center
                     ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.profile_photo),
-                            contentDescription = "Profile photo",
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .clip(CircleShape)
-                        )
+                        if (profileImageUri.value != null) {
+                            AsyncImage(
+                                model = profileImageUri.value,
+                                contentDescription = "Profile photo",
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(CircleShape)
+                            )
+                        } else {
+                            Image(
+                                painter = painterResource(id = R.drawable.profile_photo),
+                                contentDescription = "Profile photo",
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(CircleShape)
+                            )
+                        }
                     }
                     Image(
                         painter = painterResource(id = R.drawable.plus_icon),
@@ -186,6 +335,7 @@ fun SignUpThree(
                             .size(24.dp)
                             .align(Alignment.TopEnd)
                             .offset(x = 3.dp, y = 75.dp)
+                            .clickable { openImageSourceDialog(ImageType.PROFILE) }
                     )
                 }
 
@@ -232,7 +382,7 @@ fun SignUpThree(
 
                         licenseNumberState.value = TextFieldValue(
                             text = cleanInput,
-                            selection = androidx.compose.ui.text.TextRange(cleanInput.length)
+                            selection = TextRange(cleanInput.length)
                         )
                         licenseNumber.value = cleanInput
                         licenseNumberTouched.value = true
@@ -345,7 +495,7 @@ fun SignUpThree(
 
                             issueDateState.value = TextFieldValue(
                                 text = masked,
-                                selection = androidx.compose.ui.text.TextRange(newCursorPos)
+                                selection = TextRange(newCursorPos)
                             )
 
                             issueDate.value = masked
@@ -411,7 +561,7 @@ fun SignUpThree(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp)
-                    .clickable { },
+                    .clickable { openImageSourceDialog(ImageType.LICENSE) },
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(
@@ -426,11 +576,21 @@ fun SignUpThree(
                         .background(Color.White),
                     contentAlignment = Alignment.Center
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.upload_icon),
-                        contentDescription = "Upload license",
-                        modifier = Modifier.size(24.dp)
-                    )
+                    if (licenseImageUri.value != null) {
+                        AsyncImage(
+                            model = licenseImageUri.value,
+                            contentDescription = "License photo",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(12.dp))
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(id = R.drawable.upload_icon),
+                            contentDescription = "Upload license",
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
                 }
                 Text(
                     text = stringResource(id = R.string.upload_photo),
@@ -452,7 +612,7 @@ fun SignUpThree(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp)
-                    .clickable { },
+                    .clickable { openImageSourceDialog(ImageType.PASSPORT) },
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(
@@ -467,11 +627,21 @@ fun SignUpThree(
                         .background(Color.White),
                     contentAlignment = Alignment.Center
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.upload_icon),
-                        contentDescription = "Upload passport",
-                        modifier = Modifier.size(24.dp)
-                    )
+                    if (passportImageUri.value != null) {
+                        AsyncImage(
+                            model = passportImageUri.value,
+                            contentDescription = "Passport photo",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(12.dp))
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(id = R.drawable.upload_icon),
+                            contentDescription = "Upload passport",
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
                 }
                 Text(
                     text = stringResource(id = R.string.upload_photo),

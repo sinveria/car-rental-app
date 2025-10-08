@@ -1,7 +1,8 @@
-package ru.sinveria.rentcar.navigation
+package ru.sinveria.rentcar.presentation.navigation
 
 sealed class Screen(val route: String) {
     object Splash : Screen("splash_screen")
+    object NoConnection : Screen("no_connection_screen")
     object GettingStarted : Screen("getting_started_screen")
     object Onboarding : Screen("onboarding_screen")
     object Login : Screen("login_screen")

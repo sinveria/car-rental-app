@@ -1,4 +1,4 @@
-package ru.sinveria.rentcar.ui.theme
+package ru.sinveria.rentcar.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

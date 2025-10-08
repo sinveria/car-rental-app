@@ -1,4 +1,4 @@
-package ru.sinveria.rentcar.ui.screens
+package ru.sinveria.rentcar.presentation.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
