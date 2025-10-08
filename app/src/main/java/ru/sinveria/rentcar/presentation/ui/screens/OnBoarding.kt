@@ -28,12 +28,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.sinveria.rentcar.R
+import ru.sinveria.rentcar.theme.montserratFamily
 
 @Preview(showBackground = true)
 @Composable
@@ -112,8 +114,7 @@ fun OnboardingPage(
                     Text(
                         text = stringResource(R.string.onboarding_skip),
                         fontSize = 14.sp,
-                        color = colorResource(id = R.color.accent_color),
-                        fontWeight = FontWeight.Medium
+                        color = colorResource(id = R.color.accent_color)
                     )
                 }
             }
