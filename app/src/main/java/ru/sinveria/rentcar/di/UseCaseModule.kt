@@ -8,8 +8,10 @@ import ru.sinveria.rentcar.domain.repository.AuthRepository
 import ru.sinveria.rentcar.domain.repository.ConnectionRepository
 import ru.sinveria.rentcar.domain.usecase.CheckConnectionUseCase
 import ru.sinveria.rentcar.domain.usecase.LoginUseCase
+import ru.sinveria.rentcar.domain.usecase.ValidateConfirmPasswordUseCase
 import ru.sinveria.rentcar.domain.usecase.ValidateEmailUseCase
 import ru.sinveria.rentcar.domain.usecase.ValidatePasswordUseCase
+import ru.sinveria.rentcar.domain.usecase.ValidateTermsUseCase
 import javax.inject.Singleton
 
 @Module
@@ -40,5 +42,17 @@ object UseCaseModule {
     @Singleton
     fun provideLoginUseCase(authRepository: AuthRepository): LoginUseCase {
         return LoginUseCase(authRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideValidateConfirmPasswordUseCase(): ValidateConfirmPasswordUseCase {
+        return ValidateConfirmPasswordUseCase()
+    }
+
+    @Provides
+    @Singleton
+    fun provideValidateTermsUseCase(): ValidateTermsUseCase {
+        return ValidateTermsUseCase()
     }
 }

@@ -1,6 +1,5 @@
 package ru.sinveria.rentcar.presentation.ui.screens
 
-import android.util.Patterns
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,10 +22,9 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Text
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,76 +41,33 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import ru.sinveria.rentcar.R
+import ru.sinveria.rentcar.presentation.viewmodel.SignUpViewModel
 
-@Preview(showBackground = true)
 @Composable
 fun SignUpOne(
     onNavigateBack: () -> Unit = {},
-    onNavigateToSignUpTwo: () -> Unit = {}
+    onNavigateToSignUpTwo: () -> Unit = {},
+    viewModel: SignUpViewModel = hiltViewModel()
 ) {
-    val email = remember { mutableStateOf("") }
-    val password = remember { mutableStateOf("") }
-    val confirmPassword = remember { mutableStateOf("") }
-    val emailFocused = remember { mutableStateOf(false) }
-    val passwordFocused = remember { mutableStateOf(false) }
-    val confirmPasswordFocused = remember { mutableStateOf(false) }
-    val agreedToTerms = remember { mutableStateOf(false) }
-
-    val isPasswordVisible = remember { mutableStateOf(false) }
-    val isConfirmPasswordVisible = remember { mutableStateOf(false) }
-
-    val emailError = remember { mutableStateOf("") }
-    val passwordError = remember { mutableStateOf("") }
-    val confirmPasswordError = remember { mutableStateOf("") }
-    val termsError = remember { mutableStateOf("") }
-
-    val emailTouched = remember { mutableStateOf(false) }
-    val passwordTouched = remember { mutableStateOf(false) }
-    val confirmPasswordTouched = remember { mutableStateOf(false) }
-    val termsTouched = remember { mutableStateOf(false) }
-
-    fun validateEmail(email: String): String {
-
-        return when {
-            email.isEmpty() -> "Электронная почта обязательна"
-            !Patterns.EMAIL_ADDRESS.matcher(email)
-                .matches() -> "Введите корректный адрес электронной почты"
-            else -> ""
-        }
-    }
-
-    fun validatePassword(password: String): String {
-        return when {
-            password.isEmpty() -> "Пароль обязателен"
-            else -> ""
-        }
-    }
-
-    fun validateConfirmPassword(password: String, confirmPassword: String): String {
-        return when {
-            confirmPassword.isEmpty() -> "Подтверждение пароля обязательно"
-            password != confirmPassword -> "Пароли не совпадают"
-            else -> ""
-        }
-    }
-
-    fun validateTerms(agreed: Boolean): String {
-        return if (!agreed) "Необходимо согласиться с условиями обслуживания \n" +
-                "и политикой конфиденциальности" else ""
-    }
-
-    fun validateForm(): Boolean {
-        emailError.value = validateEmail(email.value)
-        passwordError.value = validatePassword(password.value)
-        confirmPasswordError.value = validateConfirmPassword(password.value, confirmPassword.value)
-        termsError.value = validateTerms(agreedToTerms.value)
-
-        return emailError.value.isEmpty() &&
-                passwordError.value.isEmpty() &&
-                confirmPasswordError.value.isEmpty() &&
-                termsError.value.isEmpty()
-    }
+    val email by viewModel.email.collectAsState()
+    val password by viewModel.password.collectAsState()
+    val confirmPassword by viewModel.confirmPassword.collectAsState()
+    val emailFocused by viewModel.emailFocused.collectAsState()
+    val passwordFocused by viewModel.passwordFocused.collectAsState()
+    val confirmPasswordFocused by viewModel.confirmPasswordFocused.collectAsState()
+    val agreedToTerms by viewModel.agreedToTerms.collectAsState()
+    val isPasswordVisible by viewModel.isPasswordVisible.collectAsState()
+    val isConfirmPasswordVisible by viewModel.isConfirmPasswordVisible.collectAsState()
+    val emailError by viewModel.emailError.collectAsState()
+    val passwordError by viewModel.passwordError.collectAsState()
+    val confirmPasswordError by viewModel.confirmPasswordError.collectAsState()
+    val termsError by viewModel.termsError.collectAsState()
+    val emailTouched by viewModel.emailTouched.collectAsState()
+    val passwordTouched by viewModel.passwordTouched.collectAsState()
+    val confirmPasswordTouched by viewModel.confirmPasswordTouched.collectAsState()
+    val termsTouched by viewModel.termsTouched.collectAsState()
 
     Column(
         modifier = Modifier
@@ -152,6 +107,7 @@ fun SignUpOne(
                 .padding(top = 32.dp),
             horizontalAlignment = Alignment.Start
         ) {
+            // Email поле
             Text(
                 text = stringResource(id = R.string.email),
                 fontSize = 14.sp,
@@ -169,8 +125,8 @@ fun SignUpOne(
                     .border(
                         width = 1.dp,
                         color = when {
-                            emailTouched.value && emailError.value.isNotEmpty() -> colorResource(id = R.color.error_color)
-                            emailFocused.value -> colorResource(id = R.color.accent_color)
+                            emailTouched && emailError.isNotEmpty() -> colorResource(id = R.color.error_color)
+                            emailFocused -> colorResource(id = R.color.accent_color)
                             else -> colorResource(id = R.color.color_border)
                         },
                         shape = RoundedCornerShape(12.dp)
@@ -178,22 +134,13 @@ fun SignUpOne(
                     .background(Color.White)
             ) {
                 BasicTextField(
-                    value = email.value,
-                    onValueChange = {
-                        email.value = it
-                        emailTouched.value = true
-                        if (emailTouched.value) {
-                            emailError.value = validateEmail(it)
-                        }
-                    },
+                    value = email,
+                    onValueChange = viewModel::onEmailChange,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(horizontal = 16.dp)
                         .onFocusChanged { focusState ->
-                            emailFocused.value = focusState.isFocused
-                            if (!focusState.isFocused && emailTouched.value) {
-                                emailError.value = validateEmail(email.value)
-                            }
+                            viewModel.onEmailFocusChanged(focusState.isFocused)
                         },
                     textStyle = TextStyle(
                         fontSize = 16.sp,
@@ -206,7 +153,7 @@ fun SignUpOne(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.CenterStart
                         ) {
-                            if (email.value.isEmpty()) {
+                            if (email.isEmpty()) {
                                 Text(
                                     text = stringResource(id = R.string.enter_email),
                                     fontSize = 16.sp,
@@ -219,9 +166,9 @@ fun SignUpOne(
                 )
             }
 
-            if (emailTouched.value && emailError.value.isNotEmpty()) {
+            if (emailTouched && emailError.isNotEmpty()) {
                 Text(
-                    text = emailError.value,
+                    text = emailError,
                     fontSize = 12.sp,
                     color = colorResource(id = R.color.error_color),
                     modifier = Modifier
@@ -230,6 +177,7 @@ fun SignUpOne(
                 )
             }
 
+            // Password поле
             Text(
                 text = stringResource(id = R.string.think_password),
                 fontSize = 14.sp,
@@ -247,8 +195,8 @@ fun SignUpOne(
                     .border(
                         width = 1.dp,
                         color = when {
-                            passwordTouched.value && passwordError.value.isNotEmpty() -> colorResource(id = R.color.error_color)
-                            passwordFocused.value -> colorResource(id = R.color.accent_color)
+                            passwordTouched && passwordError.isNotEmpty() -> colorResource(id = R.color.error_color)
+                            passwordFocused -> colorResource(id = R.color.accent_color)
                             else -> colorResource(id = R.color.color_border)
                         },
                         shape = RoundedCornerShape(12.dp)
@@ -256,32 +204,20 @@ fun SignUpOne(
                     .background(Color.White)
             ) {
                 BasicTextField(
-                    value = password.value,
-                    onValueChange = {
-                        password.value = it
-                        passwordTouched.value = true
-                        if (passwordTouched.value) {
-                            passwordError.value = validatePassword(it)
-                            if (confirmPasswordTouched.value) {
-                                confirmPasswordError.value = validateConfirmPassword(it, confirmPassword.value)
-                            }
-                        }
-                    },
+                    value = password,
+                    onValueChange = viewModel::onPasswordChange,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(horizontal = 16.dp)
                         .onFocusChanged { focusState ->
-                            passwordFocused.value = focusState.isFocused
-                            if (!focusState.isFocused && passwordTouched.value) {
-                                passwordError.value = validatePassword(password.value)
-                            }
+                            viewModel.onPasswordFocusChanged(focusState.isFocused)
                         },
                     textStyle = TextStyle(
                         fontSize = 16.sp,
                         color = Color.Black
                     ),
                     singleLine = true,
-                    visualTransformation = if (isPasswordVisible.value) {
+                    visualTransformation = if (isPasswordVisible) {
                         VisualTransformation.None
                     } else {
                         PasswordVisualTransformation()
@@ -292,7 +228,7 @@ fun SignUpOne(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.CenterStart
                         ) {
-                            if (password.value.isEmpty()) {
+                            if (password.isEmpty()) {
                                 Text(
                                     text = stringResource(id = R.string.enter_password),
                                     fontSize = 16.sp,
@@ -306,30 +242,24 @@ fun SignUpOne(
 
                 Image(
                     painter = painterResource(
-                        id = if (isPasswordVisible.value) {
+                        id = if (isPasswordVisible) {
                             R.drawable.visible_pass
                         } else {
                             R.drawable.no_visible_pass
                         }
                     ),
-                    contentDescription = if (isPasswordVisible.value) {
-                        "Скрыть пароль"
-                    } else {
-                        "Показать пароль"
-                    },
+                    contentDescription = if (isPasswordVisible) "Скрыть пароль" else "Показать пароль",
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
                         .padding(end = 16.dp)
                         .size(20.dp)
-                        .clickable {
-                            isPasswordVisible.value = !isPasswordVisible.value
-                        }
+                        .clickable { viewModel.togglePasswordVisibility() }
                 )
             }
 
-            if (passwordTouched.value && passwordError.value.isNotEmpty()) {
+            if (passwordTouched && passwordError.isNotEmpty()) {
                 Text(
-                    text = passwordError.value,
+                    text = passwordError,
                     fontSize = 12.sp,
                     color = colorResource(id = R.color.error_color),
                     modifier = Modifier
@@ -338,6 +268,7 @@ fun SignUpOne(
                 )
             }
 
+            // Confirm Password поле
             Text(
                 text = stringResource(id = R.string.repeat_password),
                 fontSize = 14.sp,
@@ -355,8 +286,8 @@ fun SignUpOne(
                     .border(
                         width = 1.dp,
                         color = when {
-                            confirmPasswordTouched.value && confirmPasswordError.value.isNotEmpty() -> colorResource(id = R.color.error_color)
-                            confirmPasswordFocused.value -> colorResource(id = R.color.accent_color)
+                            confirmPasswordTouched && confirmPasswordError.isNotEmpty() -> colorResource(id = R.color.error_color)
+                            confirmPasswordFocused -> colorResource(id = R.color.accent_color)
                             else -> colorResource(id = R.color.color_border)
                         },
                         shape = RoundedCornerShape(12.dp)
@@ -364,29 +295,20 @@ fun SignUpOne(
                     .background(Color.White)
             ) {
                 BasicTextField(
-                    value = confirmPassword.value,
-                    onValueChange = {
-                        confirmPassword.value = it
-                        confirmPasswordTouched.value = true
-                        if (confirmPasswordTouched.value) {
-                            confirmPasswordError.value = validateConfirmPassword(password.value, it)
-                        }
-                    },
+                    value = confirmPassword,
+                    onValueChange = viewModel::onConfirmPasswordChange,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(horizontal = 16.dp)
                         .onFocusChanged { focusState ->
-                            confirmPasswordFocused.value = focusState.isFocused
-                            if (!focusState.isFocused && confirmPasswordTouched.value) {
-                                confirmPasswordError.value = validateConfirmPassword(password.value, confirmPassword.value)
-                            }
+                            viewModel.onConfirmPasswordFocusChanged(focusState.isFocused)
                         },
                     textStyle = TextStyle(
                         fontSize = 16.sp,
                         color = Color.Black
                     ),
                     singleLine = true,
-                    visualTransformation = if (isConfirmPasswordVisible.value) {
+                    visualTransformation = if (isConfirmPasswordVisible) {
                         VisualTransformation.None
                     } else {
                         PasswordVisualTransformation()
@@ -397,7 +319,7 @@ fun SignUpOne(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.CenterStart
                         ) {
-                            if (confirmPassword.value.isEmpty()) {
+                            if (confirmPassword.isEmpty()) {
                                 Text(
                                     text = stringResource(id = R.string.enter_password),
                                     fontSize = 16.sp,
@@ -411,30 +333,24 @@ fun SignUpOne(
 
                 Image(
                     painter = painterResource(
-                        id = if (isConfirmPasswordVisible.value) {
+                        id = if (isConfirmPasswordVisible) {
                             R.drawable.visible_pass
                         } else {
                             R.drawable.no_visible_pass
                         }
                     ),
-                    contentDescription = if (isConfirmPasswordVisible.value) {
-                        "Скрыть пароль"
-                    } else {
-                        "Показать пароль"
-                    },
+                    contentDescription = if (isConfirmPasswordVisible) "Скрыть пароль" else "Показать пароль",
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
                         .padding(end = 16.dp)
                         .size(20.dp)
-                        .clickable {
-                            isConfirmPasswordVisible.value = !isConfirmPasswordVisible.value
-                        }
+                        .clickable { viewModel.toggleConfirmPasswordVisibility() }
                 )
             }
 
-            if (confirmPasswordTouched.value && confirmPasswordError.value.isNotEmpty()) {
+            if (confirmPasswordTouched && confirmPasswordError.isNotEmpty()) {
                 Text(
-                    text = confirmPasswordError.value,
+                    text = confirmPasswordError,
                     fontSize = 12.sp,
                     color = colorResource(id = R.color.error_color),
                     modifier = Modifier
@@ -443,6 +359,7 @@ fun SignUpOne(
                 )
             }
 
+            // Terms checkbox
             Column {
                 Row(
                     modifier = Modifier
@@ -456,21 +373,15 @@ fun SignUpOne(
                             .border(
                                 width = 1.dp,
                                 color = when {
-                                    termsTouched.value && termsError.value.isNotEmpty() -> colorResource(id = R.color.error_color)
+                                    termsTouched && termsError.isNotEmpty() -> colorResource(id = R.color.error_color)
                                     else -> colorResource(id = R.color.color_border)
                                 },
                                 shape = RoundedCornerShape(4.dp)
                             )
                     ) {
                         Checkbox(
-                            checked = agreedToTerms.value,
-                            onCheckedChange = {
-                                agreedToTerms.value = it
-                                termsTouched.value = true
-                                if (termsTouched.value) {
-                                    termsError.value = validateTerms(it)
-                                }
-                            },
+                            checked = agreedToTerms,
+                            onCheckedChange = viewModel::onTermsChecked,
                             modifier = Modifier.size(20.dp),
                             colors = CheckboxDefaults.colors(
                                 uncheckedColor = Color.Transparent,
@@ -487,9 +398,9 @@ fun SignUpOne(
                     )
                 }
 
-                if (termsTouched.value && termsError.value.isNotEmpty()) {
+                if (termsTouched && termsError.isNotEmpty()) {
                     Text(
-                        text = termsError.value,
+                        text = termsError,
                         fontSize = 12.sp,
                         color = colorResource(id = R.color.error_color),
                         modifier = Modifier
@@ -503,12 +414,8 @@ fun SignUpOne(
 
             Button(
                 onClick = {
-                    emailTouched.value = true
-                    passwordTouched.value = true
-                    confirmPasswordTouched.value = true
-                    termsTouched.value = true
-
-                    if (validateForm()) {
+                    viewModel.markAllTouched()
+                    if (viewModel.validateForm()) {
                         onNavigateToSignUpTwo()
                     }
                 },
