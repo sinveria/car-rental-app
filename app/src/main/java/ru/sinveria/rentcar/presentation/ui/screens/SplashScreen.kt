@@ -1,29 +1,39 @@
-package ru.sinveria.rentcar.ui.screens
+package ru.sinveria.rentcar.presentation.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.delay
+import androidx.hilt.navigation.compose.hiltViewModel
 import ru.sinveria.rentcar.R
+import ru.sinveria.rentcar.presentation.viewmodel.SplashViewModel
+import androidx.compose.runtime.getValue
 
-@Preview
 @Composable
-fun SplashScreen(onSplashComplete: () -> Unit = {}) {
+fun SplashScreen(
+    onSplashComplete: () -> Unit = {}, onNoConnection: () -> Unit,
+    viewModel: SplashViewModel = hiltViewModel()
+) {
 
-    LaunchedEffect(Unit) {
-        delay(2500)
-        onSplashComplete()
+    val isConnected by viewModel.isConnected.collectAsState()
+
+    LaunchedEffect(isConnected) {
+        if (isConnected) {
+            kotlinx.coroutines.delay(2000)
+            onSplashComplete()
+        } else {
+            onNoConnection()
+        }
     }
 
     Column(

@@ -1,4 +1,4 @@
-package ru.sinveria.rentcar.ui.screens
+package ru.sinveria.rentcar.presentation.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -27,24 +27,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.coroutines.delay
 import ru.sinveria.rentcar.R
-import ru.sinveria.rentcar.utils.NetworkUtils
+import ru.sinveria.rentcar.presentation.viewmodel.NoConnectionViewModel
 
-@Preview(showBackground = true)
 @Composable
 fun NoConnection(
-    onConnectionRestored: () -> Unit = {}, onRetryClick: () -> Unit = {}
+    viewModel: NoConnectionViewModel = hiltViewModel(),
+    onConnectionRestored: () -> Unit = {},
+    onRetryClick: () -> Unit = {}
 ) {
+    val connectionState = viewModel.isConnected
 
-    val context = LocalContext.current
-
-    LaunchedEffect(Unit) {
-        NetworkUtils.isConnected.collect { isConnected ->
-            if (isConnected) {
-                delay(1000)
-                onConnectionRestored()
-            }
+    LaunchedEffect(connectionState) {
+        if (connectionState.value) {
+            delay(1000)
+            onConnectionRestored()
         }
     }
 
@@ -54,7 +53,6 @@ fun NoConnection(
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
-
     ) {
         Spacer(modifier = Modifier.weight(1f))
 
@@ -93,18 +91,29 @@ fun NoConnection(
         Spacer(modifier = Modifier.weight(1f))
 
         Button(
-            onClick = { onRetryClick() }, modifier = Modifier
+            onClick = {
+                onRetryClick()
+                viewModel.checkConnection()
+            },
+            modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
-
-            shape = RoundedCornerShape(12.dp), colors = ButtonDefaults.buttonColors(
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(
                 containerColor = colorResource(id = R.color.accent_color),
                 contentColor = Color.White
             )
         ) {
             Text(
-                text = stringResource(id = R.string.retry), fontSize = 16.sp
+                text = stringResource(id = R.string.retry),
+                fontSize = 16.sp
             )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun NoConnectionScreenPreview() {
+    NoConnection()
 }

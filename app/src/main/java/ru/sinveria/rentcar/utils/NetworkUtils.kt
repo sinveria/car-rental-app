@@ -1,4 +1,3 @@
-// NetworkUtils.kt
 package ru.sinveria.rentcar.utils
 
 import android.content.Context
@@ -9,21 +8,26 @@ import android.net.NetworkRequest
 import android.os.Build
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import javax.inject.Inject
+import javax.inject.Singleton
 
-object NetworkUtils {
+@Singleton
+class NetworkUtils @Inject constructor(
+    private val context: Context
+) {
     private val _isConnected = MutableStateFlow(true)
     val isConnected: StateFlow<Boolean> = _isConnected
 
     private var isInitialized = false
 
-    fun initialize(context: Context) {
+    fun initialize() {
         if (!isInitialized) {
-            registerNetworkCallback(context)
+            registerNetworkCallback()
             isInitialized = true
         }
     }
 
-    fun registerNetworkCallback(context: Context) {
+    private fun registerNetworkCallback() {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
@@ -70,7 +74,7 @@ object NetworkUtils {
         _isConnected.value = isConnected
     }
 
-    fun isInternetAvailable(context: Context): Boolean {
+    fun isInternetAvailable(): Boolean {
         return try {
             val connectivityManager =
                 context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

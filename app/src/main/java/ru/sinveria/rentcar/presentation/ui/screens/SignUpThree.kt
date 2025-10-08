@@ -1,5 +1,7 @@
-package ru.sinveria.rentcar.ui.screens
+package ru.sinveria.rentcar.presentation.ui.screens
 
+import android.Manifest
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -35,6 +37,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -44,7 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import ru.sinveria.rentcar.R
-import ru.sinveria.rentcar.ui.components.ImageSourceDialog
+import ru.sinveria.rentcar.presentation.ui.components.ImageSourceDialog
 import ru.sinveria.rentcar.utils.ImagePicker
 import ru.sinveria.rentcar.utils.createImageUri
 import ru.sinveria.rentcar.utils.getGalleryPermission
@@ -80,14 +83,14 @@ fun SignUpThree(
     val licenseNumberTouched = remember { mutableStateOf(false) }
     val issueDateTouched = remember { mutableStateOf(false) }
 
-    val profileImageUri = remember { mutableStateOf<android.net.Uri?>(null) }
-    val licenseImageUri = remember { mutableStateOf<android.net.Uri?>(null) }
-    val passportImageUri = remember { mutableStateOf<android.net.Uri?>(null) }
+    val profileImageUri = remember { mutableStateOf<Uri?>(null) }
+    val licenseImageUri = remember { mutableStateOf<Uri?>(null) }
+    val passportImageUri = remember { mutableStateOf<Uri?>(null) }
 
     val showImageSourceDialog = remember { mutableStateOf(false) }
     val currentImageType = remember { mutableStateOf<ImageType?>(null) }
 
-    val cameraImageUri = remember { mutableStateOf<android.net.Uri?>(null) }
+    val cameraImageUri = remember { mutableStateOf<Uri?>(null) }
 
     val cameraLauncher = imagePicker.rememberCameraLauncher(
         cameraImageUri = cameraImageUri,
@@ -153,7 +156,7 @@ fun SignUpThree(
                 cameraLauncher.launch(uri)
             }
         } else {
-            cameraPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+            cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
         }
     }
 
@@ -379,7 +382,7 @@ fun SignUpThree(
 
                         licenseNumberState.value = TextFieldValue(
                             text = cleanInput,
-                            selection = androidx.compose.ui.text.TextRange(cleanInput.length)
+                            selection = TextRange(cleanInput.length)
                         )
                         licenseNumber.value = cleanInput
                         licenseNumberTouched.value = true
@@ -492,7 +495,7 @@ fun SignUpThree(
 
                             issueDateState.value = TextFieldValue(
                                 text = masked,
-                                selection = androidx.compose.ui.text.TextRange(newCursorPos)
+                                selection = TextRange(newCursorPos)
                             )
 
                             issueDate.value = masked
