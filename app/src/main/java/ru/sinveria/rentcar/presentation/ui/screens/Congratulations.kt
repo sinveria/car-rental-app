@@ -87,8 +87,7 @@ fun Congratulations() {
         ) {
             Text(
                 text = stringResource(id = R.string.next),
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.bodyMedium
             )
         }
     }
