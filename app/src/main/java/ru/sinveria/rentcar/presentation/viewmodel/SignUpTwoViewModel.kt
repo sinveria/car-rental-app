@@ -73,6 +73,17 @@ class SignUpTwoViewModel @Inject constructor(
     private val _genderTouched = MutableStateFlow(false)
     val genderTouched: StateFlow<Boolean> = _genderTouched.asStateFlow()
 
+    private val _showDatePicker = MutableStateFlow(false)
+    val showDatePicker: StateFlow<Boolean> = _showDatePicker.asStateFlow()
+
+    fun onShowDatePicker() {
+        _showDatePicker.value = true
+    }
+
+    fun onDismissDatePicker() {
+        _showDatePicker.value = false
+    }
+
     fun validateLastName(): String {
         return validateNameUseCase(_lastName.value, "Фамилия")
     }
@@ -210,5 +221,14 @@ class SignUpTwoViewModel @Inject constructor(
         _firstNameTouched.value = false
         _birthDateTouched.value = false
         _genderTouched.value = false
+    }
+
+    fun onDateSelected(year: Int, month: Int, dayOfMonth: Int) {
+        val formattedDate = String.format("%02d/%02d/%04d", dayOfMonth, month + 1, year)
+        _birthDate.value = formattedDate
+        _birthDateState.value = TextFieldValue(formattedDate)
+        _birthDateTouched.value = true
+        _birthDateError.value = validateBirthDate()
+        _showDatePicker.value = false
     }
 }

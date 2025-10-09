@@ -67,6 +67,17 @@ class SignUpThreeViewModel @Inject constructor(
     private val _currentImageType = MutableStateFlow<ImageType?>(null)
     val currentImageType: StateFlow<ImageType?> = _currentImageType.asStateFlow()
 
+    private val _showDatePicker = MutableStateFlow(false)
+    val showDatePicker: StateFlow<Boolean> = _showDatePicker.asStateFlow()
+
+    fun onShowDatePicker() {
+        _showDatePicker.value = true
+    }
+
+    fun onDismissDatePicker() {
+        _showDatePicker.value = false
+    }
+
     fun validateLicenseNumber(): String {
         return validateLicenseNumberUseCase(_licenseNumber.value)
     }
@@ -205,5 +216,14 @@ class SignUpThreeViewModel @Inject constructor(
         _profileImageUri.value = null
         _licenseImageUri.value = null
         _passportImageUri.value = null
+    }
+
+    fun onDateSelected(year: Int, month: Int, dayOfMonth: Int) {
+        val formattedDate = String.format("%02d/%02d/%04d", dayOfMonth, month + 1, year)
+        _issueDate.value = formattedDate
+        _issueDateState.value = TextFieldValue(formattedDate)
+        _issueDateTouched.value = true
+        _issueDateError.value = validateIssueDate()
+        _showDatePicker.value = false
     }
 }

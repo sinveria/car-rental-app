@@ -43,6 +43,17 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ru.sinveria.rentcar.R
 import ru.sinveria.rentcar.presentation.viewmodel.SignUpTwoViewModel
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 @Composable
 fun SignUpTwo(
@@ -67,6 +78,16 @@ fun SignUpTwo(
     val firstNameTouched by viewModel.firstNameTouched.collectAsState()
     val birthDateTouched by viewModel.birthDateTouched.collectAsState()
     val genderTouched by viewModel.genderTouched.collectAsState()
+    val showDatePicker by viewModel.showDatePicker.collectAsState()
+
+    if (showDatePicker) {
+        Material3DatePickerDialog(
+            onDismissRequest = { viewModel.onDismissDatePicker() },
+            onDateSelected = { date ->
+                viewModel.onDateSelected(date.year, date.monthNumber - 1, date.dayOfMonth)
+            }
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -331,6 +352,7 @@ fun SignUpTwo(
                             .padding(8.dp)
                             .padding(start = 10.dp)
                             .size(20.dp)
+                            .clickable { viewModel.onShowDatePicker() }
                     )
 
                     BasicTextField(
@@ -474,5 +496,41 @@ fun SignUpTwo(
                 )
             }
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun Material3DatePickerDialog(
+    onDismissRequest: () -> Unit,
+    onDateSelected: (LocalDate) -> Unit
+) {
+    val datePickerState = rememberDatePickerState()
+    val confirmEnabled = remember { derivedStateOf { datePickerState.selectedDateMillis != null } }
+
+    DatePickerDialog(
+        onDismissRequest = onDismissRequest,
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    datePickerState.selectedDateMillis?.let { millis ->
+                        val date = Instant.fromEpochMilliseconds(millis)
+                            .toLocalDateTime(TimeZone.currentSystemDefault())
+                            .date
+                        onDateSelected(date)
+                    }
+                },
+                enabled = confirmEnabled.value
+            ) {
+                Text("OK")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismissRequest) {
+                Text("Cancel")
+            }
+        }
+    ) {
+        DatePicker(state = datePickerState)
     }
 }

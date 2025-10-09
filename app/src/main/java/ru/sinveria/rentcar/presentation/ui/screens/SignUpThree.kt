@@ -58,6 +58,16 @@ import ru.sinveria.rentcar.utils.createImageUri
 import ru.sinveria.rentcar.utils.getGalleryPermission
 import ru.sinveria.rentcar.utils.hasCameraPermission
 import ru.sinveria.rentcar.utils.hasGalleryPermission
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.runtime.derivedStateOf
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 @Composable
 fun SignUpThree(
@@ -81,8 +91,18 @@ fun SignUpThree(
     val passportImageUri by viewModel.passportImageUri.collectAsState()
     val showImageSourceDialog by viewModel.showImageSourceDialog.collectAsState()
     val currentImageType by viewModel.currentImageType.collectAsState()
+    val showDatePicker by viewModel.showDatePicker.collectAsState()
 
     val localCameraImageUri = remember { mutableStateOf<Uri?>(null) }
+
+    if (showDatePicker) {
+        Material3DatePickerDialogIssueDate(
+            onDismissRequest = { viewModel.onDismissDatePicker() },
+            onDateSelected = { date ->
+                viewModel.onDateSelected(date.year, date.monthNumber - 1, date.dayOfMonth)
+            }
+        )
+    }
 
     val cameraLauncher = imagePicker.rememberCameraLauncher(
         cameraImageUri = localCameraImageUri,
@@ -349,6 +369,7 @@ fun SignUpThree(
                         modifier = Modifier
                             .padding(start = 16.dp)
                             .size(20.dp)
+                            .clickable { viewModel.onShowDatePicker() }
                     )
                     BasicTextField(
                         value = issueDateState,
@@ -527,5 +548,41 @@ fun SignUpThree(
                 )
             }
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun Material3DatePickerDialogIssueDate(
+    onDismissRequest: () -> Unit,
+    onDateSelected: (LocalDate) -> Unit
+) {
+    val datePickerState = rememberDatePickerState()
+    val confirmEnabled = remember { derivedStateOf { datePickerState.selectedDateMillis != null } }
+
+    DatePickerDialog(
+        onDismissRequest = onDismissRequest,
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    datePickerState.selectedDateMillis?.let { millis ->
+                        val date = Instant.fromEpochMilliseconds(millis)
+                            .toLocalDateTime(TimeZone.currentSystemDefault())
+                            .date
+                        onDateSelected(date)
+                    }
+                },
+                enabled = confirmEnabled.value
+            ) {
+                Text("OK")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismissRequest) {
+                Text("Cancel")
+            }
+        }
+    ) {
+        DatePicker(state = datePickerState)
     }
 }
