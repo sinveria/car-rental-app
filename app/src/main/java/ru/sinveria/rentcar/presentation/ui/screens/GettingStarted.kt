@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -42,7 +43,7 @@ fun GettingStarted(
     ) {
         Text(
             text = stringResource(R.string.title),
-            fontSize = 24.sp,
+            style = MaterialTheme.typography.titleLarge,
             color = colorResource(id = R.color.accent_color),
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(top = 112.dp)
@@ -50,8 +51,8 @@ fun GettingStarted(
 
         Text(
             text = stringResource(R.string.find_next_ride),
-            fontSize = 16.sp,
-            color = colorResource(id = R.color.color_black),
+            style = MaterialTheme.typography.bodyMedium,
+            color = colorResource(id = R.color.accent_color),
             modifier = Modifier.padding(top = 8.dp)
         )
 
@@ -77,7 +78,8 @@ fun GettingStarted(
             )
         ) {
             Text(
-                text = stringResource(R.string.login_button), fontSize = 16.sp
+                text = stringResource(R.string.login_button),
+                style = MaterialTheme.typography.bodyMedium
             )
         }
         Button(
@@ -99,7 +101,8 @@ fun GettingStarted(
             )
         ) {
             Text(
-                text = stringResource(R.string.getting_started_register_button), fontSize = 16.sp
+                text = stringResource(R.string.getting_started_register_button),
+                style = MaterialTheme.typography.bodyMedium
             )
         }
     }

@@ -12,13 +12,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -28,7 +27,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import kotlinx.coroutines.delay
 import ru.sinveria.rentcar.R
 import ru.sinveria.rentcar.presentation.viewmodel.NoConnectionViewModel
 
@@ -38,15 +36,6 @@ fun NoConnection(
     onConnectionRestored: () -> Unit = {},
     onRetryClick: () -> Unit = {}
 ) {
-    val connectionState = viewModel.isConnected
-
-    LaunchedEffect(connectionState) {
-        if (connectionState.value) {
-            delay(1000)
-            onConnectionRestored()
-        }
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -72,7 +61,7 @@ fun NoConnection(
         ) {
             Text(
                 text = stringResource(id = R.string.no_connection),
-                fontSize = 24.sp,
+                style = MaterialTheme.typography.titleLarge,
                 color = colorResource(id = R.color.accent_color),
                 fontWeight = FontWeight.Bold,
                 lineHeight = 32.sp,
@@ -82,7 +71,7 @@ fun NoConnection(
 
             Text(
                 text = stringResource(id = R.string.try_again_connection),
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.titleMedium,
                 color = colorResource(id = R.color.accent_color),
                 textAlign = TextAlign.Center
             )
@@ -106,7 +95,7 @@ fun NoConnection(
         ) {
             Text(
                 text = stringResource(id = R.string.retry),
-                fontSize = 16.sp
+                style = MaterialTheme.typography.bodyMedium
             )
         }
     }

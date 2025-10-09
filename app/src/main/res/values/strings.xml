@@ -49,4 +49,8 @@
     <string name="congratulate">Поздравляем</string>
     <string name="congratulations_description">Вы успешно зарегистрировались.\nОбработка ваших персональных данных займет около двух часов. Спасибо\nза ожидание.</string>
     <string name="heregoes">Поехали</string>
+    <string name="cancel">Отмена</string>
+    <string name="select_source">Выберите источник</string>
+    <string name="taken_photo">Сделать фото</string>
+    <string name="select_gallery">Выбрать из галереи</string>
 </resources>

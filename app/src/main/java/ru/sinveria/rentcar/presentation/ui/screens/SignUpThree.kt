@@ -24,8 +24,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -33,126 +34,118 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import ru.sinveria.rentcar.R
 import ru.sinveria.rentcar.presentation.ui.components.ImageSourceDialog
+import ru.sinveria.rentcar.presentation.viewmodel.SignUpThreeViewModel
 import ru.sinveria.rentcar.utils.ImagePicker
-import ru.sinveria.rentcar.utils.createImageUri
-import ru.sinveria.rentcar.utils.getGalleryPermission
 import ru.sinveria.rentcar.utils.rememberCameraPermissionLauncher
 import ru.sinveria.rentcar.utils.rememberGalleryPermissionLauncher
+import ru.sinveria.rentcar.presentation.viewmodel.ImageType
+import ru.sinveria.rentcar.utils.createImageUri
+import ru.sinveria.rentcar.utils.getGalleryPermission
 import ru.sinveria.rentcar.utils.hasCameraPermission
 import ru.sinveria.rentcar.utils.hasGalleryPermission
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.runtime.derivedStateOf
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
-enum class ImageType {
-    PROFILE, LICENSE, PASSPORT
-}
-
-@Preview(showBackground = true)
 @Composable
 fun SignUpThree(
     onNavigateBack: () -> Unit = {},
-    onNavigateToCong: () -> Unit = {}
+    onNavigateToCong: () -> Unit = {},
+    viewModel: SignUpThreeViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val imagePicker = ImagePicker()
 
-    val licenseNumber = remember { mutableStateOf("") }
-    val licenseNumberState = remember { mutableStateOf(TextFieldValue("")) }
-    val issueDate = remember { mutableStateOf("") }
-    val issueDateState = remember { mutableStateOf(TextFieldValue("")) }
+    val licenseNumberState by viewModel.licenseNumberState.collectAsState()
+    val issueDateState by viewModel.issueDateState.collectAsState()
+    val licenseNumberFocused by viewModel.licenseNumberFocused.collectAsState()
+    val issueDateFocused by viewModel.issueDateFocused.collectAsState()
+    val licenseNumberError by viewModel.licenseNumberError.collectAsState()
+    val issueDateError by viewModel.issueDateError.collectAsState()
+    val licenseNumberTouched by viewModel.licenseNumberTouched.collectAsState()
+    val issueDateTouched by viewModel.issueDateTouched.collectAsState()
+    val profileImageUri by viewModel.profileImageUri.collectAsState()
+    val licenseImageUri by viewModel.licenseImageUri.collectAsState()
+    val passportImageUri by viewModel.passportImageUri.collectAsState()
+    val showImageSourceDialog by viewModel.showImageSourceDialog.collectAsState()
+    val currentImageType by viewModel.currentImageType.collectAsState()
+    val showDatePicker by viewModel.showDatePicker.collectAsState()
 
-    val licenseNumberFocused = remember { mutableStateOf(false) }
-    val issueDateFocused = remember { mutableStateOf(false) }
+    val localCameraImageUri = remember { mutableStateOf<Uri?>(null) }
 
-    val licenseNumberError = remember { mutableStateOf("") }
-    val issueDateError = remember { mutableStateOf("") }
-
-    val licenseNumberTouched = remember { mutableStateOf(false) }
-    val issueDateTouched = remember { mutableStateOf(false) }
-
-    val profileImageUri = remember { mutableStateOf<Uri?>(null) }
-    val licenseImageUri = remember { mutableStateOf<Uri?>(null) }
-    val passportImageUri = remember { mutableStateOf<Uri?>(null) }
-
-    val showImageSourceDialog = remember { mutableStateOf(false) }
-    val currentImageType = remember { mutableStateOf<ImageType?>(null) }
-
-    val cameraImageUri = remember { mutableStateOf<Uri?>(null) }
+    if (showDatePicker) {
+        Material3DatePickerDialogIssueDate(
+            onDismissRequest = { viewModel.onDismissDatePicker() },
+            onDateSelected = { date ->
+                viewModel.onDateSelected(date.year, date.monthNumber - 1, date.dayOfMonth)
+            }
+        )
+    }
 
     val cameraLauncher = imagePicker.rememberCameraLauncher(
-        cameraImageUri = cameraImageUri,
+        cameraImageUri = localCameraImageUri,
         onImageCaptured = { uri ->
-            uri?.let { capturedUri ->
-                when (currentImageType.value) {
-                    ImageType.PROFILE -> profileImageUri.value = capturedUri
-                    ImageType.LICENSE -> licenseImageUri.value = capturedUri
-                    ImageType.PASSPORT -> passportImageUri.value = capturedUri
-                    null -> {}
-                }
-            }
-            cameraImageUri.value = null
-            currentImageType.value = null
+            viewModel.onImageCaptured(uri)
+            localCameraImageUri.value = null
         }
     )
 
     val galleryLauncher = imagePicker.rememberGalleryLauncher { uri ->
-        uri?.let {
-            when (currentImageType.value) {
-                ImageType.PROFILE -> profileImageUri.value = it
-                ImageType.LICENSE -> licenseImageUri.value = it
-                ImageType.PASSPORT -> passportImageUri.value = it
-                null -> {}
-            }
-        }
-        currentImageType.value = null
+        viewModel.onGalleryImageSelected(uri)
     }
 
     val cameraPermissionLauncher = rememberCameraPermissionLauncher(
         onPermissionGranted = {
-            cameraImageUri.value = createImageUri(context)
-            cameraImageUri.value?.let { uri ->
+            localCameraImageUri.value = createImageUri(context)
+            localCameraImageUri.value?.let { uri ->
                 cameraLauncher.launch(uri)
             }
         },
         onPermissionDenied = {
-            currentImageType.value = null
+            viewModel.dismissImageSourceDialog()
+            localCameraImageUri.value = null
         }
     )
 
     val galleryPermissionLauncher = rememberGalleryPermissionLauncher(
         onPermissionGranted = {
-            currentImageType.value?.let { type ->
+            currentImageType?.let { type ->
                 galleryLauncher.launch("image/*")
             }
         },
         onPermissionDenied = {
-            currentImageType.value = null
+            viewModel.dismissImageSourceDialog()
         }
     )
 
-    fun openImageSourceDialog(imageType: ImageType) {
-        currentImageType.value = imageType
-        showImageSourceDialog.value = true
-    }
-
     fun handleCameraSelection() {
-        showImageSourceDialog.value = false
         if (hasCameraPermission(context)) {
-            cameraImageUri.value = createImageUri(context)
-            cameraImageUri.value?.let { uri ->
+            viewModel.handleCameraSelection()
+            localCameraImageUri.value = createImageUri(context)
+            localCameraImageUri.value?.let { uri ->
                 cameraLauncher.launch(uri)
             }
         } else {
@@ -160,97 +153,18 @@ fun SignUpThree(
         }
     }
 
-    fun openGallery() {
-        try {
-            galleryLauncher.launch("image/*")
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    fun requestGalleryPermission() {
-        val permission = getGalleryPermission()
-        galleryPermissionLauncher.launch(permission)
-    }
-
     fun handleGallerySelection() {
-        showImageSourceDialog.value = false
-
-        val imageType = currentImageType.value
-        if (imageType == null) {
-            return
-        }
-
-        val hasPermission = hasGalleryPermission(context)
-
-        if (hasPermission) {
-            openGallery()
+        if (hasGalleryPermission(context)) {
+            viewModel.handleGallerySelection()
+            galleryLauncher.launch("image/*")
         } else {
-            requestGalleryPermission()
+            galleryPermissionLauncher.launch(getGalleryPermission())
         }
     }
 
-    fun isValidLicenseNumber(license: String): Boolean {
-        return license.length == 10 && license.all { it.isDigit() }
-    }
-
-    fun validateLicenseNumber(license: String): String {
-        return when {
-            license.isEmpty() -> "Номер водительского удостоверения обязателен"
-            !isValidLicenseNumber(license) -> "Номер должен содержать 10 цифр"
-            else -> ""
-        }
-    }
-
-    fun isValidDateFormat(date: String): Boolean {
-        val pattern = "^\\d{2}/\\d{2}/\\d{4}$".toRegex()
-        return pattern.matches(date)
-    }
-
-    fun isValidDate(date: String): Boolean {
-        if (!isValidDateFormat(date)) return false
-
-        val parts = date.split("/")
-        if (parts.size != 3) return false
-
-        val day = parts[0].toIntOrNull() ?: return false
-        val month = parts[1].toIntOrNull() ?: return false
-        val year = parts[2].toIntOrNull() ?: return false
-
-        if (year < 1900 || year > 2100) return false
-        if (month < 1 || month > 12) return false
-
-        val daysInMonth = when (month) {
-            2 -> if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) 29 else 28
-            4, 6, 9, 11 -> 30
-            else -> 31
-        }
-
-        return day in 1..daysInMonth
-    }
-
-    fun validateIssueDate(date: String): String {
-        return when {
-            date.isEmpty() -> "Дата выдачи обязательна"
-            !isValidDateFormat(date) -> "Некорректный формат даты (DD/MM/YYYY)"
-            !isValidDate(date) -> "Введите корректную дату выдачи"
-            else -> ""
-        }
-    }
-
-    fun validateForm(): Boolean {
-        licenseNumberError.value = validateLicenseNumber(licenseNumber.value)
-        issueDateError.value = validateIssueDate(issueDate.value)
-
-        return licenseNumberError.value.isEmpty() && issueDateError.value.isEmpty()
-    }
-
-    if (showImageSourceDialog.value) {
+    if (showImageSourceDialog) {
         ImageSourceDialog(
-            onDismiss = {
-                showImageSourceDialog.value = false
-                currentImageType.value = null
-            },
+            onDismiss = { viewModel.dismissImageSourceDialog() },
             onCameraSelected = { handleCameraSelection() },
             onGallerySelected = { handleGallerySelection() }
         )
@@ -279,7 +193,7 @@ fun SignUpThree(
             )
             Text(
                 text = stringResource(id = R.string.create_account),
-                fontSize = 20.sp,
+                style = MaterialTheme.typography.labelLarge,
                 color = colorResource(id = R.color.accent_color),
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
@@ -307,16 +221,17 @@ fun SignUpThree(
                                 color = colorResource(id = R.color.color_border),
                                 shape = CircleShape
                             )
-                            .clickable { openImageSourceDialog(ImageType.PROFILE) },
+                            .clickable { viewModel.openImageSourceDialog(ImageType.PROFILE) },
                         contentAlignment = Alignment.Center
                     ) {
-                        if (profileImageUri.value != null) {
+                        if (profileImageUri != null) {
                             AsyncImage(
-                                model = profileImageUri.value,
+                                model = profileImageUri,
                                 contentDescription = "Profile photo",
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .clip(CircleShape)
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop
                             )
                         } else {
                             Image(
@@ -324,7 +239,8 @@ fun SignUpThree(
                                 contentDescription = "Profile photo",
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .clip(CircleShape)
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Fit
                             )
                         }
                     }
@@ -335,13 +251,13 @@ fun SignUpThree(
                             .size(24.dp)
                             .align(Alignment.TopEnd)
                             .offset(x = 3.dp, y = 75.dp)
-                            .clickable { openImageSourceDialog(ImageType.PROFILE) }
+                            .clickable { viewModel.openImageSourceDialog(ImageType.PROFILE) }
                     )
                 }
 
                 Text(
                     text = stringResource(id = R.string.signupthree_description),
-                    fontSize = 14.sp,
+                    style = MaterialTheme.typography.titleSmall,
                     color = colorResource(id = R.color.input_text),
                     textAlign = TextAlign.Start,
                     modifier = Modifier
@@ -352,7 +268,7 @@ fun SignUpThree(
 
             Text(
                 text = stringResource(id = R.string.license_number),
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.labelLarge,
                 color = colorResource(id = R.color.label_input),
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.padding(top = 32.dp)
@@ -367,8 +283,8 @@ fun SignUpThree(
                     .border(
                         width = 1.dp,
                         color = when {
-                            licenseNumberTouched.value && licenseNumberError.value.isNotEmpty() -> colorResource(id = R.color.error_color)
-                            licenseNumberFocused.value -> colorResource(id = R.color.accent_color)
+                            licenseNumberTouched && licenseNumberError.isNotEmpty() -> colorResource(id = R.color.error_color)
+                            licenseNumberFocused -> colorResource(id = R.color.accent_color)
                             else -> colorResource(id = R.color.color_border)
                         },
                         shape = RoundedCornerShape(12.dp)
@@ -376,28 +292,13 @@ fun SignUpThree(
                     .background(Color.White)
             ) {
                 BasicTextField(
-                    value = licenseNumberState.value,
-                    onValueChange = { newValue ->
-                        val cleanInput = newValue.text.filter { it.isDigit() }.take(10)
-
-                        licenseNumberState.value = TextFieldValue(
-                            text = cleanInput,
-                            selection = TextRange(cleanInput.length)
-                        )
-                        licenseNumber.value = cleanInput
-                        licenseNumberTouched.value = true
-                        if (licenseNumberTouched.value) {
-                            licenseNumberError.value = validateLicenseNumber(cleanInput)
-                        }
-                    },
+                    value = licenseNumberState,
+                    onValueChange = viewModel::onLicenseNumberChange,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(horizontal = 16.dp)
                         .onFocusChanged { focusState ->
-                            licenseNumberFocused.value = focusState.isFocused
-                            if (!focusState.isFocused && licenseNumberTouched.value) {
-                                licenseNumberError.value = validateLicenseNumber(licenseNumber.value)
-                            }
+                            viewModel.onLicenseNumberFocusChanged(focusState.isFocused)
                         },
                     textStyle = TextStyle(
                         fontSize = 16.sp,
@@ -410,10 +311,10 @@ fun SignUpThree(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.CenterStart
                         ) {
-                            if (licenseNumberState.value.text.isEmpty()) {
+                            if (licenseNumberState.text.isEmpty()) {
                                 Text(
                                     text = "0000000000",
-                                    fontSize = 16.sp,
+                                    style = MaterialTheme.typography.bodyMedium,
                                     color = colorResource(id = R.color.input_text)
                                 )
                             }
@@ -423,10 +324,10 @@ fun SignUpThree(
                 )
             }
 
-            if (licenseNumberTouched.value && licenseNumberError.value.isNotEmpty()) {
+            if (licenseNumberTouched && licenseNumberError.isNotEmpty()) {
                 Text(
-                    text = licenseNumberError.value,
-                    fontSize = 12.sp,
+                    text = licenseNumberError,
+                    style = MaterialTheme.typography.bodySmall,
                     color = colorResource(id = R.color.error_color),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -436,7 +337,7 @@ fun SignUpThree(
 
             Text(
                 text = stringResource(id = R.string.date_of_issue),
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.labelLarge,
                 color = colorResource(id = R.color.label_input),
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.padding(top = 16.dp)
@@ -451,8 +352,8 @@ fun SignUpThree(
                     .border(
                         width = 1.dp,
                         color = when {
-                            issueDateTouched.value && issueDateError.value.isNotEmpty() -> colorResource(id = R.color.error_color)
-                            issueDateFocused.value -> colorResource(id = R.color.accent_color)
+                            issueDateTouched && issueDateError.isNotEmpty() -> colorResource(id = R.color.error_color)
+                            issueDateFocused -> colorResource(id = R.color.accent_color)
                             else -> colorResource(id = R.color.color_border)
                         },
                         shape = RoundedCornerShape(12.dp)
@@ -469,49 +370,16 @@ fun SignUpThree(
                         modifier = Modifier
                             .padding(start = 16.dp)
                             .size(20.dp)
+                            .clickable { viewModel.onShowDatePicker() }
                     )
                     BasicTextField(
-                        value = issueDateState.value,
-                        onValueChange = { newValue ->
-                            val cleanInput = newValue.text.filter { it.isDigit() }
-
-                            val masked = when {
-                                cleanInput.length <= 2 -> cleanInput
-                                cleanInput.length <= 4 -> "${cleanInput.substring(0, 2)}/${cleanInput.substring(2)}"
-                                cleanInput.length <= 8 -> "${cleanInput.substring(0, 2)}/${cleanInput.substring(2, 4)}/${cleanInput.substring(4)}"
-                                else -> "${cleanInput.substring(0, 2)}/${cleanInput.substring(2, 4)}/${cleanInput.substring(4, 8)}"
-                            }
-
-                            val oldLength = issueDateState.value.text.length
-                            val newLength = masked.length
-                            val cursorPos = newValue.selection.start
-
-                            var newCursorPos = when {
-                                newLength > oldLength -> masked.length
-                                newLength < oldLength -> maxOf(0, cursorPos - 1)
-                                else -> cursorPos
-                            }
-                            newCursorPos = minOf(newCursorPos, masked.length)
-
-                            issueDateState.value = TextFieldValue(
-                                text = masked,
-                                selection = TextRange(newCursorPos)
-                            )
-
-                            issueDate.value = masked
-                            issueDateTouched.value = true
-                            if (issueDateTouched.value) {
-                                issueDateError.value = validateIssueDate(masked)
-                            }
-                        },
+                        value = issueDateState,
+                        onValueChange = viewModel::onIssueDateChange,
                         modifier = Modifier
                             .weight(1f)
                             .padding(start = 12.dp, end = 16.dp)
                             .onFocusChanged { focusState ->
-                                issueDateFocused.value = focusState.isFocused
-                                if (!focusState.isFocused && issueDateTouched.value) {
-                                    issueDateError.value = validateIssueDate(issueDate.value)
-                                }
+                                viewModel.onIssueDateFocusChanged(focusState.isFocused)
                             },
                         textStyle = TextStyle(
                             fontSize = 16.sp,
@@ -524,10 +392,10 @@ fun SignUpThree(
                                 modifier = Modifier.fillMaxSize(),
                                 contentAlignment = Alignment.CenterStart
                             ) {
-                                if (issueDateState.value.text.isEmpty()) {
+                                if (issueDateState.text.isEmpty()) {
                                     Text(
                                         text = "DD/MM/YYYY",
-                                        fontSize = 16.sp,
+                                        style = MaterialTheme.typography.bodyMedium,
                                         color = colorResource(id = R.color.input_text)
                                     )
                                 }
@@ -538,10 +406,10 @@ fun SignUpThree(
                 }
             }
 
-            if (issueDateTouched.value && issueDateError.value.isNotEmpty()) {
+            if (issueDateTouched && issueDateError.isNotEmpty()) {
                 Text(
-                    text = issueDateError.value,
-                    fontSize = 12.sp,
+                    text = issueDateError,
+                    style = MaterialTheme.typography.bodySmall,
                     color = colorResource(id = R.color.error_color),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -551,7 +419,7 @@ fun SignUpThree(
 
             Text(
                 text = stringResource(id = R.string.upload_lisence_photo),
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.labelLarge,
                 color = colorResource(id = R.color.label_input),
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.padding(top = 16.dp)
@@ -561,7 +429,7 @@ fun SignUpThree(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp)
-                    .clickable { openImageSourceDialog(ImageType.LICENSE) },
+                    .clickable { viewModel.openImageSourceDialog(ImageType.LICENSE) },
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(
@@ -576,25 +444,27 @@ fun SignUpThree(
                         .background(Color.White),
                     contentAlignment = Alignment.Center
                 ) {
-                    if (licenseImageUri.value != null) {
+                    if (licenseImageUri != null) {
                         AsyncImage(
-                            model = licenseImageUri.value,
+                            model = licenseImageUri,
                             contentDescription = "License photo",
                             modifier = Modifier
                                 .fillMaxSize()
-                                .clip(RoundedCornerShape(12.dp))
+                                .clip(RoundedCornerShape(12.dp)),
+                            contentScale = ContentScale.Crop
                         )
                     } else {
                         Image(
                             painter = painterResource(id = R.drawable.upload_icon),
                             contentDescription = "Upload license",
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(24.dp),
+                            contentScale = ContentScale.Fit
                         )
                     }
                 }
                 Text(
                     text = stringResource(id = R.string.upload_photo),
-                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = colorResource(id = R.color.label_input),
                     modifier = Modifier.padding(start = 12.dp)
                 )
@@ -602,7 +472,7 @@ fun SignUpThree(
 
             Text(
                 text = stringResource(id = R.string.upload_passport_photo),
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.labelLarge,
                 color = colorResource(id = R.color.label_input),
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.padding(top = 16.dp)
@@ -612,7 +482,7 @@ fun SignUpThree(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp)
-                    .clickable { openImageSourceDialog(ImageType.PASSPORT) },
+                    .clickable { viewModel.openImageSourceDialog(ImageType.PASSPORT) },
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(
@@ -627,25 +497,27 @@ fun SignUpThree(
                         .background(Color.White),
                     contentAlignment = Alignment.Center
                 ) {
-                    if (passportImageUri.value != null) {
+                    if (passportImageUri != null) {
                         AsyncImage(
-                            model = passportImageUri.value,
+                            model = passportImageUri,
                             contentDescription = "Passport photo",
                             modifier = Modifier
                                 .fillMaxSize()
-                                .clip(RoundedCornerShape(12.dp))
+                                .clip(RoundedCornerShape(12.dp)),
+                            contentScale = ContentScale.Crop
                         )
                     } else {
                         Image(
                             painter = painterResource(id = R.drawable.upload_icon),
                             contentDescription = "Upload passport",
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(24.dp),
+                            contentScale = ContentScale.Fit
                         )
                     }
                 }
                 Text(
                     text = stringResource(id = R.string.upload_photo),
-                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = colorResource(id = R.color.label_input),
                     modifier = Modifier.padding(start = 12.dp)
                 )
@@ -655,10 +527,8 @@ fun SignUpThree(
 
             Button(
                 onClick = {
-                    licenseNumberTouched.value = true
-                    issueDateTouched.value = true
-
-                    if (validateForm()) {
+                    viewModel.markAllTouched()
+                    if (viewModel.validateForm()) {
                         onNavigateToCong()
                     }
                 },
@@ -674,10 +544,45 @@ fun SignUpThree(
             ) {
                 Text(
                     text = stringResource(id = R.string.next),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun Material3DatePickerDialogIssueDate(
+    onDismissRequest: () -> Unit,
+    onDateSelected: (LocalDate) -> Unit
+) {
+    val datePickerState = rememberDatePickerState()
+    val confirmEnabled = remember { derivedStateOf { datePickerState.selectedDateMillis != null } }
+
+    DatePickerDialog(
+        onDismissRequest = onDismissRequest,
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    datePickerState.selectedDateMillis?.let { millis ->
+                        val date = Instant.fromEpochMilliseconds(millis)
+                            .toLocalDateTime(TimeZone.currentSystemDefault())
+                            .date
+                        onDateSelected(date)
+                    }
+                },
+                enabled = confirmEnabled.value
+            ) {
+                Text("OK")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismissRequest) {
+                Text("Cancel")
+            }
+        }
+    ) {
+        DatePicker(state = datePickerState)
     }
 }
