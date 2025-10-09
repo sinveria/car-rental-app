@@ -11,9 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ru.sinveria.rentcar.R
 import ru.sinveria.rentcar.presentation.viewmodel.SplashViewModel
@@ -45,15 +44,14 @@ fun SplashScreen(
     ) {
         Text(
             text = stringResource(id = R.string.title),
-            fontSize = 24.sp,
+            style = MaterialTheme.typography.titleLarge,
             color = colorResource(id = R.color.accent_color),
-            fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(top = 112.dp)
         )
 
         Text(
             text = stringResource(id = R.string.find_next_ride),
-            fontSize = 16.sp,
+            style = MaterialTheme.typography.bodyMedium,
             color = colorResource(id = R.color.accent_color),
             modifier = Modifier.padding(top = 8.dp)
         )

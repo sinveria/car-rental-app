@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -113,7 +114,7 @@ fun OnboardingPage(
                 TextButton(onClick = onSkip) {
                     Text(
                         text = stringResource(R.string.onboarding_skip),
-                        fontSize = 14.sp,
+                        style = MaterialTheme.typography.bodyMedium,
                         color = colorResource(id = R.color.accent_color)
                     )
                 }
@@ -123,7 +124,7 @@ fun OnboardingPage(
 
             Text(
                 text = stringResource(titleRes),
-                fontSize = 24.sp,
+                style = MaterialTheme.typography.titleLarge,
                 color = colorResource(id = R.color.accent_color),
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 16.dp)
@@ -131,7 +132,7 @@ fun OnboardingPage(
 
             Text(
                 text = stringResource(descriptionRes),
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.bodyMedium,
                 color = colorResource(id = R.color.description),
                 textAlign = TextAlign.Start,
                 lineHeight = 24.sp,
@@ -188,7 +189,7 @@ fun OnboardingPage(
                         } else {
                             stringResource(R.string.next)
                         },
-                        fontSize = 16.sp,
+                        style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Medium
                     )
                 }

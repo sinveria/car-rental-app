@@ -19,6 +19,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
@@ -72,7 +73,7 @@ fun Login(
     ) {
         Text(
             text = stringResource(id = R.string.login_account),
-            fontSize = 24.sp,
+            style = MaterialTheme.typography.titleLarge,
             color = colorResource(id = R.color.accent_color),
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(top = 56.dp),
@@ -80,7 +81,7 @@ fun Login(
 
         Text(
             text = stringResource(id = R.string.enter_your_data),
-            fontSize = 16.sp,
+            style = MaterialTheme.typography.titleMedium,
             color = colorResource(id = R.color.input_text),
             modifier = Modifier.padding(top = 8.dp)
         )
@@ -93,7 +94,7 @@ fun Login(
         ) {
             Text(
                 text = stringResource(id = R.string.email),
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.labelLarge,
                 color = colorResource(id = R.color.label_input),
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.fillMaxWidth()
@@ -139,7 +140,7 @@ fun Login(
                             if (email.isEmpty()) {
                                 Text(
                                     text = stringResource(id = R.string.enter_email),
-                                    fontSize = 16.sp,
+                                    style = MaterialTheme.typography.labelLarge,
                                     color = colorResource(id = R.color.input_text)
                                 )
                             }
@@ -162,7 +163,7 @@ fun Login(
 
             Text(
                 text = stringResource(id = R.string.password),
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.labelLarge,
                 color = colorResource(id = R.color.label_input),
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.padding(top = 16.dp)
@@ -213,7 +214,7 @@ fun Login(
                             if (password.isEmpty()) {
                                 Text(
                                     text = stringResource(id = R.string.enter_password),
-                                    fontSize = 16.sp,
+                                    style = MaterialTheme.typography.labelLarge,
                                     color = colorResource(id = R.color.input_text)
                                 )
                             }
@@ -230,7 +231,7 @@ fun Login(
                             R.drawable.no_visible_pass
                         }
                     ),
-                    contentDescription = if (isPasswordVisible) "Скрыть пароль" else "Показать пароль",
+                    contentDescription = if (isPasswordVisible) "Hidden password" else "Show password",
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
                         .padding(end = 16.dp)
@@ -253,7 +254,7 @@ fun Login(
 
         Text(
             text = stringResource(id = R.string.forget_password),
-            fontSize = 14.sp,
+            style = MaterialTheme.typography.bodyMedium,
             color = colorResource(id = R.color.accent_color),
             fontWeight = FontWeight.Medium,
             modifier = Modifier
@@ -290,7 +291,7 @@ fun Login(
             } else {
                 Text(
                     text = stringResource(id = R.string.login_button),
-                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodyLarge,
                 )
             }
         }
@@ -325,7 +326,7 @@ fun Login(
                 )
                 Text(
                     text = stringResource(id = R.string.login_google),
-                    fontSize = 14.sp,
+                    style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }
@@ -339,7 +340,7 @@ fun Login(
         ) {
             Text(
                 text = stringResource(id = R.string.registration),
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.bodyMedium,
                 color = colorResource(id = R.color.accent_color),
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.clickable { onNavigateToSignUpOne() }

@@ -61,6 +61,7 @@ import ru.sinveria.rentcar.utils.hasGalleryPermission
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.derivedStateOf
@@ -192,7 +193,7 @@ fun SignUpThree(
             )
             Text(
                 text = stringResource(id = R.string.create_account),
-                fontSize = 20.sp,
+                style = MaterialTheme.typography.labelLarge,
                 color = colorResource(id = R.color.accent_color),
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
@@ -256,7 +257,7 @@ fun SignUpThree(
 
                 Text(
                     text = stringResource(id = R.string.signupthree_description),
-                    fontSize = 14.sp,
+                    style = MaterialTheme.typography.titleSmall,
                     color = colorResource(id = R.color.input_text),
                     textAlign = TextAlign.Start,
                     modifier = Modifier
@@ -267,7 +268,7 @@ fun SignUpThree(
 
             Text(
                 text = stringResource(id = R.string.license_number),
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.labelLarge,
                 color = colorResource(id = R.color.label_input),
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.padding(top = 32.dp)
@@ -313,7 +314,7 @@ fun SignUpThree(
                             if (licenseNumberState.text.isEmpty()) {
                                 Text(
                                     text = "0000000000",
-                                    fontSize = 16.sp,
+                                    style = MaterialTheme.typography.bodyMedium,
                                     color = colorResource(id = R.color.input_text)
                                 )
                             }
@@ -326,7 +327,7 @@ fun SignUpThree(
             if (licenseNumberTouched && licenseNumberError.isNotEmpty()) {
                 Text(
                     text = licenseNumberError,
-                    fontSize = 12.sp,
+                    style = MaterialTheme.typography.bodySmall,
                     color = colorResource(id = R.color.error_color),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -336,7 +337,7 @@ fun SignUpThree(
 
             Text(
                 text = stringResource(id = R.string.date_of_issue),
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.labelLarge,
                 color = colorResource(id = R.color.label_input),
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.padding(top = 16.dp)
@@ -394,7 +395,7 @@ fun SignUpThree(
                                 if (issueDateState.text.isEmpty()) {
                                     Text(
                                         text = "DD/MM/YYYY",
-                                        fontSize = 16.sp,
+                                        style = MaterialTheme.typography.bodyMedium,
                                         color = colorResource(id = R.color.input_text)
                                     )
                                 }
@@ -408,7 +409,7 @@ fun SignUpThree(
             if (issueDateTouched && issueDateError.isNotEmpty()) {
                 Text(
                     text = issueDateError,
-                    fontSize = 12.sp,
+                    style = MaterialTheme.typography.bodySmall,
                     color = colorResource(id = R.color.error_color),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -418,7 +419,7 @@ fun SignUpThree(
 
             Text(
                 text = stringResource(id = R.string.upload_lisence_photo),
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.labelLarge,
                 color = colorResource(id = R.color.label_input),
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.padding(top = 16.dp)
@@ -463,7 +464,7 @@ fun SignUpThree(
                 }
                 Text(
                     text = stringResource(id = R.string.upload_photo),
-                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = colorResource(id = R.color.label_input),
                     modifier = Modifier.padding(start = 12.dp)
                 )
@@ -471,7 +472,7 @@ fun SignUpThree(
 
             Text(
                 text = stringResource(id = R.string.upload_passport_photo),
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.labelLarge,
                 color = colorResource(id = R.color.label_input),
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.padding(top = 16.dp)
@@ -516,7 +517,7 @@ fun SignUpThree(
                 }
                 Text(
                     text = stringResource(id = R.string.upload_photo),
-                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = colorResource(id = R.color.label_input),
                     modifier = Modifier.padding(start = 12.dp)
                 )
@@ -543,7 +544,7 @@ fun SignUpThree(
             ) {
                 Text(
                     text = stringResource(id = R.string.next),
-                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold
                 )
             }

@@ -21,6 +21,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -92,7 +93,7 @@ fun SignUpOne(
             )
             Text(
                 text = stringResource(id = R.string.create_account),
-                fontSize = 20.sp,
+                style = MaterialTheme.typography.titleLarge,
                 color = colorResource(id = R.color.accent_color),
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
@@ -107,10 +108,9 @@ fun SignUpOne(
                 .padding(top = 32.dp),
             horizontalAlignment = Alignment.Start
         ) {
-            // Email поле
             Text(
                 text = stringResource(id = R.string.email),
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.labelLarge,
                 color = colorResource(id = R.color.label_input),
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.fillMaxWidth()
@@ -156,7 +156,7 @@ fun SignUpOne(
                             if (email.isEmpty()) {
                                 Text(
                                     text = stringResource(id = R.string.enter_email),
-                                    fontSize = 16.sp,
+                                    style = MaterialTheme.typography.bodyMedium,
                                     color = colorResource(id = R.color.input_text)
                                 )
                             }
@@ -169,7 +169,7 @@ fun SignUpOne(
             if (emailTouched && emailError.isNotEmpty()) {
                 Text(
                     text = emailError,
-                    fontSize = 12.sp,
+                    style = MaterialTheme.typography.bodySmall,
                     color = colorResource(id = R.color.error_color),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -177,10 +177,9 @@ fun SignUpOne(
                 )
             }
 
-            // Password поле
             Text(
                 text = stringResource(id = R.string.think_password),
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.labelLarge,
                 color = colorResource(id = R.color.label_input),
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.padding(top = 16.dp)
@@ -231,7 +230,7 @@ fun SignUpOne(
                             if (password.isEmpty()) {
                                 Text(
                                     text = stringResource(id = R.string.enter_password),
-                                    fontSize = 16.sp,
+                                    style = MaterialTheme.typography.bodyMedium,
                                     color = colorResource(id = R.color.input_text)
                                 )
                             }
@@ -248,7 +247,7 @@ fun SignUpOne(
                             R.drawable.no_visible_pass
                         }
                     ),
-                    contentDescription = if (isPasswordVisible) "Скрыть пароль" else "Показать пароль",
+                    contentDescription = if (isPasswordVisible) "Hidden password" else "Show password",
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
                         .padding(end = 16.dp)
@@ -260,7 +259,7 @@ fun SignUpOne(
             if (passwordTouched && passwordError.isNotEmpty()) {
                 Text(
                     text = passwordError,
-                    fontSize = 12.sp,
+                    style = MaterialTheme.typography.bodySmall,
                     color = colorResource(id = R.color.error_color),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -268,10 +267,9 @@ fun SignUpOne(
                 )
             }
 
-            // Confirm Password поле
             Text(
                 text = stringResource(id = R.string.repeat_password),
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.labelLarge,
                 color = colorResource(id = R.color.label_input),
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.padding(top = 16.dp)
@@ -322,7 +320,7 @@ fun SignUpOne(
                             if (confirmPassword.isEmpty()) {
                                 Text(
                                     text = stringResource(id = R.string.enter_password),
-                                    fontSize = 16.sp,
+                                    style = MaterialTheme.typography.bodyMedium,
                                     color = colorResource(id = R.color.input_text)
                                 )
                             }
@@ -339,7 +337,7 @@ fun SignUpOne(
                             R.drawable.no_visible_pass
                         }
                     ),
-                    contentDescription = if (isConfirmPasswordVisible) "Скрыть пароль" else "Показать пароль",
+                    contentDescription = if (isConfirmPasswordVisible) "Hidden password" else "Show password",
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
                         .padding(end = 16.dp)
@@ -351,7 +349,7 @@ fun SignUpOne(
             if (confirmPasswordTouched && confirmPasswordError.isNotEmpty()) {
                 Text(
                     text = confirmPasswordError,
-                    fontSize = 12.sp,
+                    style = MaterialTheme.typography.bodySmall,
                     color = colorResource(id = R.color.error_color),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -359,7 +357,6 @@ fun SignUpOne(
                 )
             }
 
-            // Terms checkbox
             Column {
                 Row(
                     modifier = Modifier
@@ -391,7 +388,7 @@ fun SignUpOne(
                     }
                     Text(
                         text = stringResource(id = R.string.conditions),
-                        fontSize = 14.sp,
+                        style = MaterialTheme.typography.bodySmall,
                         color = colorResource(id = R.color.label_input),
                         modifier = Modifier.padding(start = 12.dp),
                         lineHeight = 18.sp
@@ -431,7 +428,7 @@ fun SignUpOne(
             ) {
                 Text(
                     text = stringResource(id = R.string.next),
-                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodyMedium,
                 )
             }
         }

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
@@ -23,7 +24,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import ru.sinveria.rentcar.R
 
 @Preview(showBackground = true)
@@ -34,11 +34,11 @@ fun Congratulations() {
             .fillMaxSize()
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = stringResource(id = R.string.use_it),
-            fontSize = 20.sp,
+            style = MaterialTheme.typography.headlineMedium,
             color = colorResource(id = R.color.accent_color),
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(top = 56.dp)
@@ -59,7 +59,7 @@ fun Congratulations() {
 
             Text(
                 text = stringResource(id = R.string.congratulate),
-                fontSize = 24.sp,
+                style = MaterialTheme.typography.titleLarge,
                 color = colorResource(id = R.color.accent_color),
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(top = 32.dp)
@@ -67,7 +67,7 @@ fun Congratulations() {
 
             Text(
                 text = stringResource(id = R.string.congratulations_description),
-                fontSize = 16.sp,
+                style = MaterialTheme.typography.bodyMedium,
                 color = colorResource(id = R.color.input_text),
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 16.dp)
@@ -87,7 +87,7 @@ fun Congratulations() {
         ) {
             Text(
                 text = stringResource(id = R.string.next),
-                fontSize = 16.sp,
+                style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold
             )
         }

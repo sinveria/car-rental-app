@@ -46,6 +46,7 @@ import ru.sinveria.rentcar.presentation.viewmodel.SignUpTwoViewModel
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.derivedStateOf
@@ -112,7 +113,7 @@ fun SignUpTwo(
             )
             Text(
                 text = stringResource(id = R.string.create_account),
-                fontSize = 20.sp,
+                style = MaterialTheme.typography.titleLarge,
                 color = colorResource(id = R.color.accent_color),
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
@@ -128,7 +129,7 @@ fun SignUpTwo(
         ) {
             Text(
                 text = stringResource(id = R.string.surname),
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.labelLarge,
                 color = colorResource(id = R.color.label_input),
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.fillMaxWidth()
@@ -174,7 +175,7 @@ fun SignUpTwo(
                             if (lastName.isEmpty()) {
                                 Text(
                                     text = stringResource(id = R.string.enter_surname),
-                                    fontSize = 16.sp,
+                                    style = MaterialTheme.typography.bodyMedium,
                                     color = colorResource(id = R.color.input_text)
                                 )
                             }
@@ -187,7 +188,7 @@ fun SignUpTwo(
             if (lastNameTouched && lastNameError.isNotEmpty()) {
                 Text(
                     text = lastNameError,
-                    fontSize = 12.sp,
+                    style = MaterialTheme.typography.bodySmall,
                     color = colorResource(id = R.color.error_color),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -197,7 +198,7 @@ fun SignUpTwo(
 
             Text(
                 text = stringResource(id = R.string.name),
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.labelLarge,
                 color = colorResource(id = R.color.label_input),
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.padding(top = 16.dp)
@@ -243,7 +244,7 @@ fun SignUpTwo(
                             if (firstName.isEmpty()) {
                                 Text(
                                     text = stringResource(id = R.string.enter_name),
-                                    fontSize = 16.sp,
+                                    style = MaterialTheme.typography.bodyMedium,
                                     color = colorResource(id = R.color.input_text)
                                 )
                             }
@@ -256,7 +257,7 @@ fun SignUpTwo(
             if (firstNameTouched && firstNameError.isNotEmpty()) {
                 Text(
                     text = firstNameError,
-                    fontSize = 12.sp,
+                    style = MaterialTheme.typography.bodySmall,
                     color = colorResource(id = R.color.error_color),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -266,7 +267,7 @@ fun SignUpTwo(
 
             Text(
                 text = stringResource(id = R.string.patronymic),
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.labelLarge,
                 color = colorResource(id = R.color.label_input),
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.padding(top = 16.dp)
@@ -306,7 +307,7 @@ fun SignUpTwo(
                             if (middleName.isEmpty()) {
                                 Text(
                                     text = stringResource(id = R.string.enter_patronymic),
-                                    fontSize = 16.sp,
+                                    style = MaterialTheme.typography.bodyMedium,
                                     color = colorResource(id = R.color.input_text)
                                 )
                             }
@@ -318,7 +319,7 @@ fun SignUpTwo(
 
             Text(
                 text = stringResource(id = R.string.birthdate),
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.labelLarge,
                 color = colorResource(id = R.color.label_input),
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.padding(top = 16.dp)
@@ -374,7 +375,7 @@ fun SignUpTwo(
                                 if (birthDateState.text.isEmpty()) {
                                     Text(
                                         text = "DD/MM/YYYY",
-                                        fontSize = 16.sp,
+                                        style = MaterialTheme.typography.bodyMedium,
                                         color = colorResource(id = R.color.input_text)
                                     )
                                 }
@@ -388,7 +389,7 @@ fun SignUpTwo(
             if (birthDateTouched && birthDateError.isNotEmpty()) {
                 Text(
                     text = birthDateError,
-                    fontSize = 12.sp,
+                    style = MaterialTheme.typography.bodySmall,
                     color = colorResource(id = R.color.error_color),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -399,7 +400,7 @@ fun SignUpTwo(
             Column {
                 Text(
                     text = stringResource(id = R.string.gender),
-                    fontSize = 14.sp,
+                    style = MaterialTheme.typography.labelLarge,
                     color = colorResource(id = R.color.label_input),
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier.padding(top = 16.dp)
@@ -428,7 +429,7 @@ fun SignUpTwo(
                         )
                         Text(
                             text = stringResource(id = R.string.male),
-                            fontSize = 16.sp,
+                            style = MaterialTheme.typography.bodyMedium,
                             color = colorResource(id = R.color.input_text),
                             modifier = Modifier.padding(start = 8.dp)
                         )
@@ -452,7 +453,7 @@ fun SignUpTwo(
                         )
                         Text(
                             text = stringResource(id = R.string.female),
-                            fontSize = 16.sp,
+                            style = MaterialTheme.typography.bodyMedium,
                             color = colorResource(id = R.color.input_text),
                             modifier = Modifier.padding(start = 8.dp)
                         )
@@ -462,7 +463,7 @@ fun SignUpTwo(
                 if (genderTouched && genderError.isNotEmpty()) {
                     Text(
                         text = genderError,
-                        fontSize = 12.sp,
+                        style = MaterialTheme.typography.bodySmall,
                         color = colorResource(id = R.color.error_color),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -492,7 +493,7 @@ fun SignUpTwo(
             ) {
                 Text(
                     text = stringResource(id = R.string.next),
-                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodyMedium,
                 )
             }
         }
