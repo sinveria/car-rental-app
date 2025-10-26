@@ -50,6 +50,7 @@ data class CarItem(
     val name: String,
     val brand: String,
     val price: String,
+    val pricePeriod: String,
     val transmission: String,
     val fuelType: String,
     val imageRes: Int
@@ -67,7 +68,8 @@ fun HomeScreen(
                 id = 1,
                 name = "S 500 Sedan",
                 brand = "Mercedes-Benz",
-                price = "2500P в день",
+                price = "2500P",
+                pricePeriod = "в день",
                 transmission = "А/Т",
                 fuelType = "Бензин",
                 imageRes = R.drawable.machine
@@ -76,7 +78,8 @@ fun HomeScreen(
                 id = 2,
                 name = "S 500 Sedan",
                 brand = "Mercedes-Benz",
-                price = "2500P в день",
+                price = "2500P",
+                pricePeriod = "в день",
                 transmission = "А/Т",
                 fuelType = "Бензин",
                 imageRes = R.drawable.machine
@@ -85,7 +88,8 @@ fun HomeScreen(
                 id = 3,
                 name = "S 500 Sedan",
                 brand = "Mercedes-Benz",
-                price = "2500P в день",
+                price = "2500P",
+                pricePeriod = "в день",
                 transmission = "А/Т",
                 fuelType = "Бензин",
                 imageRes = R.drawable.machine
@@ -94,7 +98,8 @@ fun HomeScreen(
                 id = 4,
                 name = "S 500 Sedan",
                 brand = "Mercedes-Benz",
-                price = "2500P в день",
+                price = "2500P",
+                pricePeriod = "в день",
                 transmission = "А/Т",
                 fuelType = "Бензин",
                 imageRes = R.drawable.machine
@@ -427,7 +432,7 @@ fun BottomNavigation(modifier: Modifier = Modifier) {
                     .size(24.dp)
                     .clickable {  }
             )
-            
+
             Image(
                 painter = painterResource(id = R.drawable.settings),
                 contentDescription = "Settings",
