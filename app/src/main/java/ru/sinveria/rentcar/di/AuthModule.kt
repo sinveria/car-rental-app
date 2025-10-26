@@ -5,6 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ru.sinveria.rentcar.data.repository.AuthRepositoryImpl
+import ru.sinveria.rentcar.data.repository.LocalRepositoryImpl
 import ru.sinveria.rentcar.domain.repository.AuthRepository
 import javax.inject.Singleton
 
@@ -14,7 +15,9 @@ object AuthModule {
 
     @Provides
     @Singleton
-    fun provideAuthRepository(): AuthRepository {
-        return AuthRepositoryImpl()
+    fun provideAuthRepository(
+        localRepository: LocalRepositoryImpl
+    ): AuthRepository {
+        return AuthRepositoryImpl(localRepository)
     }
 }

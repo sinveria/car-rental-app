@@ -10,4 +10,5 @@ sealed class Screen(val route: String) {
     object SignUpTwo : Screen("sign_up_two_screen")
     object SignUpThree : Screen("sign_up_three_screen")
     object Сongratulations : Screen("congratulations_screen")
+    object UserProfile : Screen("user_profile_screen")
 }

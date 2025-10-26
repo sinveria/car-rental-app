@@ -10,8 +10,3 @@ class LoginUseCase @Inject constructor(
         return authRepository.login(email, password)
     }
 }
-
-data class LoginResult(
-    val isSuccess: Boolean,
-    val errorMessage: String? = null
-)

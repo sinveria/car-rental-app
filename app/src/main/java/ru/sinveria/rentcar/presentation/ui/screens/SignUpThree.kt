@@ -23,6 +23,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -64,17 +65,21 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import ru.sinveria.rentcar.presentation.viewmodel.RegistrationSharedViewModel
+import ru.sinveria.rentcar.presentation.viewmodel.RegistrationState
 
 @Composable
 fun SignUpThree(
     onNavigateBack: () -> Unit = {},
     onNavigateToCong: () -> Unit = {},
-    viewModel: SignUpThreeViewModel = hiltViewModel()
+    viewModel: SignUpThreeViewModel = hiltViewModel(),
+    sharedViewModel: RegistrationSharedViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val imagePicker = ImagePicker()
@@ -93,6 +98,8 @@ fun SignUpThree(
     val showImageSourceDialog by viewModel.showImageSourceDialog.collectAsState()
     val currentImageType by viewModel.currentImageType.collectAsState()
     val showDatePicker by viewModel.showDatePicker.collectAsState()
+
+    val registrationState by sharedViewModel.registrationState.collectAsState()
 
     val localCameraImageUri = remember { mutableStateOf<Uri?>(null) }
 
@@ -168,6 +175,19 @@ fun SignUpThree(
             onCameraSelected = { handleCameraSelection() },
             onGallerySelected = { handleGallerySelection() }
         )
+    }
+
+    LaunchedEffect(registrationState) {
+        when (registrationState) {
+            is RegistrationState.Success -> {
+                onNavigateToCong()
+            }
+            is RegistrationState.Error -> {
+                val errorMessage = (registrationState as RegistrationState.Error).message
+                println("Registration error: $errorMessage")
+            }
+            else -> {}
+        }
     }
 
     Column(
@@ -529,7 +549,14 @@ fun SignUpThree(
                 onClick = {
                     viewModel.markAllTouched()
                     if (viewModel.validateForm()) {
-                        onNavigateToCong()
+                        sharedViewModel.updateStepThreeData(
+                            licenseNumber = licenseNumberState.text,
+                            licenseIssueDate = issueDateState.text,
+                            licensePhotoPath = licenseImageUri?.toString(),
+                            passportPhotoPath = passportImageUri?.toString(),
+                            profilePhotoPath = profileImageUri?.toString()
+                        )
+                        sharedViewModel.registerUser()
                     }
                 },
                 modifier = Modifier
@@ -540,12 +567,20 @@ fun SignUpThree(
                 colors = ButtonDefaults.buttonColors(
                     containerColor = colorResource(id = R.color.accent_color),
                     contentColor = Color.White
-                )
+                ),
+                enabled = registrationState !is RegistrationState.Loading
             ) {
-                Text(
-                    text = stringResource(id = R.string.next),
-                    style = MaterialTheme.typography.bodyMedium
-                )
+                if (registrationState is RegistrationState.Loading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        color = Color.White
+                    )
+                } else {
+                    Text(
+                        text = stringResource(id = R.string.next),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
             }
         }
     }

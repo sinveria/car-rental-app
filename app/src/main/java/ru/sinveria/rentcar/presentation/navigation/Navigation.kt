@@ -1,9 +1,12 @@
 package ru.sinveria.rentcar.presentation.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import ru.sinveria.rentcar.presentation.ui.screens.GettingStarted
 import ru.sinveria.rentcar.presentation.ui.screens.Login
 import ru.sinveria.rentcar.presentation.ui.screens.Onboarding
@@ -13,6 +16,8 @@ import ru.sinveria.rentcar.presentation.ui.screens.SignUpTwo
 import ru.sinveria.rentcar.presentation.ui.screens.SplashScreen
 import ru.sinveria.rentcar.presentation.ui.screens.Congratulations
 import ru.sinveria.rentcar.presentation.ui.screens.NoConnection
+import ru.sinveria.rentcar.presentation.ui.screens.UserProfileScreen
+import ru.sinveria.rentcar.presentation.viewmodel.RegistrationSharedViewModel
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
@@ -59,7 +64,9 @@ fun AppNavigation(navController: NavHostController) {
                     navController.navigate(Screen.Login.route)
                 },
                 onNavigateToSignUpOne = {
-                    navController.navigate(Screen.SignUpOne.route)
+                    navController.navigate("registration_graph") {
+                        launchSingleTop = true
+                    }
                 }
             )
         }
@@ -77,46 +84,96 @@ fun AppNavigation(navController: NavHostController) {
         composable(Screen.Login.route) {
             Login(
                 onNavigateToSignUpOne = {
-                    navController.navigate(Screen.SignUpOne.route)
-                }
-            )
-        }
-
-        composable(Screen.SignUpOne.route) {
-            SignUpOne(
-                onNavigateBack = {
-                    navController.popBackStack()
+                    navController.navigate("registration_graph") {
+                        launchSingleTop = true
+                    }
                 },
-                onNavigateToSignUpTwo = {
-                    navController.navigate(Screen.SignUpTwo.route)
+                onLoginSuccess = {
+                    navController.navigate(Screen.UserProfile.route) {
+                        popUpTo(0)
+                    }
                 }
             )
         }
 
-        composable(Screen.SignUpTwo.route) {
-            SignUpTwo(
-                onNavigateBack = {
-                    navController.popBackStack()
-                },
-                onNavigateToSignUpThree = {
-                    navController.navigate(Screen.SignUpThree.route)
+        navigation(
+            startDestination = Screen.SignUpOne.route,
+            route = "registration_graph"
+        ) {
+            composable(Screen.SignUpOne.route) {
+                val parentEntry = remember(it) {
+                    navController.getBackStackEntry("registration_graph")
                 }
-            )
-        }
+                val sharedViewModel: RegistrationSharedViewModel = hiltViewModel(parentEntry)
 
-        composable(Screen.SignUpThree.route) {
-            SignUpThree(
-                onNavigateBack = {
-                    navController.popBackStack()
-                },
-                onNavigateToCong = {
-                    navController.navigate(Screen.Сongratulations.route)
+                SignUpOne(
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    },
+                    onNavigateToSignUpTwo = {
+                        navController.navigate(Screen.SignUpTwo.route)
+                    },
+                    sharedViewModel = sharedViewModel
+                )
+            }
+
+            composable(Screen.SignUpTwo.route) {
+                val parentEntry = remember(it) {
+                    navController.getBackStackEntry("registration_graph")
                 }
-            )
-        }
+                val sharedViewModel: RegistrationSharedViewModel = hiltViewModel(parentEntry)
 
-        composable(Screen.Сongratulations.route) {
-            Congratulations()
+                SignUpTwo(
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    },
+                    onNavigateToSignUpThree = {
+                        navController.navigate(Screen.SignUpThree.route)
+                    },
+                    sharedViewModel = sharedViewModel
+                )
+            }
+
+            composable(Screen.SignUpThree.route) {
+                val parentEntry = remember(it) {
+                    navController.getBackStackEntry("registration_graph")
+                }
+                val sharedViewModel: RegistrationSharedViewModel = hiltViewModel(parentEntry)
+
+                SignUpThree(
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    },
+                    onNavigateToCong = {
+                        navController.navigate(Screen.Сongratulations.route)
+                    },
+                    sharedViewModel = sharedViewModel
+                )
+            }
+
+            composable(Screen.Сongratulations.route) {
+                val parentEntry = remember(it) {
+                    navController.getBackStackEntry("registration_graph")
+                }
+                val sharedViewModel: RegistrationSharedViewModel = hiltViewModel(parentEntry)
+
+                Congratulations(
+                    onNavigateToProfile = {
+                        navController.navigate(Screen.UserProfile.route)
+                    },
+                    sharedViewModel = sharedViewModel
+                )
+            }
+
+            composable(Screen.UserProfile.route) {
+                UserProfileScreen(
+                    onNavigateBack = {
+                        navController.navigate(Screen.GettingStarted.route) {
+                            popUpTo(0)
+                        }
+                    }
+                )
+            }
         }
     }
 }

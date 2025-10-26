@@ -268,7 +268,10 @@ fun Login(
             onClick = {
                 viewModel.login(
                     onSuccess = onLoginSuccess,
-                    onError = { }
+                    onError = {
+                        errorMessage ->
+                        println("Login error: $errorMessage")
+                    }
                 )
             },
             modifier = Modifier

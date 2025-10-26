@@ -1,4 +1,3 @@
-// utils/PermissionUtils.kt
 package ru.sinveria.rentcar.utils
 
 import android.Manifest

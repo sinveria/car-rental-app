@@ -55,12 +55,14 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import ru.sinveria.rentcar.presentation.viewmodel.RegistrationSharedViewModel
 
 @Composable
 fun SignUpTwo(
     onNavigateBack: () -> Unit = {},
     onNavigateToSignUpThree: () -> Unit = {},
-    viewModel: SignUpTwoViewModel = hiltViewModel()
+    viewModel: SignUpTwoViewModel = hiltViewModel(),
+    sharedViewModel: RegistrationSharedViewModel = hiltViewModel()
 ) {
     val lastName by viewModel.lastName.collectAsState()
     val firstName by viewModel.firstName.collectAsState()
@@ -478,6 +480,17 @@ fun SignUpTwo(
                 onClick = {
                     viewModel.markAllTouched()
                     if (viewModel.validateForm()) {
+                        sharedViewModel.updateStepTwoData(
+                            lastName = lastName,
+                            firstName = firstName,
+                            middleName = middleName,
+                            birthDate = birthDateState.text,
+                            gender = selectedGender
+                        )
+
+                        val currentData = sharedViewModel.registrationData.value
+                        println("Data after step 2: $currentData")
+
                         onNavigateToSignUpThree()
                     }
                 },

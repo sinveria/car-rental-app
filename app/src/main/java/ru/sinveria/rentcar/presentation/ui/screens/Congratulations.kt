@@ -13,7 +13,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,10 +24,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import ru.sinveria.rentcar.R
+import ru.sinveria.rentcar.presentation.viewmodel.RegistrationSharedViewModel
 
-@Preview(showBackground = true)
 @Composable
-fun Congratulations() {
+fun Congratulations(
+    onNavigateToProfile: () -> Unit = {},
+    sharedViewModel: RegistrationSharedViewModel
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -75,7 +77,7 @@ fun Congratulations() {
         }
 
         Button(
-            onClick = { },
+            onClick = onNavigateToProfile,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),

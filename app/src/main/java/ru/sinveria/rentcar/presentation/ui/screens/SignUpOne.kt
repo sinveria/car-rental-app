@@ -24,6 +24,7 @@ import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -44,13 +45,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ru.sinveria.rentcar.R
+import ru.sinveria.rentcar.presentation.viewmodel.RegistrationSharedViewModel
 import ru.sinveria.rentcar.presentation.viewmodel.SignUpViewModel
 
 @Composable
 fun SignUpOne(
     onNavigateBack: () -> Unit = {},
     onNavigateToSignUpTwo: () -> Unit = {},
-    viewModel: SignUpViewModel = hiltViewModel()
+    viewModel: SignUpViewModel = hiltViewModel(),
+    sharedViewModel: RegistrationSharedViewModel
 ) {
     val email by viewModel.email.collectAsState()
     val password by viewModel.password.collectAsState()
@@ -69,6 +72,10 @@ fun SignUpOne(
     val passwordTouched by viewModel.passwordTouched.collectAsState()
     val confirmPasswordTouched by viewModel.confirmPasswordTouched.collectAsState()
     val termsTouched by viewModel.termsTouched.collectAsState()
+
+    LaunchedEffect(Unit) {
+        sharedViewModel.clearData()
+    }
 
     Column(
         modifier = Modifier
@@ -413,6 +420,11 @@ fun SignUpOne(
                 onClick = {
                     viewModel.markAllTouched()
                     if (viewModel.validateForm()) {
+                        sharedViewModel.updateStepOneData(
+                            email = email,
+                            password = password
+                        )
+
                         onNavigateToSignUpTwo()
                     }
                 },

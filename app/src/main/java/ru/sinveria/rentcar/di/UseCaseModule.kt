@@ -1,13 +1,17 @@
 package ru.sinveria.rentcar.di
 
+import android.content.Context
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import ru.sinveria.rentcar.data.repository.LocalRepositoryImpl
 import ru.sinveria.rentcar.domain.repository.AuthRepository
 import ru.sinveria.rentcar.domain.repository.ConnectionRepository
 import ru.sinveria.rentcar.domain.usecase.CheckConnectionUseCase
 import ru.sinveria.rentcar.domain.usecase.CheckPermissionsUseCase
+import ru.sinveria.rentcar.domain.usecase.CopyImageUseCase
+import ru.sinveria.rentcar.domain.usecase.GetUserUseCase
 import ru.sinveria.rentcar.domain.usecase.ImagePickerUseCase
 import ru.sinveria.rentcar.domain.usecase.LoginUseCase
 import ru.sinveria.rentcar.domain.usecase.ValidateBirthDateUseCase
@@ -19,6 +23,7 @@ import ru.sinveria.rentcar.domain.usecase.ValidateLicenseNumberUseCase
 import ru.sinveria.rentcar.domain.usecase.ValidateNameUseCase
 import ru.sinveria.rentcar.domain.usecase.ValidatePasswordUseCase
 import ru.sinveria.rentcar.domain.usecase.ValidateTermsUseCase
+import ru.sinveria.rentcar.domain.usecase.RegisterUseCase
 import javax.inject.Singleton
 
 @Module
@@ -103,5 +108,30 @@ object UseCaseModule {
     @Singleton
     fun provideImagePickerUseCase(): ImagePickerUseCase {
         return ImagePickerUseCase()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCopyImageUseCase(
+        context: Context
+    ): CopyImageUseCase {
+        return CopyImageUseCase(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRegisterUseCase(
+        authRepository: AuthRepository,
+        copyImageUseCase: CopyImageUseCase
+    ): RegisterUseCase {
+        return RegisterUseCase(authRepository, copyImageUseCase)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetUserUseCase(
+        localRepository: LocalRepositoryImpl
+    ): GetUserUseCase {
+        return GetUserUseCase(localRepository)
     }
 }
