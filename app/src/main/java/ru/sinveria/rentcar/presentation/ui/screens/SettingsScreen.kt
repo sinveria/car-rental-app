@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -90,7 +89,6 @@ fun SettingsContent(
             .fillMaxSize()
             .background(Color.White)
     ) {
-        // Header with back button and title
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -98,7 +96,6 @@ fun SettingsContent(
                 .padding(horizontal = 24.dp),
             contentAlignment = Alignment.Center
         ) {
-            // Back button aligned to start
             Image(
                 painter = painterResource(id = R.drawable.go_back),
                 contentDescription = "Back",
@@ -108,7 +105,6 @@ fun SettingsContent(
                     .align(Alignment.CenterStart)
             )
 
-            // Title centered
             Text(
                 text = "Настройки",
                 style = MaterialTheme.typography.headlineMedium,
@@ -206,7 +202,6 @@ fun UserProfileSection(userEntity: UserEntity?) {
 
         Spacer(modifier = Modifier.width(16.dp))
 
-        // User info
         Column {
             Text(
                 text = "${userEntity?.firstName ?: ""} ${userEntity?.lastName ?: ""}".trim().ifEmpty { "Пользователь" },
@@ -222,6 +217,11 @@ fun UserProfileSection(userEntity: UserEntity?) {
             )
         }
     }
+}
+
+@Composable
+fun LoadImageFromUri(uri: String, contentDescription: String, modifier: Modifier) {
+    TODO("Not yet implemented")
 }
 
 @Composable
@@ -252,7 +252,6 @@ fun SettingsItem(
             modifier = Modifier.weight(1f)
         )
 
-        // Chevron icon
         Image(
             painter = painterResource(id = R.drawable.go_next),
             contentDescription = "Navigate",
@@ -261,7 +260,6 @@ fun SettingsItem(
     }
 }
 
-// Reuse the existing LoadImageFromUri composable from UserProfileScreen
 @Composable
 fun LoadImageFromUriSettings(
     uri: String,
