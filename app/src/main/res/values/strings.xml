@@ -53,4 +53,8 @@
     <string name="select_source">Выберите источник</string>
     <string name="taken_photo">Сделать фото</string>
     <string name="select_gallery">Выбрать из галереи</string>
+    <string name="search_hint">Поиск...</string>
+    <string name="search_title">Давайте найдем автомобиль</string>
+    <string name="book_button">Забронировать</string>
+    <string name="details_button">Детали</string>
 </resources>

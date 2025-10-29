@@ -11,20 +11,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import ru.sinveria.rentcar.R
+import ru.sinveria.rentcar.presentation.navigation.Screen
 
 @Composable
 fun BottomNavigation(
     modifier: Modifier = Modifier,
+    currentScreen: String = Screen.Home.route,
     onHomeClick: () -> Unit = {},
     onBookmarksClick: () -> Unit = {},
     onSettingsClick: () -> Unit = {}
@@ -46,7 +46,13 @@ fun BottomNavigation(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(id = R.drawable.home),
+                painter = painterResource(
+                    id = if (currentScreen == Screen.Home.route) {
+                        R.drawable.home_active
+                    } else {
+                        R.drawable.home
+                    }
+                ),
                 contentDescription = "Home",
                 modifier = Modifier
                     .size(24.dp)
@@ -62,7 +68,13 @@ fun BottomNavigation(
             )
 
             Image(
-                painter = painterResource(id = R.drawable.settings),
+                painter = painterResource(
+                    id = if (currentScreen == Screen.Settings.route || currentScreen == Screen.UserProfile.route) {
+                        R.drawable.settings_active
+                    } else {
+                        R.drawable.settings
+                    }
+                ),
                 contentDescription = "Settings",
                 modifier = Modifier
                     .size(24.dp)

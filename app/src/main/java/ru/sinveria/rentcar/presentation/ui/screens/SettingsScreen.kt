@@ -32,7 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ru.sinveria.rentcar.R
 import ru.sinveria.rentcar.data.local.entity.UserEntity
+import ru.sinveria.rentcar.presentation.navigation.Screen
 import ru.sinveria.rentcar.presentation.viewmodel.UserProfileViewModel
+import ru.sinveria.rentcar.presentation.ui.components.BottomNavigation
 
 @Composable
 fun SettingsScreen(
@@ -43,6 +45,10 @@ fun SettingsScreen(
     onConnectCarClick: () -> Unit = {},
     onHelpClick: () -> Unit = {},
     onInviteFriendClick: () -> Unit = {},
+    onHomeClick: () -> Unit = {},
+    onSettingsClick: () -> Unit = {},
+    onBookmarksClick: () -> Unit = {},
+    onProfileClick: () -> Unit = {},
     viewModel: UserProfileViewModel = hiltViewModel()
 ) {
     val userData by viewModel.userData.collectAsState()
@@ -52,23 +58,46 @@ fun SettingsScreen(
         viewModel.loadLastRegisteredUser()
     }
 
-    if (isLoading) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 72.dp)
         ) {
-            CircularProgressIndicator()
+            if (isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            } else {
+                SettingsContent(
+                    userEntity = userData,
+                    onNavigateBack = onNavigateBack,
+                    onBookingsClick = onBookingsClick,
+                    onThemeClick = onThemeClick,
+                    onNotificationsClick = onNotificationsClick,
+                    onConnectCarClick = onConnectCarClick,
+                    onHelpClick = onHelpClick,
+                    onInviteFriendClick = onInviteFriendClick,
+                    onProfileClick = onProfileClick
+                )
+            }
         }
-    } else {
-        SettingsContent(
-            userEntity = userData,
-            onNavigateBack = onNavigateBack,
-            onBookingsClick = onBookingsClick,
-            onThemeClick = onThemeClick,
-            onNotificationsClick = onNotificationsClick,
-            onConnectCarClick = onConnectCarClick,
-            onHelpClick = onHelpClick,
-            onInviteFriendClick = onInviteFriendClick
+
+        BottomNavigation(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth(),
+            currentScreen = Screen.Settings.route,
+            onHomeClick = onHomeClick,
+            onBookmarksClick = onBookmarksClick,
+            onSettingsClick = onSettingsClick
         )
     }
 }
@@ -82,7 +111,8 @@ fun SettingsContent(
     onNotificationsClick: () -> Unit,
     onConnectCarClick: () -> Unit,
     onHelpClick: () -> Unit,
-    onInviteFriendClick: () -> Unit
+    onInviteFriendClick: () -> Unit,
+    onProfileClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -121,8 +151,15 @@ fun SettingsContent(
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp)
         ) {
-            // User profile section
-            UserProfileSection(userEntity = userEntity)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onProfileClick() }
+                    .padding(vertical = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                UserProfileSection(userEntity = userEntity)
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -221,7 +258,11 @@ fun UserProfileSection(userEntity: UserEntity?) {
 
 @Composable
 fun LoadImageFromUri(uri: String, contentDescription: String, modifier: Modifier) {
-    TODO("Not yet implemented")
+    LoadImageFromUriSettings(
+        uri = uri,
+        contentDescription = contentDescription,
+        modifier = modifier
+    )
 }
 
 @Composable

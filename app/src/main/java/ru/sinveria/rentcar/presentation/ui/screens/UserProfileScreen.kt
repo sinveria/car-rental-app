@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ru.sinveria.rentcar.R
 import ru.sinveria.rentcar.data.local.entity.UserEntity
+import ru.sinveria.rentcar.presentation.navigation.Screen
 import ru.sinveria.rentcar.presentation.ui.components.BottomNavigation
 import ru.sinveria.rentcar.presentation.viewmodel.UserProfileViewModel
 import java.io.File
@@ -60,20 +61,15 @@ fun UserProfileScreen(
         viewModel.loadLastRegisteredUser()
     }
 
-    Scaffold(
-        bottomBar = {
-            BottomNavigation(
-                onHomeClick = onHomeClick,
-                onBookmarksClick = onBookmarksClick,
-                onSettingsClick = onSettingsClick
-            )
-        }
-    ) { innerPadding ->
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
-                .padding(innerPadding)
+                .padding(bottom = 72.dp)
         ) {
             if (isLoading) {
                 CircularProgressIndicator(
@@ -89,6 +85,16 @@ fun UserProfileScreen(
                 )
             }
         }
+
+        BottomNavigation(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth(),
+            currentScreen = Screen.UserProfile.route,
+            onHomeClick = onHomeClick,
+            onBookmarksClick = onBookmarksClick,
+            onSettingsClick = onSettingsClick
+        )
     }
 }
 
@@ -394,48 +400,4 @@ private fun loadImageBitmapFromFilePath(filePath: String): ImageBitmap? {
 private fun getJoinDate(): String {
     val dateFormat = SimpleDateFormat("MMMM yyyy", Locale("ru"))
     return dateFormat.format(Date())
-}
-
-// Добавьте этот композабл в конец файла
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun UserProfileScreenPreview() {
-    val mockUser = UserEntity(
-        id = "1",
-        email = "ivanov@mtuci.ru",
-        firstName = "Иван",
-        lastName = "Иванов",
-        middleName = "",
-        birthDate = "",
-        password = "",
-        gender = "Мужской",
-        licenseNumber = "",
-        licenseIssueDate = "",
-        profilePhotoPath = "",
-        licensePhotoPath = "",
-        passportPhotoPath = ""
-    )
-
-    Scaffold(
-        bottomBar = {
-            BottomNavigation(
-                onHomeClick = {},
-                onBookmarksClick = {},
-                onSettingsClick = {}
-            )
-        }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White)
-                .padding(innerPadding)
-        ) {
-            UserProfileContent(
-                userEntity = mockUser,
-                onNavigateBack = {},
-                onLogoutClick = {}
-            )
-        }
-    }
 }

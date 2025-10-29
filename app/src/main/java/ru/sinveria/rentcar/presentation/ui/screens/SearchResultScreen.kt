@@ -121,7 +121,7 @@ fun SearchResultsScreen(
             }
         }
 
-        BottomNavigation()
+        //BottomNavigation()
     }
 }
 

@@ -17,6 +17,8 @@ import ru.sinveria.rentcar.presentation.ui.screens.SplashScreen
 import ru.sinveria.rentcar.presentation.ui.screens.Congratulations
 import ru.sinveria.rentcar.presentation.ui.screens.NoConnection
 import ru.sinveria.rentcar.presentation.ui.screens.UserProfileScreen
+import ru.sinveria.rentcar.presentation.ui.screens.HomeScreen
+import ru.sinveria.rentcar.presentation.ui.screens.SettingsScreen
 import ru.sinveria.rentcar.presentation.viewmodel.RegistrationSharedViewModel
 
 @Composable
@@ -89,12 +91,64 @@ fun AppNavigation(navController: NavHostController) {
                     }
                 },
                 onLoginSuccess = {
-                    navController.navigate(Screen.UserProfile.route) {
+                    navController.navigate(Screen.Home.route) {
                         popUpTo(0)
                     }
                 }
             )
         }
+
+        composable(Screen.Home.route) {
+            HomeScreen(
+                onCarDetailsClick = { carId ->
+
+                },
+                onBookCarClick = { carId ->
+
+                },
+                onBookmarksClick = {
+
+                },
+                onSettingsClick = {
+                    navController.navigate(Screen.Settings.route)
+                }
+            )
+        }
+
+        composable(Screen.Settings.route) {
+            SettingsScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                onBookingsClick = {
+
+                },
+                onThemeClick = {
+
+                },
+                onNotificationsClick = {
+
+                },
+                onConnectCarClick = {
+
+                },
+                onHelpClick = {
+
+                },
+                onInviteFriendClick = {
+
+                },
+                onHomeClick = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(0)
+                    }
+                },
+                onProfileClick = {
+                    navController.navigate(Screen.UserProfile.route)
+                }
+            )
+        }
+
 
         navigation(
             startDestination = Screen.SignUpOne.route,
@@ -168,9 +222,23 @@ fun AppNavigation(navController: NavHostController) {
             composable(Screen.UserProfile.route) {
                 UserProfileScreen(
                     onNavigateBack = {
+                        navController.popBackStack()
+                    },
+                    onLogoutClick = {
                         navController.navigate(Screen.GettingStarted.route) {
                             popUpTo(0)
                         }
+                    },
+                    onHomeClick = {
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(0)
+                        }
+                    },
+                    onBookmarksClick = {
+
+                    },
+                    onSettingsClick = {
+                        navController.navigate(Screen.Settings.route)
                     }
                 )
             }

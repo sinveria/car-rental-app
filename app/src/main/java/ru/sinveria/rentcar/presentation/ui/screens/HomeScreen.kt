@@ -3,7 +3,6 @@ package ru.sinveria.rentcar.presentation.ui.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +21,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,6 +37,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -44,6 +45,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.sinveria.rentcar.R
+import ru.sinveria.rentcar.presentation.navigation.Screen
+import ru.sinveria.rentcar.presentation.ui.components.BottomNavigation
 
 data class CarItem(
     val id: Int,
@@ -56,11 +59,13 @@ data class CarItem(
     val imageRes: Int
 )
 
-@Preview(showBackground = true)
 @Composable
 fun HomeScreen(
     onCarDetailsClick: (Int) -> Unit = {},
-    onBookCarClick: (Int) -> Unit = {}
+    onBookCarClick: (Int) -> Unit = {},
+    onHomeClick: () -> Unit = {},
+    onBookmarksClick: () -> Unit = {},
+    onSettingsClick: () -> Unit = {}
 ) {
     val carItems = remember {
         listOf(
@@ -119,82 +124,86 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            Column(
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(colorResource(id = R.color.light_purple))
-                    .padding(24.dp),
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.Top
             ) {
-                Box(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(56.dp)
-                        .shadow(
-                            elevation = 4.dp,
-                            shape = RoundedCornerShape(12.dp),
-                            clip = true
-                        )
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(Color.White)
+                        .padding(
+                            top = 60.dp,
+                            start = 24.dp,
+                            end = 24.dp,
+                            bottom = 24.dp
+                        ),
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.Top
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalAlignment = Alignment.CenterVertically
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp)
+                            .shadow(
+                                elevation = 4.dp,
+                                shape = RoundedCornerShape(12.dp),
+                                clip = true
+                            )
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(Color.White)
                     ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.search_icon),
-                            contentDescription = "Search",
-                            modifier = Modifier
-                                .padding(start = 16.dp)
-                                .size(20.dp)
-                        )
-                        BasicTextField(
-                            value = searchText,
-                            onValueChange = { searchText = it },
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(start = 12.dp, end = 16.dp)
-                                .onFocusChanged { focusState ->
-                                    searchFocused = focusState.isFocused
-                                },
-                            textStyle = TextStyle(
-                                fontSize = 16.sp,
-                                color = Color.Black
-                            ),
-                            singleLine = true,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                            decorationBox = { innerTextField ->
-                                Box(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.CenterStart
-                                ) {
-                                    if (searchText.isEmpty()) {
-                                        Text(
-                                            text = "Поиск...",
-                                            style = TextStyle(
-                                                fontSize = 16.sp,
+                        Row(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.search_icon),
+                                contentDescription = "Search",
+                                modifier = Modifier
+                                    .padding(start = 16.dp)
+                                    .size(20.dp)
+                            )
+                            BasicTextField(
+                                value = searchText,
+                                onValueChange = { searchText = it },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(start = 12.dp, end = 16.dp)
+                                    .onFocusChanged { focusState ->
+                                        searchFocused = focusState.isFocused
+                                    },
+                                textStyle = TextStyle(
+                                    fontSize = 16.sp,
+                                    color = Color.Black
+                                ),
+                                singleLine = true,
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                                decorationBox = { innerTextField ->
+                                    Box(
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentAlignment = Alignment.CenterStart
+                                    ) {
+                                        if (searchText.isEmpty()) {
+                                            Text(
+                                                text = stringResource(R.string.search_hint),
+                                                style = MaterialTheme.typography.bodyMedium,
                                                 color = colorResource(id = R.color.input_text)
                                             )
-                                        )
+                                        }
+                                        innerTextField()
                                     }
-                                    innerTextField()
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
-                }
 
-                Text(
-                    text = "Давайте найдем автомобиль",
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black
-                    ),
-                    modifier = Modifier.padding(top = 24.dp, bottom = 16.dp)
-                )
+                    Text(
+                        text = stringResource(R.string.search_title),
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(top = 24.dp, bottom = 16.dp)
+                    )
+                }
             }
 
             Box(
@@ -224,7 +233,11 @@ fun HomeScreen(
         BottomNavigation(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            currentScreen = Screen.Home.route,
+            onHomeClick = onHomeClick,
+            onBookmarksClick = onBookmarksClick,
+            onSettingsClick = onSettingsClick
         )
     }
 }
@@ -273,15 +286,28 @@ fun CarItemCard(
                         ),
                         modifier = Modifier.padding(top = 4.dp)
                     )
-                    Text(
-                        text = car.price,
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = colorResource(id = R.color.accent_color)
-                        ),
+                    Row(
+                        verticalAlignment = Alignment.Bottom,
                         modifier = Modifier.padding(top = 8.dp)
-                    )
+                    ) {
+                        Text(
+                            text = car.price,
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = colorResource(id = R.color.accent_color)
+                            )
+                        )
+                        Text(
+                            text = " ${car.pricePeriod}",
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Normal,
+                                color = colorResource(id = R.color.input_text)
+                            ),
+                            modifier = Modifier.padding(bottom = 1.dp)
+                        )
+                    }
                 }
 
                 Image(
@@ -363,11 +389,8 @@ fun CarItemCard(
                     )
                 ) {
                     Text(
-                        text = "Забронировать",
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Medium
-                        )
+                        text = stringResource(R.string.book_button),
+                        style = MaterialTheme.typography.titleSmall
                     )
                 }
 
@@ -386,60 +409,11 @@ fun CarItemCard(
                     )
                 ) {
                     Text(
-                        text = "Детали",
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Medium
-                        )
+                        text = stringResource(R.string.details_button),
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun BottomNavigation(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-            .height(72.dp)
-            .shadow(
-                elevation = 16.dp,
-                shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-                clip = true
-            )
-            .background(Color.White)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 68.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.home),
-                contentDescription = "Home",
-                modifier = Modifier
-                    .size(24.dp)
-                    .clickable {  }
-            )
-
-            Image(
-                painter = painterResource(id = R.drawable.bookmark),
-                contentDescription = "Bookmarks",
-                modifier = Modifier
-                    .size(24.dp)
-                    .clickable {  }
-            )
-
-            Image(
-                painter = painterResource(id = R.drawable.settings),
-                contentDescription = "Settings",
-                modifier = Modifier
-                    .size(24.dp)
-                    .clickable {  }
-            )
         }
     }
 }
