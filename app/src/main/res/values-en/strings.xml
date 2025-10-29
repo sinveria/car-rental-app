@@ -71,4 +71,14 @@
     <string name="profile_photo">Profile photo</string>
     <string name="find_suitable_cars">We are looking for suitable cars</string>
     <string name="search_results_title">Search results</string>
+    <string name="profile_title">Profile</string>
+    <string name="joined_date">Joined %s</string>
+    <string name="email_title">Email</string>
+    <string name="password_title">Password</string>
+    <string name="change_password">Change password</string>
+    <string name="gender_title">Gender</string>
+    <string name="google_title">Google</string>
+    <string name="not_connected">Not connected</string>
+    <string name="logout_button">Log out of your profile</string>
+    <string name="add_photo">Add a photo</string>
 </resources>

@@ -71,4 +71,14 @@
     <string name="profile_photo">Фото профиля</string>
     <string name="find_suitable_cars">Ищем подходящие автомобили</string>
     <string name="search_results_title">Результаты поиска</string>
+    <string name="profile_title">Профиль</string>
+    <string name="joined_date">Присоединился в %s</string>
+    <string name="email_title">Электронная почта</string>
+    <string name="password_title">Пароль</string>
+    <string name="change_password">Поменять пароль</string>
+    <string name="gender_title">Пол</string>
+    <string name="google_title">Google</string>
+    <string name="not_connected">Не подключено</string>
+    <string name="logout_button">Выйти из профиля</string>
+    <string name="add_photo">Добавить фото</string>
 </resources>

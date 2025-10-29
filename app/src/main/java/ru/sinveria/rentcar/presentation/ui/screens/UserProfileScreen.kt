@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,8 +31,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ru.sinveria.rentcar.R
@@ -109,7 +108,8 @@ fun UserProfileContent(
             .fillMaxSize()
             .background(Color.White)
     ) {
-        // Header
+        Spacer(modifier = Modifier.height(30.dp))
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -118,7 +118,7 @@ fun UserProfileContent(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "Профиль",
+                text = stringResource(id = R.string.profile_title),
                 style = MaterialTheme.typography.headlineMedium,
                 color = Color.Black,
                 fontWeight = FontWeight.Bold,
@@ -126,7 +126,6 @@ fun UserProfileContent(
             )
         }
 
-        // Scrollable content
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -168,7 +167,7 @@ fun ProfilePhotoSection(userEntity: UserEntity?) {
                 if (!userEntity?.profilePhotoPath.isNullOrEmpty()) {
                     LoadImageFromUriProfile(
                         uri = userEntity?.profilePhotoPath ?: "",
-                        contentDescription = "Profile photo",
+                        contentDescription = stringResource(id = R.string.profile_photo),
                         modifier = Modifier
                             .fillMaxSize()
                             .clip(CircleShape)
@@ -176,7 +175,7 @@ fun ProfilePhotoSection(userEntity: UserEntity?) {
                 } else {
                     Image(
                         painter = painterResource(id = R.drawable.profile_photo),
-                        contentDescription = "Profile photo",
+                        contentDescription = stringResource(id = R.string.profile_photo),
                         modifier = Modifier
                             .fillMaxSize()
                             .clip(CircleShape),
@@ -187,7 +186,7 @@ fun ProfilePhotoSection(userEntity: UserEntity?) {
 
             Image(
                 painter = painterResource(id = R.drawable.plus_icon),
-                contentDescription = "Add photo",
+                contentDescription = stringResource(id = R.string.add_photo),
                 modifier = Modifier
                     .size(24.dp)
                     .align(Alignment.BottomEnd)
@@ -197,14 +196,16 @@ fun ProfilePhotoSection(userEntity: UserEntity?) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "${userEntity?.firstName ?: ""} ${userEntity?.lastName ?: ""}".trim().ifEmpty { "Пользователь" },
+            text = "${userEntity?.firstName ?: ""} ${userEntity?.lastName ?: ""}".trim().ifEmpty {
+                stringResource(id = R.string.user_default)
+            },
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
             color = Color.Black
         )
 
         Text(
-            text = "Присоединился ${getJoinDate()}",
+            text = stringResource(id = R.string.joined_date, getJoinDate()),
             style = MaterialTheme.typography.bodyMedium,
             color = colorResource(id = R.color.input_text),
             modifier = Modifier.padding(top = 4.dp)
@@ -216,27 +217,27 @@ fun ProfilePhotoSection(userEntity: UserEntity?) {
 fun ProfileInfoSection(userEntity: UserEntity?) {
     Column {
         ProfileInfoItem(
-            title = "Электронная почта",
-            value = userEntity?.email ?: "Не указано",
+            title = stringResource(id = R.string.email_title),
+            value = userEntity?.email ?: stringResource(id = R.string.not_specified),
             showDivider = true
         )
 
         ProfileInfoItem(
-            title = "Пароль",
-            value = "Поменять пароль",
+            title = stringResource(id = R.string.password_title),
+            value = stringResource(id = R.string.change_password),
             valueColor = colorResource(id = R.color.accent_color),
             showDivider = true
         )
 
         ProfileInfoItem(
-            title = "Пол",
-            value = userEntity?.gender ?: "Не указано",
+            title = stringResource(id = R.string.gender_title),
+            value = userEntity?.gender ?: stringResource(id = R.string.not_specified),
             showDivider = true
         )
 
         ProfileInfoItem(
-            title = "Google",
-            value = userEntity?.email ?: "Не подключено",
+            title = stringResource(id = R.string.google_title),
+            value = userEntity?.email ?: stringResource(id = R.string.not_connected),
             showDivider = false
         )
     }
@@ -300,7 +301,7 @@ fun LogoutButton(onClick: () -> Unit) {
             .padding(vertical = 16.dp)
     ) {
         Text(
-            text = "Выйти из профиля",
+            text = stringResource(id = R.string.logout_button),
             style = MaterialTheme.typography.bodyLarge,
             color = colorResource(id = R.color.accent_color),
             fontWeight = FontWeight.Medium

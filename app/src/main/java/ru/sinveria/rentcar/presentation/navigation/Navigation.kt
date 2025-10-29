@@ -2,16 +2,12 @@ package ru.sinveria.rentcar.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.delay
 import ru.sinveria.rentcar.presentation.ui.screens.GettingStarted
 import ru.sinveria.rentcar.presentation.ui.screens.Login
@@ -111,19 +107,18 @@ fun AppNavigation(navController: NavHostController) {
         composable(Screen.Home.route) {
             HomeScreen(
                 onCarDetailsClick = { carId ->
-                    // Обработка деталей автомобиля
+
                 },
                 onBookCarClick = { carId ->
-                    // Обработка бронирования
+
                 },
                 onBookmarksClick = {
-                    // Переход к закладкам
+
                 },
                 onSettingsClick = {
                     navController.navigate(Screen.Settings.route)
                 },
                 onSearchLoading = { searchQuery ->
-                    // Переход на экран загрузки поиска
                     navController.navigate("search_loading/$searchQuery")
                 }
             )
@@ -135,22 +130,22 @@ fun AppNavigation(navController: NavHostController) {
                     navController.popBackStack()
                 },
                 onBookingsClick = {
-                    // Переход к бронированиям
+
                 },
                 onThemeClick = {
-                    // Обработка темы
+
                 },
                 onNotificationsClick = {
-                    // Обработка уведомлений
+
                 },
                 onConnectCarClick = {
-                    // Подключение автомобиля
+
                 },
                 onHelpClick = {
-                    // Помощь
+
                 },
                 onInviteFriendClick = {
-                    // Пригласить друга
+
                 },
                 onHomeClick = {
                     navController.navigate(Screen.Home.route) {
@@ -192,10 +187,10 @@ fun AppNavigation(navController: NavHostController) {
                     }
                 },
                 onCarDetailsClick = { carId ->
-                    // Обработка деталей автомобиля
+
                 },
                 onBookCarClick = { carId ->
-                    // Обработка бронирования
+
                 },
                 onHomeClick = {
                     navController.navigate(Screen.Home.route) {
@@ -206,7 +201,7 @@ fun AppNavigation(navController: NavHostController) {
                     navController.navigate(Screen.Settings.route)
                 },
                 onBookmarksClick = {
-                    // Переход к закладкам
+
                 }
             )
         }
