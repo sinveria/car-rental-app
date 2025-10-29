@@ -70,4 +70,5 @@
     <string name="navigate">Перейти</string>
     <string name="profile_photo">Фото профиля</string>
     <string name="find_suitable_cars">Ищем подходящие автомобили</string>
+    <string name="search_results_title">Результаты поиска</string>
 </resources>
