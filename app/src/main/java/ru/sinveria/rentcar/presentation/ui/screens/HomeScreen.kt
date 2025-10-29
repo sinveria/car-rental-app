@@ -36,6 +36,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -65,52 +68,61 @@ fun HomeScreen(
     onBookCarClick: (Int) -> Unit = {},
     onHomeClick: () -> Unit = {},
     onBookmarksClick: () -> Unit = {},
-    onSettingsClick: () -> Unit = {}
+    onSettingsClick: () -> Unit = {},
+    onSearchLoading: (String) -> Unit = {}
 ) {
-    val carItems = remember {
-        listOf(
-            CarItem(
-                id = 1,
-                name = "S 500 Sedan",
-                brand = "Mercedes-Benz",
-                price = "2500P",
-                pricePeriod = "в день",
-                transmission = "А/Т",
-                fuelType = "Бензин",
-                imageRes = R.drawable.machine
-            ),
-            CarItem(
-                id = 2,
-                name = "S 500 Sedan",
-                brand = "Mercedes-Benz",
-                price = "2500P",
-                pricePeriod = "в день",
-                transmission = "А/Т",
-                fuelType = "Бензин",
-                imageRes = R.drawable.machine
-            ),
-            CarItem(
-                id = 3,
-                name = "S 500 Sedan",
-                brand = "Mercedes-Benz",
-                price = "2500P",
-                pricePeriod = "в день",
-                transmission = "А/Т",
-                fuelType = "Бензин",
-                imageRes = R.drawable.machine
-            ),
-            CarItem(
-                id = 4,
-                name = "S 500 Sedan",
-                brand = "Mercedes-Benz",
-                price = "2500P",
-                pricePeriod = "в день",
-                transmission = "А/Т",
-                fuelType = "Бензин",
-                imageRes = R.drawable.machine
-            )
+    val allCarItems = listOf(
+        CarItem(
+            id = 1,
+            name = "S 500 Sedan",
+            brand = "Mercedes-Benz",
+            price = "2500P",
+            pricePeriod = "в день",
+            transmission = "А/Т",
+            fuelType = "Бензин",
+            imageRes = R.drawable.machine
+        ),
+        CarItem(
+            id = 2,
+            name = "X5",
+            brand = "BMW",
+            price = "2800P",
+            pricePeriod = "в день",
+            transmission = "А/Т",
+            fuelType = "Бензин",
+            imageRes = R.drawable.machine
+        ),
+        CarItem(
+            id = 3,
+            name = "A6",
+            brand = "Audi",
+            price = "2200P",
+            pricePeriod = "в день",
+            transmission = "А/Т",
+            fuelType = "Бензин",
+            imageRes = R.drawable.machine
+        ),
+        CarItem(
+            id = 4,
+            name = "Camry",
+            brand = "Toyota",
+            price = "1800P",
+            pricePeriod = "в день",
+            transmission = "А/Т",
+            fuelType = "Бензин",
+            imageRes = R.drawable.machine
+        ),
+        CarItem(
+            id = 5,
+            name = "Civic",
+            brand = "Honda",
+            price = "1600P",
+            pricePeriod = "в день",
+            transmission = "А/Т",
+            fuelType = "Бензин",
+            imageRes = R.drawable.machine
         )
-    }
+    )
 
     var searchText by remember { mutableStateOf("") }
     var searchFocused by remember { mutableStateOf(false) }
@@ -172,6 +184,16 @@ fun HomeScreen(
                                     .padding(start = 12.dp, end = 16.dp)
                                     .onFocusChanged { focusState ->
                                         searchFocused = focusState.isFocused
+                                    }
+                                    .onKeyEvent { keyEvent ->
+                                        if (keyEvent.key == Key.Enter) {
+                                            if (searchText.isNotBlank()) {
+                                                onSearchLoading(searchText)
+                                            }
+                                            true
+                                        } else {
+                                            false
+                                        }
                                     },
                                 textStyle = TextStyle(
                                     fontSize = 16.sp,
@@ -219,7 +241,7 @@ fun HomeScreen(
                         .padding(top = 16.dp, bottom = 72.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    items(carItems) { car ->
+                    items(allCarItems) { car ->
                         CarItemCard(
                             car = car,
                             onDetailsClick = { onCarDetailsClick(car.id) },

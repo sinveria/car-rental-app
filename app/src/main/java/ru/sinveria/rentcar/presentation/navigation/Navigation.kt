@@ -1,12 +1,18 @@
 package ru.sinveria.rentcar.presentation.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.delay
 import ru.sinveria.rentcar.presentation.ui.screens.GettingStarted
 import ru.sinveria.rentcar.presentation.ui.screens.Login
 import ru.sinveria.rentcar.presentation.ui.screens.Onboarding
@@ -19,10 +25,14 @@ import ru.sinveria.rentcar.presentation.ui.screens.NoConnection
 import ru.sinveria.rentcar.presentation.ui.screens.UserProfileScreen
 import ru.sinveria.rentcar.presentation.ui.screens.HomeScreen
 import ru.sinveria.rentcar.presentation.ui.screens.SettingsScreen
+import ru.sinveria.rentcar.presentation.ui.screens.SearchLoadingScreen
+import ru.sinveria.rentcar.presentation.ui.screens.SearchResultsScreen
+import ru.sinveria.rentcar.presentation.ui.screens.CarItem
 import ru.sinveria.rentcar.presentation.viewmodel.RegistrationSharedViewModel
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
+
     NavHost(
         navController = navController,
         startDestination = Screen.Splash.route
@@ -101,16 +111,20 @@ fun AppNavigation(navController: NavHostController) {
         composable(Screen.Home.route) {
             HomeScreen(
                 onCarDetailsClick = { carId ->
-
+                    // Обработка деталей автомобиля
                 },
                 onBookCarClick = { carId ->
-
+                    // Обработка бронирования
                 },
                 onBookmarksClick = {
-
+                    // Переход к закладкам
                 },
                 onSettingsClick = {
                     navController.navigate(Screen.Settings.route)
+                },
+                onSearchLoading = { searchQuery ->
+                    // Переход на экран загрузки поиска
+                    navController.navigate("search_loading/$searchQuery")
                 }
             )
         }
@@ -121,22 +135,22 @@ fun AppNavigation(navController: NavHostController) {
                     navController.popBackStack()
                 },
                 onBookingsClick = {
-
+                    // Переход к бронированиям
                 },
                 onThemeClick = {
-
+                    // Обработка темы
                 },
                 onNotificationsClick = {
-
+                    // Обработка уведомлений
                 },
                 onConnectCarClick = {
-
+                    // Подключение автомобиля
                 },
                 onHelpClick = {
-
+                    // Помощь
                 },
                 onInviteFriendClick = {
-
+                    // Пригласить друга
                 },
                 onHomeClick = {
                     navController.navigate(Screen.Home.route) {
@@ -149,6 +163,53 @@ fun AppNavigation(navController: NavHostController) {
             )
         }
 
+        composable("search_loading/{searchQuery}") { backStackEntry ->
+            val searchQuery = backStackEntry.arguments?.getString("searchQuery") ?: ""
+
+            SearchLoadingScreen()
+
+            LaunchedEffect(Unit) {
+                delay(3000)
+
+                val results = filterCars(searchQuery)
+
+                navController.navigate("search_results/$searchQuery") {
+                    popUpTo(Screen.Home.route)
+                }
+            }
+        }
+
+        composable("search_results/{searchQuery}") { backStackEntry ->
+            val searchQuery = backStackEntry.arguments?.getString("searchQuery") ?: ""
+            val searchResults = filterCars(searchQuery)
+
+            SearchResultsScreen(
+                searchQuery = searchQuery,
+                searchResults = searchResults,
+                onBackClick = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Home.route) { inclusive = true }
+                    }
+                },
+                onCarDetailsClick = { carId ->
+                    // Обработка деталей автомобиля
+                },
+                onBookCarClick = { carId ->
+                    // Обработка бронирования
+                },
+                onHomeClick = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(0)
+                    }
+                },
+                onSettingsClick = {
+                    navController.navigate(Screen.Settings.route)
+                },
+                onBookmarksClick = {
+                    // Переход к закладкам
+                }
+            )
+        }
 
         navigation(
             startDestination = Screen.SignUpOne.route,
@@ -235,7 +296,7 @@ fun AppNavigation(navController: NavHostController) {
                         }
                     },
                     onBookmarksClick = {
-
+                        // Переход к закладкам
                     },
                     onSettingsClick = {
                         navController.navigate(Screen.Settings.route)
@@ -243,5 +304,65 @@ fun AppNavigation(navController: NavHostController) {
                 )
             }
         }
+    }
+}
+
+private fun filterCars(searchQuery: String): List<CarItem> {
+    val allCars = listOf(
+        CarItem(
+            id = 1,
+            name = "S 500 Sedan",
+            brand = "Mercedes-Benz",
+            price = "2500P",
+            pricePeriod = "в день",
+            transmission = "А/Т",
+            fuelType = "Бензин",
+            imageRes = ru.sinveria.rentcar.R.drawable.machine
+        ),
+        CarItem(
+            id = 2,
+            name = "X5",
+            brand = "BMW",
+            price = "2800P",
+            pricePeriod = "в день",
+            transmission = "А/Т",
+            fuelType = "Бензин",
+            imageRes = ru.sinveria.rentcar.R.drawable.machine
+        ),
+        CarItem(
+            id = 3,
+            name = "A6",
+            brand = "Audi",
+            price = "2200P",
+            pricePeriod = "в день",
+            transmission = "А/Т",
+            fuelType = "Бензин",
+            imageRes = ru.sinveria.rentcar.R.drawable.machine
+        ),
+        CarItem(
+            id = 4,
+            name = "Camry",
+            brand = "Toyota",
+            price = "1800P",
+            pricePeriod = "в день",
+            transmission = "А/Т",
+            fuelType = "Бензин",
+            imageRes = ru.sinveria.rentcar.R.drawable.machine
+        ),
+        CarItem(
+            id = 5,
+            name = "Civic",
+            brand = "Honda",
+            price = "1600P",
+            pricePeriod = "в день",
+            transmission = "А/Т",
+            fuelType = "Бензин",
+            imageRes = ru.sinveria.rentcar.R.drawable.machine
+        )
+    )
+
+    return allCars.filter { car ->
+        car.name.contains(searchQuery, ignoreCase = true) ||
+                car.brand.contains(searchQuery, ignoreCase = true)
     }
 }

@@ -204,7 +204,7 @@ fun ProfilePhotoSection(userEntity: UserEntity?) {
         )
 
         Text(
-            text = "Присоединился в ${getJoinDate()}",
+            text = "Присоединился ${getJoinDate()}",
             style = MaterialTheme.typography.bodyMedium,
             color = colorResource(id = R.color.input_text),
             modifier = Modifier.padding(top = 4.dp)
