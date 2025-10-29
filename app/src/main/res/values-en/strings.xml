@@ -57,4 +57,16 @@
     <string name="search_title">Let\'s find a car</string>
     <string name="book_button">Book</string>
     <string name="details_button">Details</string>
+    <string name="settings_title">Settings</string>
+    <string name="my_bookings">My reservations</string>
+    <string name="theme">Subject</string>
+    <string name="notifications">Notifications</string>
+    <string name="connect_car">Connect your car</string>
+    <string name="help">Help</string>
+    <string name="invite_friend">Invite a friend</string>
+    <string name="user_default">User</string>
+    <string name="not_specified">Not specified</string>
+    <string name="back">Back</string>
+    <string name="navigate">Go to</string>
+    <string name="profile_photo">Profile photo</string>
 </resources>

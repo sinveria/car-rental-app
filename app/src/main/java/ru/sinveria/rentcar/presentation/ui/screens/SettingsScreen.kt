@@ -27,7 +27,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ru.sinveria.rentcar.R
@@ -36,6 +38,7 @@ import ru.sinveria.rentcar.presentation.navigation.Screen
 import ru.sinveria.rentcar.presentation.viewmodel.UserProfileViewModel
 import ru.sinveria.rentcar.presentation.ui.components.BottomNavigation
 
+@Preview(showBackground = true)
 @Composable
 fun SettingsScreen(
     onNavigateBack: () -> Unit = {},
@@ -119,6 +122,8 @@ fun SettingsContent(
             .fillMaxSize()
             .background(Color.White)
     ) {
+        Spacer(modifier = Modifier.height(30.dp))
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -126,20 +131,9 @@ fun SettingsContent(
                 .padding(horizontal = 24.dp),
             contentAlignment = Alignment.Center
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.go_back),
-                contentDescription = "Back",
-                modifier = Modifier
-                    .size(24.dp)
-                    .clickable { onNavigateBack() }
-                    .align(Alignment.CenterStart)
-            )
-
             Text(
-                text = "Настройки",
-                style = MaterialTheme.typography.headlineMedium,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold,
+                text = stringResource(id = R.string.settings_title),
+                style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.align(Alignment.Center)
             )
         }
@@ -163,40 +157,39 @@ fun SettingsContent(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Settings items
             SettingsItem(
                 iconRes = R.drawable.bookmark,
-                text = "Мои бронирования",
+                text = stringResource(id = R.string.my_bookings),
                 onClick = onBookingsClick
             )
 
             SettingsItem(
                 iconRes = R.drawable.theme_icon,
-                text = "Тема",
+                text = stringResource(id = R.string.theme),
                 onClick = onThemeClick
             )
 
             SettingsItem(
                 iconRes = R.drawable.notice,
-                text = "Уведомления",
+                text = stringResource(id = R.string.notifications),
                 onClick = onNotificationsClick
             )
 
             SettingsItem(
                 iconRes = R.drawable.banknotes,
-                text = "Подключить свой автомобиль",
+                text = stringResource(id = R.string.connect_car),
                 onClick = onConnectCarClick
             )
 
             SettingsItem(
                 iconRes = R.drawable.help,
-                text = "Помощь",
+                text = stringResource(id = R.string.help),
                 onClick = onHelpClick
             )
 
             SettingsItem(
                 iconRes = R.drawable.letter,
-                text = "Пригласи друга",
+                text = stringResource(id = R.string.invite_friend),
                 onClick = onInviteFriendClick
             )
         }
@@ -220,7 +213,7 @@ fun UserProfileSection(userEntity: UserEntity?) {
             if (!userEntity?.profilePhotoPath.isNullOrEmpty()) {
                 LoadImageFromUri(
                     uri = userEntity?.profilePhotoPath ?: "",
-                    contentDescription = "Profile photo",
+                    contentDescription = stringResource(id = R.string.profile_photo),
                     modifier = Modifier
                         .fillMaxSize()
                         .clip(CircleShape)
@@ -228,7 +221,7 @@ fun UserProfileSection(userEntity: UserEntity?) {
             } else {
                 Image(
                     painter = painterResource(id = R.drawable.profile_photo),
-                    contentDescription = "Profile photo",
+                    contentDescription = stringResource(id = R.string.profile_photo),
                     modifier = Modifier
                         .fillMaxSize()
                         .clip(CircleShape),
@@ -241,13 +234,15 @@ fun UserProfileSection(userEntity: UserEntity?) {
 
         Column {
             Text(
-                text = "${userEntity?.firstName ?: ""} ${userEntity?.lastName ?: ""}".trim().ifEmpty { "Пользователь" },
+                text = "${userEntity?.firstName ?: ""} ${userEntity?.lastName ?: ""}".trim().ifEmpty {
+                    stringResource(id = R.string.user_default)
+                },
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
             )
             Text(
-                text = userEntity?.email ?: "Не указано",
+                text = userEntity?.email ?: stringResource(id = R.string.not_specified),
                 style = MaterialTheme.typography.bodyMedium,
                 color = colorResource(id = R.color.input_text),
                 modifier = Modifier.padding(top = 4.dp)
@@ -295,7 +290,7 @@ fun SettingsItem(
 
         Image(
             painter = painterResource(id = R.drawable.go_next),
-            contentDescription = "Navigate",
+            contentDescription = stringResource(id = R.string.navigate),
             modifier = Modifier.size(16.dp)
         )
     }

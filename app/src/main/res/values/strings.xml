@@ -57,4 +57,16 @@
     <string name="search_title">Давайте найдем автомобиль</string>
     <string name="book_button">Забронировать</string>
     <string name="details_button">Детали</string>
+    <string name="settings_title">Настройки</string>
+    <string name="my_bookings">Мои бронирования</string>
+    <string name="theme">Тема</string>
+    <string name="notifications">Уведомления</string>
+    <string name="connect_car">Подключить свой автомобиль</string>
+    <string name="help">Помощь</string>
+    <string name="invite_friend">Пригласи друга</string>
+    <string name="user_default">Пользователь</string>
+    <string name="not_specified">Не указано</string>
+    <string name="back">Назад</string>
+    <string name="navigate">Перейти</string>
+    <string name="profile_photo">Фото профиля</string>
 </resources>
