@@ -204,7 +204,6 @@ fun UserProfileSection(userEntity: UserEntity?) {
             .padding(vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Profile photo
         Box(
             modifier = Modifier
                 .size(60.dp)
