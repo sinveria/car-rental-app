@@ -281,8 +281,9 @@ fun AppNavigation(navController: NavHostController) {
                         navController.popBackStack()
                     },
                     onLogoutClick = {
-                        navController.navigate(Screen.GettingStarted.route) {
+                        navController.navigate(Screen.Login.route) {
                             popUpTo(0)
+                            launchSingleTop = true
                         }
                     },
                     onHomeClick = {
@@ -291,7 +292,7 @@ fun AppNavigation(navController: NavHostController) {
                         }
                     },
                     onBookmarksClick = {
-                        // Переход к закладкам
+
                     },
                     onSettingsClick = {
                         navController.navigate(Screen.Settings.route)
