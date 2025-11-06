@@ -107,4 +107,5 @@
     <string name="car_description_hint">Please add additional information about your car that may be of interest to the renter. For example, about the interior design, power, and other features of your car.</string>
     <string name="car_submit_button">Send</string>
     <string name="add_car_photos_title">Adding photos</string>
+
 </resources>

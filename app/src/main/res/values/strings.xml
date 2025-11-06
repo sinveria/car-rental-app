@@ -107,4 +107,7 @@
     <string name="car_description_hint">Пожалуйста, добавьте дополнительную информацию о вашем автомобиле, которая может быть интересна арендатору. Например, о внутреннем оформлении, мощности и других особенностях вашего автомобиля.</string>
     <string name="car_submit_button">Отправить</string>
     <string name="add_car_photos_title">Добавление фотографий</string>
+    <string name="car_added_title">Ваш автомобиль добавлен</string>
+    <string name="car_added_subtitle">Поздравляем! Ваш автомобиль одобрен</string>
+    <string name="home_button">На главную</string>
 </resources>
