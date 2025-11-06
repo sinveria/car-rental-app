@@ -90,4 +90,7 @@
     <string name="support_you">We will support you</string>
     <string name="checking_tenants">From tenant verification to customer support, you can always share your car with confidence.</string>
     <string name="to_begin">Start</string>
+    <string name="enter_the_address">Enter the address</string>
+    <string name="where_car_located">Where is your car located?</string>
+    <string name="adding_car">Adding a car</string>
 </resources>
