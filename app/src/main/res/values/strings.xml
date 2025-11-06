@@ -81,4 +81,13 @@
     <string name="not_connected">Не подключено</string>
     <string name="logout_button">Выйти из профиля</string>
     <string name="add_photo">Добавить фото</string>
+    <string name="get_renters">Стать арендодателем</string>
+    <string name="involves_renters">Узнайте, что включает в себя становление арендодателем в приложении.\nПрисоединяйтесь к тысячам владельцев, зарабатывающих в приложении.</string>
+    <string name="how_it_works">Как это работает</string>
+    <string name="accommodation_is_free">Размещение бесплатное, вы можете устанавливать свои цены, доступность и правила. Получение и возврат автомобиля просты, а оплата производится быстро после каждой поездки.</string>
+    <string name="insurance_policy">Политика страхования</string>
+    <string name="various_levels">Доступны различные уровни защиты автомобиля на случай непредвиденных ситуаций.</string>
+    <string name="support_you">Мы поддержим вас</string>
+    <string name="checking_tenants">От проверки арендаторов до поддержки клиентов – вы всегда можете делиться своим автомобилем с уверенностью.</string>
+    <string name="to_begin">Начать</string>
 </resources>

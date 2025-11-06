@@ -81,4 +81,13 @@
     <string name="not_connected">Not connected</string>
     <string name="logout_button">Log out of your profile</string>
     <string name="add_photo">Add a photo</string>
+    <string name="get_renters">Become a renters</string>
+    <string name="involves_renters">Find out what becoming a renters involves in the app.\nJoin thousands of owners who earn money in the app.</string>
+    <string name="how_it_works">How it works</string>
+    <string name="accommodation_is_free">The accommodation is free, you can set your own prices, availability and rules. Receiving and returning the car is simple, and payment is made quickly after each trip.</string>
+    <string name="insurance_policy">Insurance policy</string>
+    <string name="various_levels">Various levels of vehicle protection are available in case of unforeseen situations.</string>
+    <string name="support_you">We will support you</string>
+    <string name="checking_tenants">From tenant verification to customer support, you can always share your car with confidence.</string>
+    <string name="to_begin">Start</string>
 </resources>
