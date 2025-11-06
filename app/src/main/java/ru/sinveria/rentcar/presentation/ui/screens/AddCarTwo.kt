@@ -195,7 +195,7 @@ fun AddCarTwo(
         }
 
         Text(
-            text = stringResource(id = R.string.car_model_label),
+            text = stringResource(id = R.string.car_model_hint),
             style = MaterialTheme.typography.labelLarge,
             color = colorResource(id = R.color.label_input),
             fontWeight = FontWeight.Medium,
@@ -243,7 +243,7 @@ fun AddCarTwo(
         }
 
         Text(
-            text = stringResource(id = R.string.car_transmission_label),
+            text = stringResource(id = R.string.car_transmission_hint),
             style = MaterialTheme.typography.labelLarge,
             color = colorResource(id = R.color.label_input),
             fontWeight = FontWeight.Medium,
@@ -314,7 +314,7 @@ fun AddCarTwo(
         }
 
         Text(
-            text = stringResource(id = R.string.car_mileage_label),
+            text = stringResource(id = R.string.car_mileage_hint),
             style = MaterialTheme.typography.labelLarge,
             color = colorResource(id = R.color.label_input),
             fontWeight = FontWeight.Medium,

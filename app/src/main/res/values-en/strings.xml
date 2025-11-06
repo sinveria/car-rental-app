@@ -92,22 +92,19 @@
     <string name="to_begin">Start</string>
     <string name="enter_the_address">Enter the address</string>
     <string name="where_car_located">Where is your car located?</string>
-    <string name="adding_car">Adding a car</string>
     <string name="add_car_title">Adding a car</string>
     <string name="car_year_label">Year of release</string>
     <string name="car_year_hint">Year</string>
     <string name="car_brand_label">Car brand</string>
     <string name="car_brand_hint">Brand</string>
-    <string name="car_model_label">The</string> model
     <string name="car_model_hint">The</string> model
-    <string name="car_transmission_label">Transmission</string>
     <string name="car_transmission_hint">Transmission</string>
     <string name="car_transmission_auto">Automatic machine</string>
     <string name="car_transmission_manual">Mechanics</string>
     <string name="car_transmission_robot">Robot</string>
-    <string name="car_mileage_label">Mileage</string>
     <string name="car_mileage_hint">Mileage</string>
     <string name="car_description_label">Add a description</string>
     <string name="car_description_hint">Please add additional information about your car that may be of interest to the renter. For example, about the interior design, power, and other features of your car.</string>
     <string name="car_submit_button">Send</string>
+    <string name="add_car_photos_title">Adding photos</string>
 </resources>

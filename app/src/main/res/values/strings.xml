@@ -92,22 +92,19 @@
     <string name="to_begin">Начать</string>
     <string name="enter_the_address">Введите адрес</string>
     <string name="where_car_located">Где расположен ваш автомобиль?</string>
-    <string name="adding_car">Добавление автомобиля</string>
     <string name="add_car_title">Добавление автомобиля</string>
     <string name="car_year_label">Год выпуска</string>
     <string name="car_year_hint">Год</string>
     <string name="car_brand_label">Марка автомобиля</string>
     <string name="car_brand_hint">Марка</string>
-    <string name="car_model_label">Модель</string>
     <string name="car_model_hint">Модель</string>
-    <string name="car_transmission_label">Трансмиссия</string>
     <string name="car_transmission_hint">Трансмиссия</string>
     <string name="car_transmission_auto">Автомат</string>
     <string name="car_transmission_manual">Механика</string>
     <string name="car_transmission_robot">Робот</string>
-    <string name="car_mileage_label">Пробег</string>
     <string name="car_mileage_hint">Пробег</string>
     <string name="car_description_label">Добавьте описание</string>
     <string name="car_description_hint">Пожалуйста, добавьте дополнительную информацию о вашем автомобиле, которая может быть интересна арендатору. Например, о внутреннем оформлении, мощности и других особенностях вашего автомобиля.</string>
     <string name="car_submit_button">Отправить</string>
+    <string name="add_car_photos_title">Добавление фотографий</string>
 </resources>
