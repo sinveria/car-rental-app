@@ -37,13 +37,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import ru.sinveria.rentcar.R
+import ru.sinveria.rentcar.presentation.viewmodel.AddCarSharedViewModel
+import ru.sinveria.rentcar.presentation.viewmodel.AddCarTwoViewModel
 
 @Composable
 fun AddCarTwo(
     onNavigateBack: () -> Unit = {},
     onSubmit: () -> Unit = {}
 ) {
+    val viewModel: AddCarTwoViewModel = hiltViewModel()
+    val sharedVm: AddCarSharedViewModel = hiltViewModel()
+
     var year by rememberSaveable { mutableStateOf("") }
     var brand by rememberSaveable { mutableStateOf("") }
     var model by rememberSaveable { mutableStateOf("") }
@@ -58,13 +64,6 @@ fun AddCarTwo(
         stringResource(id = R.string.car_transmission_manual),
         stringResource(id = R.string.car_transmission_robot)
     )
-
-    val isSubmitButtonEnabled = year.isNotEmpty() &&
-            brand.isNotEmpty() &&
-            model.isNotEmpty() &&
-            transmission.isNotEmpty() &&
-            mileage.isNotEmpty() &&
-            description.isNotEmpty()
 
     Column(
         modifier = Modifier
@@ -120,12 +119,14 @@ fun AddCarTwo(
                 .background(Color.White)
         ) {
             BasicTextField(
-                value = year,
-                onValueChange = { year = it },
+                value = viewModel.year,
+                onValueChange = { viewModel.onYearChange(it) },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 16.dp)
-                    .onFocusChanged { /* ... */ },
+                    .onFocusChanged { focusState ->
+                        viewModel.onYearFocusChanged(focusState.isFocused)
+                    },
                 textStyle = MaterialTheme.typography.bodyMedium.copy(color = Color.Black),
                 singleLine = true,
                 decorationBox = { innerTextField ->
@@ -133,7 +134,7 @@ fun AddCarTwo(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.CenterStart
                     ) {
-                        if (year.isEmpty()) {
+                        if (viewModel.year.isEmpty()) {
                             Text(
                                 text = stringResource(id = R.string.car_year_hint),
                                 style = MaterialTheme.typography.bodyMedium,
@@ -143,6 +144,14 @@ fun AddCarTwo(
                         innerTextField()
                     }
                 }
+            )
+        }
+
+        if (viewModel.yearTouched && viewModel.yearError.isNotEmpty()) {
+            Text(
+                text = viewModel.yearError,
+                color = colorResource(id = R.color.error_color),
+                modifier = Modifier.padding(top = 4.dp)
             )
         }
 
@@ -168,12 +177,14 @@ fun AddCarTwo(
                 .background(Color.White)
         ) {
             BasicTextField(
-                value = brand,
-                onValueChange = { brand = it },
+                value = viewModel.brand,
+                onValueChange = { viewModel.onBrandChange(it) },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 16.dp)
-                    .onFocusChanged { /* ... */ },
+                    .onFocusChanged { focusState ->
+                        viewModel.onBrandFocusChanged(focusState.isFocused)
+                    },
                 textStyle = MaterialTheme.typography.bodyMedium.copy(color = Color.Black),
                 singleLine = true,
                 decorationBox = { innerTextField ->
@@ -181,7 +192,7 @@ fun AddCarTwo(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.CenterStart
                     ) {
-                        if (brand.isEmpty()) {
+                        if (viewModel.brand.isEmpty()) {
                             Text(
                                 text = stringResource(id = R.string.car_brand_hint),
                                 style = MaterialTheme.typography.bodyMedium,
@@ -191,6 +202,14 @@ fun AddCarTwo(
                         innerTextField()
                     }
                 }
+            )
+        }
+
+        if (viewModel.brandTouched && viewModel.brandError.isNotEmpty()) {
+            Text(
+                text = viewModel.brandError,
+                color = colorResource(id = R.color.error_color),
+                modifier = Modifier.padding(top = 4.dp)
             )
         }
 
@@ -216,12 +235,14 @@ fun AddCarTwo(
                 .background(Color.White)
         ) {
             BasicTextField(
-                value = model,
-                onValueChange = { model = it },
+                value = viewModel.model,
+                onValueChange = { viewModel.onModelChange(it) },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 16.dp)
-                    .onFocusChanged { /* ... */ },
+                    .onFocusChanged { focusState ->
+                        viewModel.onModelFocusChanged(focusState.isFocused)
+                    },
                 textStyle = MaterialTheme.typography.bodyMedium.copy(color = Color.Black),
                 singleLine = true,
                 decorationBox = { innerTextField ->
@@ -229,7 +250,7 @@ fun AddCarTwo(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.CenterStart
                     ) {
-                        if (model.isEmpty()) {
+                        if (viewModel.model.isEmpty()) {
                             Text(
                                 text = stringResource(id = R.string.car_model_hint),
                                 style = MaterialTheme.typography.bodyMedium,
@@ -239,6 +260,14 @@ fun AddCarTwo(
                         innerTextField()
                     }
                 }
+            )
+        }
+
+        if (viewModel.modelTouched && viewModel.modelError.isNotEmpty()) {
+            Text(
+                text = viewModel.modelError,
+                color = colorResource(id = R.color.error_color),
+                modifier = Modifier.padding(top = 4.dp)
             )
         }
 
@@ -258,7 +287,11 @@ fun AddCarTwo(
                 .clip(RoundedCornerShape(12.dp))
                 .border(
                     width = 1.dp,
-                    color = colorResource(id = R.color.color_border),
+                    color = if (viewModel.transmissionError.isNotEmpty() && viewModel.transmissionTouched) {
+                        colorResource(id = R.color.error_color)
+                    } else {
+                        colorResource(id = R.color.color_border)
+                    },
                     shape = RoundedCornerShape(12.dp)
                 )
                 .background(Color.White)
@@ -272,13 +305,13 @@ fun AddCarTwo(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = if (transmission.isEmpty()) {
+                    text = if (viewModel.transmission.isEmpty()) {
                         stringResource(id = R.string.car_transmission_hint)
                     } else {
-                        transmission
+                        viewModel.transmission
                     },
                     style = MaterialTheme.typography.bodyMedium,
-                    color = if (transmission.isEmpty()) {
+                    color = if (viewModel.transmission.isEmpty()) {
                         colorResource(id = R.color.input_text)
                     } else {
                         Color.Black
@@ -305,12 +338,20 @@ fun AddCarTwo(
                     DropdownMenuItem(
                         text = { Text(option) },
                         onClick = {
-                            transmission = option
+                            viewModel.transmission = option
                             showTransmissionMenu = false
                         }
                     )
                 }
             }
+        }
+
+        if (viewModel.transmissionError.isNotEmpty() && viewModel.transmissionTouched) {
+            Text(
+                text = viewModel.transmissionError,
+                color = colorResource(id = R.color.error_color),
+                modifier = Modifier.padding(top = 4.dp)
+            )
         }
 
         Text(
@@ -335,12 +376,14 @@ fun AddCarTwo(
                 .background(Color.White)
         ) {
             BasicTextField(
-                value = mileage,
-                onValueChange = { mileage = it },
+                value = viewModel.mileage,
+                onValueChange = { viewModel.onMileageChange(it) },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 16.dp)
-                    .onFocusChanged { /* ... */ },
+                    .onFocusChanged { focusState ->
+                        viewModel.onMileageFocusChanged(focusState.isFocused)
+                    },
                 textStyle = MaterialTheme.typography.bodyMedium.copy(color = Color.Black),
                 singleLine = true,
                 decorationBox = { innerTextField ->
@@ -348,7 +391,7 @@ fun AddCarTwo(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.CenterStart
                     ) {
-                        if (mileage.isEmpty()) {
+                        if (viewModel.mileage.isEmpty()) {
                             Text(
                                 text = stringResource(id = R.string.car_mileage_hint),
                                 style = MaterialTheme.typography.bodyMedium,
@@ -358,6 +401,14 @@ fun AddCarTwo(
                         innerTextField()
                     }
                 }
+            )
+        }
+
+        if (viewModel.mileageTouched && viewModel.mileageError.isNotEmpty()) {
+            Text(
+                text = viewModel.mileageError,
+                color = colorResource(id = R.color.error_color),
+                modifier = Modifier.padding(top = 4.dp)
             )
         }
 
@@ -383,12 +434,14 @@ fun AddCarTwo(
                 .background(Color.White)
         ) {
             BasicTextField(
-                value = description,
-                onValueChange = { description = it },
+                value = viewModel.description,
+                onValueChange = { viewModel.onDescriptionChange(it) },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp)
-                    .onFocusChanged { /* ... */ },
+                    .onFocusChanged { focusState ->
+                        viewModel.onDescriptionFocusChanged(focusState.isFocused)
+                    },
                 textStyle = MaterialTheme.typography.bodyMedium.copy(color = Color.Black),
                 maxLines = 5,
                 decorationBox = { innerTextField ->
@@ -396,7 +449,7 @@ fun AddCarTwo(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.TopStart
                     ) {
-                        if (description.isEmpty()) {
+                        if (viewModel.description.isEmpty()) {
                             Text(
                                 text = stringResource(id = R.string.car_description_hint),
                                 style = MaterialTheme.typography.bodyMedium,
@@ -409,23 +462,36 @@ fun AddCarTwo(
             )
         }
 
+        if (viewModel.descriptionTouched && viewModel.descriptionError.isNotEmpty()) {
+            Text(
+                text = viewModel.descriptionError,
+                color = colorResource(id = R.color.error_color),
+                modifier = Modifier.padding(top = 4.dp)
+            )
+        }
+
         Spacer(modifier = Modifier.weight(1f))
 
         Button(
-            onClick = { if (isSubmitButtonEnabled) onSubmit() },
+            onClick = {
+                viewModel.onSubmit()
+                if (viewModel.isSubmitEnabled) {
+                    onSubmit()
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (isSubmitButtonEnabled) {
+                containerColor = if (viewModel.isSubmitEnabled) {
                     colorResource(id = R.color.accent_color)
                 } else {
                     colorResource(id = R.color.accent_color).copy(alpha = 0.2f)
                 },
                 contentColor = Color.White
             ),
-            enabled = isSubmitButtonEnabled
+            enabled = viewModel.isSubmitEnabled
         ) {
             Text(
                 text = stringResource(id = R.string.car_submit_button),

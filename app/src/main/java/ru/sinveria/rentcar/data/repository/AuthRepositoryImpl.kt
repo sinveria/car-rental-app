@@ -83,12 +83,28 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getCurrentUserId(): String {
+        val token = localRepository.getCurrentToken()
+            ?: throw IllegalStateException("Not authenticated")
+        return token.userId ?: throw IllegalStateException("No user ID in token")
+    }
+
     override suspend fun getCurrentToken(): String? {
         val tokenEntity = localRepository.getCurrentToken()
         return tokenEntity?.token
     }
 
+    override suspend fun getCurrentUser(): UserEntity? {
+        return try {
+            val userId = getCurrentUserId()
+            localRepository.getUserById(userId)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
     override suspend fun logout() {
         localRepository.clearTokens()
     }
+
 }

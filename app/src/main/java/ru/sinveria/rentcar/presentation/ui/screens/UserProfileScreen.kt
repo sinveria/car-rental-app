@@ -51,6 +51,7 @@ fun UserProfileScreen(
     onHomeClick: () -> Unit = {},
     onBookmarksClick: () -> Unit = {},
     onSettingsClick: () -> Unit = {},
+    onAddCarClick: () -> Unit = {},
     viewModel: UserProfileViewModel = hiltViewModel()
 ) {
     val userData by viewModel.userData.collectAsState()
@@ -80,7 +81,8 @@ fun UserProfileScreen(
                 UserProfileContent(
                     userEntity = userData,
                     onNavigateBack = onNavigateBack,
-                    onLogoutClick = onLogoutClick
+                    onLogoutClick = onLogoutClick,
+                    onAddCarClick = onAddCarClick
                 )
             }
         }
@@ -101,7 +103,8 @@ fun UserProfileScreen(
 fun UserProfileContent(
     userEntity: UserEntity?,
     onNavigateBack: () -> Unit,
-    onLogoutClick: () -> Unit
+    onLogoutClick: () -> Unit,
+    onAddCarClick: () -> Unit
 ) {
     Column(
         modifier = Modifier

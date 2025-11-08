@@ -21,10 +21,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,16 +31,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import ru.sinveria.rentcar.R
+import ru.sinveria.rentcar.presentation.viewmodel.AddCarOneViewModel
 
 @Composable
 fun AddCarOne(
     onNavigateBack: () -> Unit = {},
     onNext: () -> Unit = {}
 ) {
-    var address by rememberSaveable { mutableStateOf("") }
-
-    val isNextButtonEnabled = address.isNotEmpty()
+    val viewModel: AddCarOneViewModel = hiltViewModel()
 
     Column(
         modifier = Modifier
@@ -100,14 +96,14 @@ fun AddCarOne(
                 .background(Color.White)
         ) {
             BasicTextField(
-                value = address,
-                onValueChange = { newValue ->
-                    address = newValue
-                },
+                value = viewModel.address,
+                onValueChange = { viewModel.onAddressChange(it) },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 16.dp)
-                    .onFocusChanged { },
+                    .onFocusChanged { focusState ->
+                        viewModel.onAddressFocusChanged(focusState.isFocused)
+                    },
                 textStyle = MaterialTheme.typography.bodyMedium.copy(color = Color.Black),
                 singleLine = true,
                 decorationBox = { innerTextField ->
@@ -115,7 +111,7 @@ fun AddCarOne(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.CenterStart
                     ) {
-                        if (address.isEmpty()) {
+                        if (viewModel.address.isEmpty()) {
                             Text(
                                 text = stringResource(id = R.string.enter_the_address),
                                 style = MaterialTheme.typography.bodyMedium,
@@ -131,20 +127,25 @@ fun AddCarOne(
         Spacer(modifier = Modifier.weight(1f))
 
         Button(
-            onClick = { if (isNextButtonEnabled) onNext() },
+            onClick = {
+                viewModel.onNext()
+                if (viewModel.isNextEnabled) {
+                    onNext()
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (isNextButtonEnabled) {
+                containerColor = if (viewModel.isNextEnabled) {
                     colorResource(id = R.color.accent_color)
                 } else {
                     colorResource(id = R.color.accent_color).copy(alpha = 0.2f)
                 },
                 contentColor = Color.White
             ),
-            enabled = isNextButtonEnabled
+            enabled = viewModel.isNextEnabled
         ) {
             Text(
                 text = stringResource(id = R.string.next),

@@ -27,9 +27,9 @@ class UserProfileViewModel @Inject constructor(
             try {
                 val user = localRepository.getUserByEmail(email)
                 _userData.value = user
-                println("🔄 DEBUG: Loaded user data for profile: ${user?.email}")
+                println("Loaded user data for profile: ${user?.email}")
             } catch (e: Exception) {
-                println("❌ DEBUG: Error loading user data: ${e.message}")
+                println("Error loading user data: ${e.message}")
             } finally {
                 _isLoading.value = false
             }
@@ -42,9 +42,9 @@ class UserProfileViewModel @Inject constructor(
                 val allUsers = localRepository.getAllUsers()
                 val lastUser = allUsers.lastOrNull()
                 _userData.value = lastUser
-                println("🔄 DEBUG: Loaded last user for profile: ${lastUser?.email}")
+                println("Loaded last user for profile: ${lastUser?.email}")
             } catch (e: Exception) {
-                println("❌ DEBUG: Error loading last user: ${e.message}")
+                println("Error loading last user: ${e.message}")
             } finally {
                 _isLoading.value = false
             }

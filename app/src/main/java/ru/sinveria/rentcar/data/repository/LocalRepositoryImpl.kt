@@ -35,4 +35,9 @@ class LocalRepositoryImpl @Inject constructor(
     }
 
     suspend fun clearTokens() = authTokenDao.clearAllTokens()
+
+    suspend fun getCurrentUserId(userId: String): String? {
+        val tokenEntity = authTokenDao.getTokenByUserId(userId)
+        return tokenEntity?.userId ?: tokenEntity?.userId
+    }
 }

@@ -1,5 +1,6 @@
 package ru.sinveria.rentcar.presentation.ui.screens
 
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -22,10 +23,13 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,6 +43,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -47,82 +53,33 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import java.io.File
+import coil.request.ImageRequest
 import ru.sinveria.rentcar.R
+import ru.sinveria.rentcar.data.local.entity.CarEntity
 import ru.sinveria.rentcar.presentation.navigation.Screen
 import ru.sinveria.rentcar.presentation.ui.components.BottomNavigation
-
-data class CarItem(
-    val id: Int,
-    val name: String,
-    val brand: String,
-    val price: String,
-    val pricePeriod: String,
-    val transmission: String,
-    val fuelType: String,
-    val imageRes: Int
-)
+import ru.sinveria.rentcar.presentation.viewmodel.HomeViewModel
 
 @Composable
 fun HomeScreen(
-    onCarDetailsClick: (Int) -> Unit = {},
-    onBookCarClick: (Int) -> Unit = {},
+    onCarDetailsClick: (Long) -> Unit = {},
+    onBookCarClick: (Long) -> Unit = {},
     onHomeClick: () -> Unit = {},
     onBookmarksClick: () -> Unit = {},
     onSettingsClick: () -> Unit = {},
-    onSearchLoading: (String) -> Unit = {}
+    onSearchLoading: (String) -> Unit = {},
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val allCarItems = listOf(
-        CarItem(
-            id = 1,
-            name = "S 500 Sedan",
-            brand = "Mercedes-Benz",
-            price = "2500P",
-            pricePeriod = "в день",
-            transmission = "А/Т",
-            fuelType = "Бензин",
-            imageRes = R.drawable.machine
-        ),
-        CarItem(
-            id = 2,
-            name = "X5",
-            brand = "BMW",
-            price = "2800P",
-            pricePeriod = "в день",
-            transmission = "А/Т",
-            fuelType = "Бензин",
-            imageRes = R.drawable.machine
-        ),
-        CarItem(
-            id = 3,
-            name = "A6",
-            brand = "Audi",
-            price = "2200P",
-            pricePeriod = "в день",
-            transmission = "А/Т",
-            fuelType = "Бензин",
-            imageRes = R.drawable.machine
-        ),
-        CarItem(
-            id = 4,
-            name = "Camry",
-            brand = "Toyota",
-            price = "1800P",
-            pricePeriod = "в день",
-            transmission = "А/Т",
-            fuelType = "Бензин",
-            imageRes = R.drawable.machine
-        ),
-        CarItem(
-            id = 5,
-            name = "Civic",
-            brand = "Honda",
-            price = "1600P",
-            pricePeriod = "в день",
-            transmission = "А/Т",
-            fuelType = "Бензин",
-            imageRes = R.drawable.machine
-        )
-    )
+    val cars by viewModel.cars.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.loadCars()
+    }
 
     var searchText by remember { mutableStateOf("") }
     var searchFocused by remember { mutableStateOf(false) }
@@ -188,7 +145,10 @@ fun HomeScreen(
                                     .onKeyEvent { keyEvent ->
                                         if (keyEvent.key == Key.Enter) {
                                             if (searchText.isNotBlank()) {
-                                                onSearchLoading(searchText)
+                                                try {
+                                                    onSearchLoading(searchText)
+                                                } catch (e: Exception) {
+                                                }
                                             }
                                             true
                                         } else {
@@ -234,18 +194,23 @@ fun HomeScreen(
                     .weight(1f)
                     .background(Color.White)
             ) {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 24.dp)
-                        .padding(top = 16.dp, bottom = 72.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    items(allCarItems) { car ->
-                        CarItemCard(
-                            car = car,
-                            onDetailsClick = { onCarDetailsClick(car.id) },
-                            onBookClick = { onBookCarClick(car.id) }
+                when {
+                    isLoading -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                    cars.isEmpty() -> {
+                        EmptyCarsState()
+                    }
+                    else -> {
+                        CarsList(
+                            cars = cars,
+                            onCarDetailsClick = onCarDetailsClick,
+                            onBookCarClick = onBookCarClick
                         )
                     }
                 }
@@ -265,8 +230,55 @@ fun HomeScreen(
 }
 
 @Composable
+private fun EmptyCarsState() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Text(
+                text = "Нет доступных автомобилей",
+                style = MaterialTheme.typography.titleMedium,
+                color = colorResource(id = R.color.input_text)
+            )
+            Text(
+                text = "Добавьте свой первый автомобиль в профиле",
+                style = MaterialTheme.typography.bodyMedium,
+                color = colorResource(id = R.color.input_text)
+            )
+        }
+    }
+}
+
+@Composable
+private fun CarsList(
+    cars: List<CarEntity>,
+    onCarDetailsClick: (Long) -> Unit,
+    onBookCarClick: (Long) -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 24.dp)
+            .padding(top = 16.dp, bottom = 72.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(cars) { car ->
+            CarItemCard(
+                car = car,
+                onDetailsClick = { onCarDetailsClick(car.id) },
+                onBookClick = { onBookCarClick(car.id) }
+            )
+        }
+    }
+}
+
+@Composable
 fun CarItemCard(
-    car: CarItem,
+    car: CarEntity,
     onDetailsClick: () -> Unit,
     onBookClick: () -> Unit
 ) {
@@ -292,7 +304,7 @@ fun CarItemCard(
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(
-                        text = car.name,
+                        text = car.model,
                         style = TextStyle(
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
@@ -308,12 +320,13 @@ fun CarItemCard(
                         ),
                         modifier = Modifier.padding(top = 4.dp)
                     )
+
                     Row(
                         verticalAlignment = Alignment.Bottom,
                         modifier = Modifier.padding(top = 8.dp)
                     ) {
                         Text(
-                            text = car.price,
+                            text = "2500P",
                             style = TextStyle(
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Medium,
@@ -321,7 +334,7 @@ fun CarItemCard(
                             )
                         )
                         Text(
-                            text = " ${car.pricePeriod}",
+                            text = " в день",
                             style = TextStyle(
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Normal,
@@ -332,13 +345,7 @@ fun CarItemCard(
                     }
                 }
 
-                Image(
-                    painter = painterResource(id = car.imageRes),
-                    contentDescription = "${car.brand} ${car.name}",
-                    modifier = Modifier
-                        .size(width = 176.dp, height = 136.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                )
+                CarImage(car = car)
             }
 
             Row(
@@ -346,97 +353,164 @@ fun CarItemCard(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .padding(horizontal = 12.dp, vertical = 6.dp)
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.gearbox),
-                        contentDescription = "Transmission",
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = car.transmission,
-                        style = TextStyle(
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = colorResource(id = R.color.label_input)
-                        )
-                    )
-                }
+                SpecificationChip(
+                    iconRes = R.drawable.gearbox,
+                    text = "А/Т"
+                )
 
                 Spacer(modifier = Modifier.width(8.dp))
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .padding(horizontal = 12.dp, vertical = 6.dp)
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.fuel),
-                        contentDescription = "Fuel type",
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = car.fuelType,
-                        style = TextStyle(
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = colorResource(id = R.color.label_input)
-                        )
-                    )
+                SpecificationChip(
+                    iconRes = R.drawable.fuel,
+                    text = "Бензин"
+                )
+            }
+
+            CarActionButtons(
+                onDetailsClick = onDetailsClick,
+                onBookClick = onBookClick
+            )
+        }
+    }
+}
+
+@Composable
+fun CarImage(car: CarEntity) {
+    val context = LocalContext.current
+
+    if (car.photoUris.isNotEmpty()) {
+        val firstPhotoUri = car.photoUris.split(",").firstOrNull()
+        firstPhotoUri?.let { uriString ->
+            val uri = remember(uriString) {
+                try {
+                    val parsedUri = Uri.parse(uriString)
+                    if (parsedUri.scheme == "file") {
+                        val file = File(parsedUri.path ?: "")
+                        if (file.exists()) {
+                            parsedUri
+                        } else {
+                            null
+                        }
+                    } else if (parsedUri.scheme == "content") {
+                        parsedUri
+                    } else {
+                        null
+                    }
+                } catch (e: Exception) {
+                    null
                 }
             }
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Button(
-                    onClick = onBookClick,
+            if (uri != null) {
+                AsyncImage(
+                    model = ImageRequest.Builder(context)
+                        .data(uri)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = "${car.brand} ${car.model}",
                     modifier = Modifier
-                        .weight(1f)
-                        .height(44.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = colorResource(id = R.color.accent_color),
-                        contentColor = Color.White
-                    ),
-                    contentPadding = PaddingValues(0.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.book_button),
-                        maxLines = 1
-                    )
-                }
-
-                OutlinedButton(
-                    onClick = onDetailsClick,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(44.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = colorResource(id = R.color.accent_color)
-                    ),
-                    border = androidx.compose.foundation.BorderStroke(
-                        1.dp,
-                        colorResource(id = R.color.accent_color)
-                    )
-                ) {
-                    Text(
-                        text = stringResource(R.string.details_button),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
+                        .size(width = 120.dp, height = 90.dp)
+                        .clip(RoundedCornerShape(8.dp)),
+                    contentScale = ContentScale.Crop,
+                )
+            } else {
+                DefaultCarImage()
             }
+        } ?: run {
+            DefaultCarImage()
+        }
+    } else {
+        DefaultCarImage()
+    }
+}
+
+@Composable
+fun DefaultCarImage() {
+    Image(
+        painter = painterResource(id = R.drawable.machine),
+        contentDescription = "Car image",
+        modifier = Modifier
+            .size(width = 120.dp, height = 90.dp)
+            .clip(RoundedCornerShape(8.dp)),
+        contentScale = ContentScale.Crop
+    )
+}
+
+@Composable
+fun SpecificationChip(
+    iconRes: Int,
+    text: String
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
+            .padding(horizontal = 12.dp, vertical = 6.dp)
+    ) {
+        Image(
+            painter = painterResource(id = iconRes),
+            contentDescription = null,
+            modifier = Modifier.size(16.dp)
+        )
+        Spacer(modifier = Modifier.width(4.dp))
+        Text(
+            text = text,
+            style = TextStyle(
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
+                color = colorResource(id = R.color.label_input)
+            )
+        )
+    }
+}
+
+@Composable
+fun CarActionButtons(
+    onDetailsClick: () -> Unit,
+    onBookClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Button(
+            onClick = onBookClick,
+            modifier = Modifier
+                .weight(1f)
+                .height(44.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = colorResource(id = R.color.accent_color),
+                contentColor = Color.White
+            ),
+            contentPadding = PaddingValues(0.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.book_button),
+                maxLines = 1
+            )
+        }
+
+        OutlinedButton(
+            onClick = onDetailsClick,
+            modifier = Modifier
+                .weight(1f)
+                .height(44.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = colorResource(id = R.color.accent_color)
+            ),
+            border = androidx.compose.foundation.BorderStroke(
+                1.dp,
+                colorResource(id = R.color.accent_color)
+            )
+        ) {
+            Text(
+                text = stringResource(R.string.details_button),
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
     }
 }

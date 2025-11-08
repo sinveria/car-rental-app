@@ -7,10 +7,13 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ru.sinveria.rentcar.data.repository.LocalRepositoryImpl
 import ru.sinveria.rentcar.domain.repository.AuthRepository
+import ru.sinveria.rentcar.domain.repository.CarRepository
 import ru.sinveria.rentcar.domain.repository.ConnectionRepository
 import ru.sinveria.rentcar.domain.usecase.CheckConnectionUseCase
 import ru.sinveria.rentcar.domain.usecase.CheckPermissionsUseCase
 import ru.sinveria.rentcar.domain.usecase.CopyImageUseCase
+import ru.sinveria.rentcar.domain.usecase.GetCarsUseCase
+import ru.sinveria.rentcar.domain.usecase.GetCurrentUserUseCase
 import ru.sinveria.rentcar.domain.usecase.GetUserUseCase
 import ru.sinveria.rentcar.domain.usecase.ImagePickerUseCase
 import ru.sinveria.rentcar.domain.usecase.LoginUseCase
@@ -24,6 +27,7 @@ import ru.sinveria.rentcar.domain.usecase.ValidateNameUseCase
 import ru.sinveria.rentcar.domain.usecase.ValidatePasswordUseCase
 import ru.sinveria.rentcar.domain.usecase.ValidateTermsUseCase
 import ru.sinveria.rentcar.domain.usecase.RegisterUseCase
+import ru.sinveria.rentcar.domain.usecase.SaveCarUseCase
 import javax.inject.Singleton
 
 @Module
@@ -133,5 +137,23 @@ object UseCaseModule {
         localRepository: LocalRepositoryImpl
     ): GetUserUseCase {
         return GetUserUseCase(localRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSaveCarUseCase(carRepository: CarRepository): SaveCarUseCase {
+        return SaveCarUseCase(carRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetCarsUseCase(carRepository: CarRepository): GetCarsUseCase {
+        return GetCarsUseCase(carRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetCurrentUserUseCase(authRepository: AuthRepository): GetCurrentUserUseCase {
+        return GetCurrentUserUseCase(authRepository)
     }
 }

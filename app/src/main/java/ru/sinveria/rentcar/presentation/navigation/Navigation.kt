@@ -2,6 +2,7 @@ package ru.sinveria.rentcar.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -9,6 +10,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import kotlinx.coroutines.delay
+import ru.sinveria.rentcar.presentation.ui.screens.AddCarOne
+import ru.sinveria.rentcar.presentation.ui.screens.AddCarPhotos
+import ru.sinveria.rentcar.presentation.ui.screens.AddCarSuccess
+import ru.sinveria.rentcar.presentation.ui.screens.AddCarTwo
 import ru.sinveria.rentcar.presentation.ui.screens.GettingStarted
 import ru.sinveria.rentcar.presentation.ui.screens.Login
 import ru.sinveria.rentcar.presentation.ui.screens.Onboarding
@@ -23,8 +28,9 @@ import ru.sinveria.rentcar.presentation.ui.screens.HomeScreen
 import ru.sinveria.rentcar.presentation.ui.screens.SettingsScreen
 import ru.sinveria.rentcar.presentation.ui.screens.SearchLoadingScreen
 import ru.sinveria.rentcar.presentation.ui.screens.SearchResultsScreen
-import ru.sinveria.rentcar.presentation.ui.screens.CarItem
 import ru.sinveria.rentcar.presentation.viewmodel.RegistrationSharedViewModel
+import ru.sinveria.rentcar.presentation.viewmodel.SearchViewModel
+import androidx.compose.runtime.getValue
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
@@ -106,10 +112,10 @@ fun AppNavigation(navController: NavHostController) {
 
         composable(Screen.Home.route) {
             HomeScreen(
-                onCarDetailsClick = { carId ->
+                onCarDetailsClick = {
 
                 },
-                onBookCarClick = { carId ->
+                onBookCarClick = {
 
                 },
                 onBookmarksClick = {
@@ -130,22 +136,17 @@ fun AppNavigation(navController: NavHostController) {
                     navController.popBackStack()
                 },
                 onBookingsClick = {
-
                 },
                 onThemeClick = {
-
                 },
                 onNotificationsClick = {
-
                 },
                 onConnectCarClick = {
-
+                    navController.navigate("add_car_graph")
                 },
                 onHelpClick = {
-
                 },
                 onInviteFriendClick = {
-
                 },
                 onHomeClick = {
                     navController.navigate(Screen.Home.route) {
@@ -164,10 +165,7 @@ fun AppNavigation(navController: NavHostController) {
             SearchLoadingScreen()
 
             LaunchedEffect(Unit) {
-                delay(3000)
-
-                val results = filterCars(searchQuery)
-
+                delay(2000)
                 navController.navigate("search_results/$searchQuery") {
                     popUpTo(Screen.Home.route)
                 }
@@ -176,21 +174,24 @@ fun AppNavigation(navController: NavHostController) {
 
         composable("search_results/{searchQuery}") { backStackEntry ->
             val searchQuery = backStackEntry.arguments?.getString("searchQuery") ?: ""
-            val searchResults = filterCars(searchQuery)
+            val searchViewModel: SearchViewModel = hiltViewModel()
+            val searchResults by searchViewModel.searchResults.collectAsState()
+            val isLoading by searchViewModel.isLoading.collectAsState()
+
+            LaunchedEffect(searchQuery) {
+                searchViewModel.searchCars(searchQuery)
+            }
 
             SearchResultsScreen(
                 searchQuery = searchQuery,
                 searchResults = searchResults,
+                isLoading = isLoading,
                 onBackClick = {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Home.route) { inclusive = true }
-                    }
+                    navController.popBackStack()
                 },
                 onCarDetailsClick = { carId ->
-
                 },
                 onBookCarClick = { carId ->
-
                 },
                 onHomeClick = {
                     navController.navigate(Screen.Home.route) {
@@ -201,7 +202,6 @@ fun AppNavigation(navController: NavHostController) {
                     navController.navigate(Screen.Settings.route)
                 },
                 onBookmarksClick = {
-
                 }
             )
         }
@@ -269,96 +269,91 @@ fun AppNavigation(navController: NavHostController) {
 
                 Congratulations(
                     onNavigateToProfile = {
-                        navController.navigate(Screen.UserProfile.route)
-                    },
-                    sharedViewModel = sharedViewModel
-                )
-            }
-
-            composable(Screen.UserProfile.route) {
-                UserProfileScreen(
-                    onNavigateBack = {
-                        navController.popBackStack()
-                    },
-                    onLogoutClick = {
-                        navController.navigate(Screen.Login.route) {
-                            popUpTo(0)
-                            launchSingleTop = true
-                        }
-                    },
-                    onHomeClick = {
                         navController.navigate(Screen.Home.route) {
                             popUpTo(0)
                         }
                     },
-                    onBookmarksClick = {
+                    sharedViewModel = sharedViewModel
+                )
+            }
+        }
 
+        composable(Screen.UserProfile.route) {
+            UserProfileScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                onLogoutClick = {
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(0)
+                        launchSingleTop = true
+                    }
+                },
+                onHomeClick = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(0)
+                    }
+                },
+                onBookmarksClick = {
+                },
+                onSettingsClick = {
+                    navController.navigate(Screen.Settings.route)
+                },
+                onAddCarClick = {
+                    navController.navigate("add_car_graph")
+                }
+            )
+        }
+
+        navigation(
+            startDestination = Screen.AddCarOne.route,
+            route = "add_car_graph"
+        ) {
+            composable(Screen.AddCarOne.route) {
+                AddCarOne(
+                    onNavigateBack = {
+                        navController.popBackStack()
                     },
-                    onSettingsClick = {
-                        navController.navigate(Screen.Settings.route)
+                    onNext = {
+                        navController.navigate(Screen.AddCarTwo.route)
+                    }
+                )
+            }
+
+            composable(Screen.AddCarTwo.route) {
+                AddCarTwo(
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    },
+                    onSubmit = {
+                        navController.navigate(Screen.AddCarPhotos.route)
+                    }
+                )
+            }
+
+            composable(Screen.AddCarPhotos.route) {
+                AddCarPhotos(
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    },
+                    onNext = {
+                        navController.navigate(Screen.AddCarSuccess.route)
+                    }
+                )
+            }
+
+            composable(Screen.AddCarSuccess.route) {
+                AddCarSuccess(
+                    onNavigateToHome = {
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.Home.route) {
+                                inclusive = false
+                            }
+                            launchSingleTop = true
+                        }
                     }
                 )
             }
         }
-    }
-}
-
-private fun filterCars(searchQuery: String): List<CarItem> {
-    val allCars = listOf(
-        CarItem(
-            id = 1,
-            name = "S 500 Sedan",
-            brand = "Mercedes-Benz",
-            price = "2500P",
-            pricePeriod = "в день",
-            transmission = "А/Т",
-            fuelType = "Бензин",
-            imageRes = ru.sinveria.rentcar.R.drawable.machine
-        ),
-        CarItem(
-            id = 2,
-            name = "X5",
-            brand = "BMW",
-            price = "2800P",
-            pricePeriod = "в день",
-            transmission = "А/Т",
-            fuelType = "Бензин",
-            imageRes = ru.sinveria.rentcar.R.drawable.machine
-        ),
-        CarItem(
-            id = 3,
-            name = "A6",
-            brand = "Audi",
-            price = "2200P",
-            pricePeriod = "в день",
-            transmission = "А/Т",
-            fuelType = "Бензин",
-            imageRes = ru.sinveria.rentcar.R.drawable.machine
-        ),
-        CarItem(
-            id = 4,
-            name = "Camry",
-            brand = "Toyota",
-            price = "1800P",
-            pricePeriod = "в день",
-            transmission = "А/Т",
-            fuelType = "Бензин",
-            imageRes = ru.sinveria.rentcar.R.drawable.machine
-        ),
-        CarItem(
-            id = 5,
-            name = "Civic",
-            brand = "Honda",
-            price = "1600P",
-            pricePeriod = "в день",
-            transmission = "А/Т",
-            fuelType = "Бензин",
-            imageRes = ru.sinveria.rentcar.R.drawable.machine
-        )
-    )
-
-    return allCars.filter { car ->
-        car.name.contains(searchQuery, ignoreCase = true) ||
-                car.brand.contains(searchQuery, ignoreCase = true)
     }
 }

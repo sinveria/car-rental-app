@@ -14,4 +14,8 @@ sealed class Screen(val route: String) {
     object SettingsScreen : Screen("settings_user")
     object Home : Screen("home_screen")
     object Settings :  Screen("settings_screen")
+    object AddCarOne : Screen("add_car_one")
+    object AddCarTwo : Screen("add_car_two")
+    object AddCarPhotos : Screen("add_car_photos")
+    object AddCarSuccess : Screen("add_car_success")
 }

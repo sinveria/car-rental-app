@@ -1,8 +1,10 @@
 package ru.sinveria.rentcar.domain.repository
 
+import ru.sinveria.rentcar.data.local.entity.UserEntity
 import ru.sinveria.rentcar.domain.usecase.LoginResult
 
 interface AuthRepository {
+    suspend fun getCurrentUserId(): String
     suspend fun login(email: String, password: String): LoginResult
 
     suspend fun register(
@@ -21,5 +23,6 @@ interface AuthRepository {
     ): LoginResult
 
     suspend fun getCurrentToken(): String?
+    suspend fun getCurrentUser(): UserEntity?
     suspend fun logout()
 }

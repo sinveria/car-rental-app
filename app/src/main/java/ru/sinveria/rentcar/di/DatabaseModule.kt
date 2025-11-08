@@ -9,7 +9,10 @@ import dagger.hilt.components.SingletonComponent
 import ru.sinveria.rentcar.data.local.database.AppDatabase
 import ru.sinveria.rentcar.data.local.dao.UserDao
 import ru.sinveria.rentcar.data.local.dao.AuthTokenDao
+import ru.sinveria.rentcar.data.local.dao.CarDao
+import ru.sinveria.rentcar.data.repository.CarRepositoryImpl
 import ru.sinveria.rentcar.data.repository.LocalRepositoryImpl
+import ru.sinveria.rentcar.domain.repository.CarRepository
 import javax.inject.Singleton
 
 @Module
@@ -34,10 +37,22 @@ object DatabaseModule {
 
     @Provides
     @Singleton
+    fun provideCarDao(database: AppDatabase): CarDao {
+        return database.carDao()
+    }
+
+    @Provides
+    @Singleton
     fun provideLocalRepository(
         userDao: UserDao,
         authTokenDao: AuthTokenDao
     ): LocalRepositoryImpl {
         return LocalRepositoryImpl(userDao, authTokenDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCarRepository(carDao: CarDao): CarRepository {
+        return CarRepositoryImpl(carDao)
     }
 }
